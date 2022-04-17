@@ -10,6 +10,7 @@ enable_testing()
 
 include_directories(include)
 
-add_subdirectory(lib/googletest)
 add_subdirectory(src)
-add_subdirectory(test)
+
+# add_subdirectory(lib/googletest)
+# add_subdirectory(test)
