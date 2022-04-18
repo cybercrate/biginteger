@@ -9,6 +9,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(include)
 add_subdirectory(src)
 
-enable_testing()
+# enable_testing()
 # add_subdirectory(lib/googletest)
 # add_subdirectory(test)
