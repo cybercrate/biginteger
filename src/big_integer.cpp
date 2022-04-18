@@ -1,5 +1,7 @@
 #include "big_integer.h"
 
+using namespace wingmann;
+
 const big_integer big_integer::zero_value{"0"};
 const big_integer big_integer::one_value{"1"};
 const big_integer big_integer::ten_value{"10"};

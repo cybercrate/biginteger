@@ -9,8 +9,10 @@
 #include <vector>
 #include <cctype>
 
+namespace wingmann {
+
 /**
-* big_integer C++ implementation
+* Big integer C++ implementation
 */
 class big_integer {
     int radix_{10};
@@ -90,5 +92,7 @@ public:
 
     [[nodiscard]] std::string to_string(int radix = 10) const;
 };
+
+} // namespace wingmann
 
 #endif // WINGMANN_BIG_INTEGER_H

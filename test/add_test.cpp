@@ -2,7 +2,9 @@
 
 #include "gtest/gtest.h"
 
-TEST(BigIntegerTest, AddTest_1)
+using namespace wingmann;
+
+TEST(big_integer, add)
 {
     big_integer a{"213283396647678464710419826418277230127361770187167317837127838163723763"};
     big_integer b{"903819310371273282019839077556598710691209128309837263716376338084991064"};
@@ -15,7 +17,7 @@ TEST(BigIntegerTest, AddTest_1)
     EXPECT_EQ(expected, actual);
 }
 
-TEST(BigIntegerTest, AddNegativeTest_1)
+TEST(big_integer, add_negative_1)
 {
     big_integer a{"2132833966476784647104198264182772301273617701871673178"};
     big_integer b{"-7106912091283098372637163763380849910641"};
@@ -27,7 +29,7 @@ TEST(BigIntegerTest, AddNegativeTest_1)
     EXPECT_EQ(expected, actual);
 }
 
-TEST(BigIntegerTest, AddNegativeTest_2)
+TEST(big_integer, add_negative_2)
 {
     big_integer a{"-7837893232"};
     big_integer b{"-832721963128309837"};
@@ -39,7 +41,7 @@ TEST(BigIntegerTest, AddNegativeTest_2)
     EXPECT_EQ(expected, actual);
 }
 
-TEST(BigIntegerTest, AddBigNuberTest_1)
+TEST(big_integer, add_big_numbers)
 {
     std::string i =
         "461848481646846848464811468486464282146814684841848648648484894484842982419848949889294189"

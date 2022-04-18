@@ -6,11 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-enable_testing()
-
 include_directories(include)
-
 add_subdirectory(src)
 
-# add_subdirectory(lib/googletest)
-# add_subdirectory(test)
+enable_testing()
+add_subdirectory(lib/googletest)
+add_subdirectory(test)
