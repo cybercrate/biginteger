@@ -16,7 +16,7 @@ big_integer::big_integer(int value) : signed_{value < 0}
     value_ = string_value;
 }
 
-big_integer::big_integer(long long value) : signed_{value < 0}
+big_integer::big_integer(std::int64_t value) : signed_{value < 0}
 {
     auto string_value = std::to_string(value);
     if (signed_)

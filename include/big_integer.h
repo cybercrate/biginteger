@@ -22,7 +22,7 @@ class big_integer {
 public:
     big_integer() = default;
     big_integer(int value);
-    big_integer(long long value);
+    big_integer(std::int64_t value);
     big_integer(std::string value, int radix = 10);
     virtual ~big_integer() = default;
 
