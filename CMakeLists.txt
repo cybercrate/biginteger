@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.22)
 project(biginteger)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-include_directories(include)
 add_subdirectory(src)
 
-# enable_testing()
-# add_subdirectory(lib/googletest)
-# add_subdirectory(test)
+if(CMAKE_BUILD_TYPE STREQUAL Test)
+    add_subdirectory("lib/googletest")
+    add_subdirectory(tests)
+endif()

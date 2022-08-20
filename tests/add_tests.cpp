@@ -1,8 +1,8 @@
-#include "big_integer.h"
+#include <big_integer/big_integer.h>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
-using namespace wingmann;
+using namespace wingmann::numerics;
 
 TEST(big_integer, add)
 {

@@ -1,5 +1,9 @@
-#ifndef WINGMANN_BIG_INTEGER_H
-#define WINGMANN_BIG_INTEGER_H
+/**
+* Big integer implementation
+*/
+
+#ifndef WINGMANN_BIGINTEGER_H
+#define WINGMANN_BIGINTEGER_H
 
 #include <string>
 #include <cmath>
@@ -9,11 +13,8 @@
 #include <vector>
 #include <cctype>
 
-namespace wingmann {
+namespace wingmann::numerics {
 
-/**
-* Big integer C++ implementation
-*/
 class big_integer {
     int radix_{10};
     bool signed_{};
@@ -36,24 +37,43 @@ public:
 
 public:
     // Basic arithmetic.
-    [[nodiscard]] big_integer add(const big_integer& bi) const;
-    [[nodiscard]] big_integer subtract(const big_integer& bi) const;
-    [[nodiscard]] big_integer multiply(const big_integer& bi) const;
-    [[nodiscard]] big_integer divide(const big_integer& bi) const;
+    [[nodiscard]]
+    big_integer add(const big_integer& bi) const;
+
+    [[nodiscard]]
+    big_integer subtract(const big_integer& bi) const;
+
+    [[nodiscard]]
+    big_integer multiply(const big_integer& bi) const;
+
+    [[nodiscard]]
+    big_integer divide(const big_integer& bi) const;
 
     // Complex arithmetic.
-    [[nodiscard]] big_integer pow(const big_integer& bi) const;
-    [[nodiscard]] big_integer modulus(const big_integer& bi) const;
+    [[nodiscard]]
+    big_integer pow(const big_integer& bi) const;
+
+    [[nodiscard]]
+    big_integer modulus(const big_integer& bi) const;
 
     // Modification and checking.
-    [[nodiscard]] size_type bit_length() const;
-    [[nodiscard]] int compare(const big_integer& bi) const;
+    [[nodiscard]]
+    size_type bit_length() const;
 
-    [[nodiscard]] big_integer negate() const;
-    [[nodiscard]] big_integer absolute() const;
+    [[nodiscard]]
+    int compare(const big_integer& bi) const;
 
-    [[nodiscard]] bool is_positive() const;
-    [[nodiscard]] bool is_negative() const;
+    [[nodiscard]]
+    big_integer negate() const;
+
+    [[nodiscard]]
+    big_integer absolute() const;
+
+    [[nodiscard]]
+    bool is_positive() const;
+
+    [[nodiscard]]
+    bool is_negative() const;
 
     void swap(big_integer& bi);
 
@@ -84,15 +104,15 @@ public:
     bool operator<=(const big_integer& bi) const;
     bool operator>=(const big_integer& bi) const;
 
-    friend std::ostream& operator<<(std::ostream& stream, const big_integer& bi)
-    {
+    friend std::ostream& operator<<(std::ostream& stream, const big_integer& bi) {
         stream << bi.to_string();
         return stream;
     }
 
-    [[nodiscard]] std::string to_string(int radix = 10) const;
+    [[nodiscard]]
+    std::string to_string(int radix = 10) const;
 };
 
-} // namespace wingmann
+} // namespace wingmann::numerics
 
-#endif // WINGMANN_BIG_INTEGER_H
+#endif // WINGMANN_BIGINTEGER_H
