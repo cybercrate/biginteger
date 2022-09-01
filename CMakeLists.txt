@@ -7,12 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/lib")
 list(APPEND PROJECT_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
-find_package(GTest COMPONENTS gtest_main REQUIRED)
-
 add_subdirectory(src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRS})
 
 if(CMAKE_BUILD_TYPE MATCHES "Test")
+    find_package(GTest COMPONENTS gtest_main REQUIRED)
+
     add_subdirectory(test)
 
     if(GTest_FOUND)
