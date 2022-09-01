@@ -1,3 +1,3 @@
 mkdir ../lib
 cd ../lib
-git clone https://github.com/google/googletest.git
+conan install .. --build missing
