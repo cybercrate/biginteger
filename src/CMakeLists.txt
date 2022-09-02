@@ -1,3 +1,3 @@
 file(GLOB PROJECT_SOURCES "*.cpp")
 
-add_library(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

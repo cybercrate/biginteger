@@ -1,9 +1,8 @@
-# Temporary IDE folders
-.idea/
-.vs/
-
-# Temporary project folders
 build/
 cmake-build-debug/
 out/
-lib/
+bin/
+vcpkg/
+
+.idea/
+.vs/
