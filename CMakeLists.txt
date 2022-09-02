@@ -16,5 +16,4 @@ add_subdirectory(src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRS})
 
 add_subdirectory(test)
-target_include_directories("${PROJECT_NAME}_test" PRIVATE ${GTest_INCLUDE_DIRS})
 target_link_libraries("${PROJECT_NAME}_test" PRIVATE GTest::gtest_main ${PROJECT_NAME})
