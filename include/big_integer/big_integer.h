@@ -1,7 +1,3 @@
-/**
-* Big integer implementation
-*/
-
 #ifndef WINGMANN_BIGINTEGER_H
 #define WINGMANN_BIGINTEGER_H
 
