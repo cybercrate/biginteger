@@ -1,3 +1,5 @@
 file(GLOB PROJECT_SOURCES "*.cpp")
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRS})

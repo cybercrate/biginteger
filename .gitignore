@@ -2,7 +2,6 @@ build/
 cmake-build-debug/
 out/
 bin/
-vcpkg/
 
 .idea/
 .vs/
