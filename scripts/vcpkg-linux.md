@@ -1,6 +1,6 @@
-# Setup vcpkg on linux 
+# Handling dependencies in Linux with vcpkg
 
-## Install vcpkg
+## Install vcpkg once
 ```bash
 cd ~/
 git clone https://github.com/microsoft/vcpkg
@@ -11,6 +11,5 @@ git clone https://github.com/microsoft/vcpkg
 ## Install dependencies
 ```bash
 cd ~/vcpkg/
-./vcpkg install fmt:x64-linux
 ./vcpkg install gtest:x64-linux
 ```

@@ -1,4 +1,4 @@
-file(GLOB PROJECT_SOURCES "*.cpp")
+file(GLOB PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_executable("${PROJECT_NAME}_test" ${PROJECT_SOURCES})
 
