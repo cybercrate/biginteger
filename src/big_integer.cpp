@@ -506,7 +506,23 @@ bool big_integer::operator==(const big_integer& value) const {
     return compare(value) == 0;
 }
 
+bool big_integer::operator==(const std::int32_t& value) const {
+    return compare(value) == 0;
+}
+
+bool big_integer::operator==(const std::int64_t& value) const {
+    return compare(value) == 0;
+}
+
 bool big_integer::operator!=(const big_integer& value) const {
+    return compare(value) != 0;
+}
+
+bool big_integer::operator!=(const std::int32_t& value) const {
+    return compare(value) != 0;
+}
+
+bool big_integer::operator!=(const std::int64_t& value) const {
     return compare(value) != 0;
 }
 
@@ -514,7 +530,23 @@ bool big_integer::operator<(const big_integer& value) const {
     return compare(value) == -1;
 }
 
+bool big_integer::operator<(const std::int32_t& value) const {
+    return compare(value) == -1;
+}
+
+bool big_integer::operator<(const std::int64_t& value) const {
+    return compare(value) == -1;
+}
+
 bool big_integer::operator>(const big_integer& value) const {
+    return compare(value) == 1;
+}
+
+bool big_integer::operator>(const std::int32_t& value) const {
+    return compare(value) == 1;
+}
+
+bool big_integer::operator>(const std::int64_t& value) const {
     return compare(value) == 1;
 }
 
@@ -523,7 +555,27 @@ bool big_integer::operator<=(const big_integer& value) const {
     return (cmp == -1) || (cmp == 0);
 }
 
+bool big_integer::operator<=(const std::int32_t& value) const {
+    int cmp = compare(value);
+    return (cmp == -1) || (cmp == 0);
+}
+
+bool big_integer::operator<=(const std::int64_t& value) const {
+    int cmp = compare(value);
+    return (cmp == -1) || (cmp == 0);
+}
+
 bool big_integer::operator>=(const big_integer& value) const {
+    auto cmp = compare(value);
+    return (cmp == 0) || (cmp == 1);
+}
+
+bool big_integer::operator>=(const std::int32_t& value) const {
+    auto cmp = compare(value);
+    return (cmp == 0) || (cmp == 1);
+}
+
+bool big_integer::operator>=(const std::int64_t& value) const {
     auto cmp = compare(value);
     return (cmp == 0) || (cmp == 1);
 }
