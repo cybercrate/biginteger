@@ -7,7 +7,7 @@ const big_integer big_integer::one_value{"1"};
 const big_integer big_integer::ten_value{"10"};
 const std::string big_integer::base_char_value{"0123456789abcdefghijklmnopqrstuv"};
 
-big_integer::big_integer(int value) : signed_{value < 0} {
+big_integer::big_integer(std::int32_t value) : signed_{value < 0} {
     auto string_value = std::to_string(value);
     if (signed_)
         string_value.erase(0, 1);
@@ -24,7 +24,8 @@ big_integer::big_integer(std::int64_t value) : signed_{value < 0} {
 }
 
 big_integer::big_integer(std::string value, int radix)
-    : radix_{radix}, signed_{value.front() == '-'} {
+    : radix_{radix}, signed_{value.starts_with('-')}
+{
     if (signed_)
         value.erase(0, 1);
 
@@ -61,19 +62,19 @@ big_integer::big_integer(std::string value, int radix)
     }
 }
 
-big_integer big_integer::add(const big_integer& bi) const {
+big_integer big_integer::add(const big_integer& value) const {
     big_integer addition;
 
-    if (signed_ && !bi.signed_) {
+    if (signed_ && !value.signed_) {
         // (-a)+(+b)
-        addition = bi.subtract(negate());
-    } else if (!signed_ && bi.signed_) {
+        addition = value.subtract(negate());
+    } else if (!signed_ && value.signed_) {
         // (+a)+(-b)
-        addition = subtract(bi.negate());
+        addition = subtract(value.negate());
     } else {
         // (+a)+(+b) or (-a)+(-b)
         auto sum = value_;
-        auto added = bi.value_;
+        auto added = value.value_;
 
         auto difference_length = std::abs(int(sum.length() - added.length()));
 
@@ -111,21 +112,21 @@ big_integer big_integer::add(const big_integer& bi) const {
     return addition;
 }
 
-big_integer big_integer::subtract(const big_integer& bi) const {
+big_integer big_integer::subtract(const big_integer& value) const {
     big_integer subtraction;
 
-    if ((signed_ && !bi.signed_) || !signed_ && bi.signed_) {
+    if ((signed_ && !value.signed_) || !signed_ && value.signed_) {
         // (-a)-(+b) or (+a)-(-b)
-        subtraction = add(bi.negate());
+        subtraction = add(value.negate());
     } else {
         // (+a)-(+b) or (-a)-(-b)
         if (signed_) {
-            subtraction = add(bi.negate());
+            subtraction = add(value.negate());
         } else {
-            bool invert_sign = (compare(bi) == -1);
+            bool invert_sign = (compare(value) == -1);
 
-            std::string sub = invert_sign ? bi.value_ : value_;
-            std::string removed = invert_sign ? value_ : bi.value_;
+            std::string sub = invert_sign ? value.value_ : value_;
+            std::string removed = invert_sign ? value_ : value.value_;
 
             auto difference_length = std::abs(int(sub.length() - removed.length()));
 
@@ -158,11 +159,11 @@ big_integer big_integer::subtract(const big_integer& bi) const {
     return subtraction;
 }
 
-big_integer big_integer::multiply(const big_integer& bi) const {
+big_integer big_integer::multiply(const big_integer& value) const {
     big_integer multiplication;
 
     auto mul = value_;
-    auto multiplied = bi.value_;
+    auto multiplied = value.value_;
 
     std::reverse(mul.begin(), mul.end());
     std::reverse(multiplied.begin(), multiplied.end());
@@ -194,20 +195,20 @@ big_integer big_integer::multiply(const big_integer& bi) const {
         step++;
     }
 
-    if (bool positive = (signed_ && bi.signed_) || (!signed_ && !bi.signed_); !positive)
+    if (bool positive = (signed_ && value.signed_) || (!signed_ && !value.signed_); !positive)
         multiplication = multiplication.negate();
 
     return multiplication;
 }
 
-big_integer big_integer::divide(const big_integer& bi) const {
+big_integer big_integer::divide(const big_integer& value) const {
     big_integer division;
 
-    if (bi == zero_value) {
+    if (value == zero_value) {
         // Division by zero.
-    } else if (bi == one_value) {
+    } else if (value == one_value) {
         division = (*this);
-    } else if (compare(bi) == 0) {
+    } else if (compare(value) == 0) {
         division = 1;
     } else {
         std::string dividend = value_;
@@ -216,7 +217,7 @@ big_integer big_integer::divide(const big_integer& bi) const {
 
         std::reverse(dividend.begin(), dividend.end());
 
-        big_integer bi_abs = bi.absolute();
+        big_integer bi_abs = value.absolute();
 
         do {
             current_quotient.push_back(dividend.back());
@@ -241,58 +242,58 @@ big_integer big_integer::divide(const big_integer& bi) const {
         division = big_integer{quotient};
     }
 
-    if (bool positive = (signed_ && bi.signed_) || (!signed_ && !bi.signed_); !positive)
+    if (bool positive = (signed_ && value.signed_) || (!signed_ && !value.signed_); !positive)
         division = division.negate();
 
     return division;
 }
 
-big_integer big_integer::pow(const big_integer& bi) const {
-    big_integer value;
+big_integer big_integer::pow(const big_integer& value) const {
+    big_integer temp;
 
-    if (bi == zero_value) {
-        value = one_value;
-    } else if (bi == one_value) {
-        value = (*this);
+    if (value == zero_value) {
+        temp = one_value;
+    } else if (value == one_value) {
+        temp = (*this);
     } else {
         big_integer initial_value{*this};
-        value = (*this);
+        temp = (*this);
 
-        for (big_integer i = one_value; i < bi; i++)
-            value *= initial_value;
+        for (big_integer i = one_value; i < value; i++)
+            temp *= initial_value;
     }
-    return value;
+    return temp;
 }
 
-big_integer big_integer::modulus(const big_integer& bi) const {
-    return subtract(bi.multiply(divide(bi)));
+big_integer big_integer::modulus(const big_integer& value) const {
+    return subtract(value.multiply(divide(value)));
 }
 
 big_integer::size_type big_integer::bit_length() const {
     return to_string(2).length();
 }
 
-int big_integer::compare(const big_integer& bi) const {
+int big_integer::compare(const big_integer& value) const {
     int comparison;
 
-    if (signed_ && !bi.signed_) {
+    if (signed_ && !value.signed_) {
         // -a, +b
         comparison = -1;
-    } else if (!signed_ && bi.signed_) {
+    } else if (!signed_ && value.signed_) {
         // +a, -b
         comparison = 1;
     } else {
         // +a, +b or -a, -b
-        if (value_.length() < bi.value_.length()) {
+        if (value_.length() < value.value_.length()) {
             comparison = -1;
-        } else if (value_.length() > bi.value_.length()) {
+        } else if (value_.length() > value.value_.length()) {
             comparison = 1;
         } else {
             bool positive = !signed_;
 
-            if (value_ < bi.value_)
+            if (value_ < value.value_)
                 comparison = (positive ? -1 : 1);
-            else if (value_ > bi.value_)
+            else if (value_ > value.value_)
                 comparison = (positive ? 1 : -1);
             else
                 comparison = 0;
@@ -324,37 +325,37 @@ void big_integer::swap(big_integer &bi) {
     bi = tmp;
 }
 
-big_integer big_integer::operator+(const big_integer& bi) {
-    return add(bi);
+big_integer big_integer::operator+(const big_integer& value) {
+    return add(value);
 }
 
-big_integer big_integer::operator-(const big_integer& bi) {
-    return subtract(bi);
+big_integer big_integer::operator-(const big_integer& value) {
+    return subtract(value);
 }
 
-big_integer big_integer::operator*(const big_integer& bi) {
-    return multiply(bi);
+big_integer big_integer::operator*(const big_integer& value) {
+    return multiply(value);
 }
 
-big_integer big_integer::operator/(const big_integer& bi) {
-    return divide(bi);
+big_integer big_integer::operator/(const big_integer& value) {
+    return divide(value);
 }
 
-big_integer big_integer::operator%(const big_integer& bi) {
-    return modulus(bi);
+big_integer big_integer::operator%(const big_integer& value) {
+    return modulus(value);
 }
 
-big_integer big_integer::operator<<(const big_integer& bi) const {
+big_integer big_integer::operator<<(const big_integer& value) const {
     auto bitwise_value = to_string(2);
-    for (big_integer i = zero_value; i < bi; i++)
+    for (big_integer i = zero_value; i < value; i++)
         bitwise_value.push_back('0');
 
     return {bitwise_value, 2};
 }
 
-big_integer big_integer::operator>>(const big_integer& bi) const {
+big_integer big_integer::operator>>(const big_integer& value) const {
     auto bitwise_value = to_string(2);
-    for (big_integer i = zero_value; i < bi && bitwise_value.length() > 0; i++)
+    for (big_integer i = zero_value; i < value && bitwise_value.length() > 0; i++)
         bitwise_value.pop_back();
 
     if (bitwise_value.empty())
@@ -363,23 +364,23 @@ big_integer big_integer::operator>>(const big_integer& bi) const {
     return {bitwise_value, 2};
 }
 
-big_integer& big_integer::operator+=(const big_integer& bi) {
-    (*this) = add(bi);
+big_integer& big_integer::operator+=(const big_integer& value) {
+    (*this) = add(value);
     return (*this);
 }
 
-big_integer& big_integer::operator-=(const big_integer& bi) {
-    (*this) = subtract(bi);
+big_integer& big_integer::operator-=(const big_integer& value) {
+    (*this) = subtract(value);
     return (*this);
 }
 
-big_integer& big_integer::operator*=(const big_integer& bi) {
-    (*this) = multiply(bi);
+big_integer& big_integer::operator*=(const big_integer& value) {
+    (*this) = multiply(value);
     return (*this);
 }
 
-big_integer& big_integer::operator/=(const big_integer& bi) {
-    (*this) = divide(bi);
+big_integer& big_integer::operator/=(const big_integer& value) {
+    (*this) = divide(value);
     return (*this);
 }
 
@@ -405,30 +406,35 @@ const big_integer big_integer::operator++(int) {
     return before_plus;
 }
 
-bool big_integer::operator==(const big_integer& bi) const {
-    return compare(bi) == 0;
+bool big_integer::operator==(const big_integer& value) const {
+    return compare(value) == 0;
 }
 
-bool big_integer::operator!=(const big_integer& bi) const {
-    return compare(bi) != 0;
+bool big_integer::operator!=(const big_integer& value) const {
+    return compare(value) != 0;
 }
 
-bool big_integer::operator<(const big_integer& bi) const {
-    return compare(bi) == -1;
+bool big_integer::operator<(const big_integer& value) const {
+    return compare(value) == -1;
 }
 
-bool big_integer::operator>(const big_integer& bi) const {
-    return compare(bi) == 1;
+bool big_integer::operator>(const big_integer& value) const {
+    return compare(value) == 1;
 }
 
-bool big_integer::operator<=(const big_integer& bi) const {
-    int cmp = compare(bi);
+bool big_integer::operator<=(const big_integer& value) const {
+    int cmp = compare(value);
     return (cmp == -1) || (cmp == 0);
 }
 
-bool big_integer::operator>=(const big_integer& bi) const {
-    auto cmp = compare(bi);
+bool big_integer::operator>=(const big_integer& value) const {
+    auto cmp = compare(value);
     return (cmp == 0) || (cmp == 1);
+}
+
+std::ostream &wingmann::numerics::operator<<(std::ostream &os, const big_integer &value) {
+    os << value.to_string();
+    return os;
 }
 
 std::string big_integer::to_string(int radix) const {

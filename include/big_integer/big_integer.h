@@ -18,9 +18,10 @@ class big_integer {
 
 public:
     big_integer() = default;
-    big_integer(int value);
+    big_integer(std::int32_t value);
     big_integer(std::int64_t value);
     big_integer(std::string value, int radix = 10);
+
     virtual ~big_integer() = default;
 
 public:
@@ -34,30 +35,30 @@ public:
 public:
     // Basic arithmetic.
     [[nodiscard]]
-    big_integer add(const big_integer& bi) const;
+    big_integer add(const big_integer& value) const;
 
     [[nodiscard]]
-    big_integer subtract(const big_integer& bi) const;
+    big_integer subtract(const big_integer& value) const;
 
     [[nodiscard]]
-    big_integer multiply(const big_integer& bi) const;
+    big_integer multiply(const big_integer& value) const;
 
     [[nodiscard]]
-    big_integer divide(const big_integer& bi) const;
+    big_integer divide(const big_integer& value) const;
 
     // Complex arithmetic.
     [[nodiscard]]
-    big_integer pow(const big_integer& bi) const;
+    big_integer pow(const big_integer& value) const;
 
     [[nodiscard]]
-    big_integer modulus(const big_integer& bi) const;
+    big_integer modulus(const big_integer& value) const;
 
     // Modification and checking.
     [[nodiscard]]
     size_type bit_length() const;
 
     [[nodiscard]]
-    int compare(const big_integer& bi) const;
+    int compare(const big_integer& value) const;
 
     [[nodiscard]]
     big_integer negate() const;
@@ -74,36 +75,33 @@ public:
     void swap(big_integer& bi);
 
     // Operators.
-    big_integer operator+(const big_integer& bi);
-    big_integer operator-(const big_integer& bi);
-    big_integer operator*(const big_integer& bi);
-    big_integer operator/(const big_integer& bi);
-    big_integer operator%(const big_integer& bi);
+    big_integer operator+(const big_integer& value);
+    big_integer operator-(const big_integer& value);
+    big_integer operator*(const big_integer& value);
+    big_integer operator/(const big_integer& value);
+    big_integer operator%(const big_integer& value);
 
-    big_integer operator<<(const big_integer& bi) const;
-    big_integer operator>>(const big_integer& bi) const;
+    big_integer operator<<(const big_integer& value) const;
+    big_integer operator>>(const big_integer& value) const;
 
-    big_integer& operator+=(const big_integer& bi);
-    big_integer& operator-=(const big_integer& bi);
-    big_integer& operator*=(const big_integer& bi);
-    big_integer& operator/=(const big_integer& bi);
+    big_integer& operator+=(const big_integer& value);
+    big_integer& operator-=(const big_integer& value);
+    big_integer& operator*=(const big_integer& value);
+    big_integer& operator/=(const big_integer& value);
 
     big_integer& operator--();
     const big_integer operator--(int);
     big_integer& operator++();
     const big_integer operator++(int);
 
-    bool operator==(const big_integer& bi) const;
-    bool operator!=(const big_integer& bi) const;
-    bool operator<(const big_integer& bi) const;
-    bool operator>(const big_integer& bi) const;
-    bool operator<=(const big_integer& bi) const;
-    bool operator>=(const big_integer& bi) const;
+    bool operator==(const big_integer& value) const;
+    bool operator!=(const big_integer& value) const;
+    bool operator<(const big_integer& value) const;
+    bool operator>(const big_integer& value) const;
+    bool operator<=(const big_integer& value) const;
+    bool operator>=(const big_integer& value) const;
 
-    friend std::ostream& operator<<(std::ostream& stream, const big_integer& bi) {
-        stream << bi.to_string();
-        return stream;
-    }
+    friend std::ostream& operator<<(std::ostream& os, const big_integer& value);
 
     [[nodiscard]]
     std::string to_string(int radix = 10) const;
