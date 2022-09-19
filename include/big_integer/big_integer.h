@@ -82,27 +82,53 @@ public:
     [[nodiscard]]
     bool is_negative() const;
 
-    void swap(big_integer& bi);
+    void swap(big_integer& value);
 
     // Operators.
     big_integer operator+(const big_integer& value);
+    big_integer operator+(const std::int32_t& value);
+    big_integer operator+(const std::int64_t& value);
+
     big_integer operator-(const big_integer& value);
+    big_integer operator-(const std::int32_t& value);
+    big_integer operator-(const std::int64_t& value);
+
     big_integer operator*(const big_integer& value);
+    big_integer operator*(const std::int32_t& value);
+    big_integer operator*(const std::int64_t& value);
+
     big_integer operator/(const big_integer& value);
+    big_integer operator/(const std::int32_t& value);
+    big_integer operator/(const std::int64_t& value);
+
     big_integer operator%(const big_integer& value);
+    big_integer operator%(const std::int32_t& value);
+    big_integer operator%(const std::int64_t& value);
 
     big_integer operator<<(const big_integer& value) const;
     big_integer operator>>(const big_integer& value) const;
 
     big_integer& operator+=(const big_integer& value);
+    big_integer& operator+=(const std::int32_t& value);
+    big_integer& operator+=(const std::int64_t& value);
+
     big_integer& operator-=(const big_integer& value);
+    big_integer& operator-=(const std::int32_t& value);
+    big_integer& operator-=(const std::int64_t& value);
+
     big_integer& operator*=(const big_integer& value);
+    big_integer& operator*=(const std::int32_t& value);
+    big_integer& operator*=(const std::int64_t& value);
+
     big_integer& operator/=(const big_integer& value);
+    big_integer& operator/=(const std::int32_t& value);
+    big_integer& operator/=(const std::int64_t& value);
+
+    big_integer& operator++();
+    const big_integer operator++(int);
 
     big_integer& operator--();
     const big_integer operator--(int);
-    big_integer& operator++();
-    const big_integer operator++(int);
 
     bool operator==(const big_integer& value) const;
     bool operator!=(const big_integer& value) const;
@@ -112,6 +138,7 @@ public:
     bool operator>=(const big_integer& value) const;
 
     friend std::ostream& operator<<(std::ostream& os, const big_integer& value);
+    friend std::istream& operator>>(std::istream& is, big_integer& right);
 
     [[nodiscard]]
     std::string to_string(int radix = 10) const;
