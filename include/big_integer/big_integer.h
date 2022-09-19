@@ -42,7 +42,6 @@ public:
     big_integer& operator=(const big_integer &value);
 
 public:
-
     // Basic arithmetic.
     [[nodiscard]]
     big_integer add(const big_integer& value) const;
