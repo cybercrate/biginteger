@@ -7,33 +7,41 @@ const big_integer big_integer::one_value{"1"};
 const big_integer big_integer::ten_value{"10"};
 const std::string big_integer::base_char_value{"0123456789abcdefghijklmnopqrstuv"};
 
-big_integer::big_integer(std::int32_t value) : signed_{value < 0} {
-    auto string_value = std::to_string(value);
-    if (signed_)
-        string_value.erase(0, 1);
+big_integer::big_integer(std::int32_t value) : signed_{value < 0} { *this = value; }
 
-    value_ = string_value;
+big_integer::big_integer(std::int64_t value) : signed_{value < 0} { *this = value; }
+
+big_integer::big_integer(const char *value, int radix) : radix_{radix} { *this = value; }
+
+big_integer::big_integer(const std::string& value, int radix) : radix_{radix} { *this = value; }
+
+big_integer::big_integer(const big_integer &value) { *this = value; }
+
+big_integer& big_integer::operator=(std::int32_t value) {
+    *this = std::to_string(value);
+    return *this;
 }
 
-big_integer::big_integer(std::int64_t value) : signed_{value < 0} {
-    auto string_value = std::to_string(value);
-    if (signed_)
-        string_value.erase(0, 1);
-
-    value_ = string_value;
+big_integer& big_integer::operator=(std::int64_t value) {
+    *this = std::to_string(value);
+    return *this;
 }
 
-big_integer::big_integer(std::string value, int radix)
-    : radix_{radix}, signed_{value.starts_with('-')}
-{
+big_integer &big_integer::operator=(const char* value) {
+    *this = std::string{value};
+    return *this;
+}
+
+big_integer& big_integer::operator=(std::string value) {
+    signed_ = value.starts_with('-');
     if (signed_)
         value.erase(0, 1);
 
     // Remove leading zero.
-    while (value.front() == '0' && value.length() != 1)
+    while (value.starts_with('0') && (value.length() != 1))
         value.erase(0, 1);
 
-    if (radix == 10) {
+    if (radix_ == 10) {
         value_ = value;
     } else {
         // Convert to base ten to use trivial algorithm.
@@ -46,7 +54,7 @@ big_integer::big_integer(std::string value, int radix)
 
         big_integer pow{value_length - 1};
         big_integer converted_value{last};
-        big_integer bi_radix{radix};
+        big_integer bi_radix{radix_};
 
         for (int i = 0; i < value_length - 1; i++) {
             auto c = value.at(i);
@@ -60,6 +68,14 @@ big_integer::big_integer(std::string value, int radix)
             ? converted_value.negate()
             : converted_value;
     }
+    return *this;
+}
+
+big_integer &big_integer::operator=(const big_integer &value) {
+    this->radix_ = value.radix_;
+    this->value_ = value.value_;
+    this->signed_ = value.signed_;
+    return *this;
 }
 
 big_integer big_integer::add(const big_integer& value) const {
