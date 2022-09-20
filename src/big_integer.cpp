@@ -7,6 +7,8 @@ const big_integer big_integer::one_value{"1"};
 const big_integer big_integer::ten_value{"10"};
 const std::string big_integer::base_char_value{"0123456789abcdefghijklmnopqrstuv"};
 
+big_integer::big_integer(const big_integer&& value) noexcept { *this = std::move(value); }
+
 big_integer::big_integer(std::int32_t value) : signed_{value < 0} { *this = value; }
 
 big_integer::big_integer(std::int64_t value) : signed_{value < 0} { *this = value; }
@@ -15,7 +17,12 @@ big_integer::big_integer(const char *value, int radix) : radix_{radix} { *this =
 
 big_integer::big_integer(const std::string& value, int radix) : radix_{radix} { *this = value; }
 
-big_integer::big_integer(const big_integer &value) { *this = value; }
+big_integer& big_integer::operator=(const big_integer&& value) noexcept {
+    this->radix_ = value.radix_;
+    this->value_ = value.value_;
+    this->signed_ = value.signed_;
+    return *this;
+}
 
 big_integer& big_integer::operator=(std::int32_t value) {
     *this = std::to_string(value);
@@ -66,15 +73,8 @@ big_integer& big_integer::operator=(std::string value) {
         }
         (*this) = signed_
             ? converted_value.negate()
-            : converted_value;
+            : std::move(converted_value);
     }
-    return *this;
-}
-
-big_integer &big_integer::operator=(const big_integer &value) {
-    this->radix_ = value.radix_;
-    this->value_ = value.value_;
-    this->signed_ = value.signed_;
     return *this;
 }
 
@@ -161,7 +161,7 @@ big_integer big_integer::subtract(const big_integer& value) const {
                     c += 10;
                     sub[index + 1]--;
                 }
-                c = (c - '0') - (removed.at(index) - '0') + '0';
+                c = static_cast<char>((c - '0') - (removed.at(index) - '0') + '0');
                 index++;
             }
             std::reverse(sub.begin(), sub.end());
@@ -191,16 +191,16 @@ big_integer big_integer::multiply(const big_integer& value) const {
         auto current_operation = std::string{}.insert(0, step, '0');
 
         for (const char& c2 : multiplied) {
-            unsigned char value = ((c1 - '0') * (c2 - '0')) + (carry - '0') + '0';
+            unsigned char c_value = ((c1 - '0') * (c2 - '0')) + (carry - '0') + '0';
             carry = '0';
 
-            if (value > '9') {
-                while (value > '9') {
-                    value -= 10;
+            if (c_value > '9') {
+                while (c_value > '9') {
+                    c_value -= 10;
                     carry++;
                 }
             }
-            current_operation.insert(0, 1, static_cast<char>(value));
+            current_operation.insert(0, 1, static_cast<char>(c_value));
         }
 
         if (carry > '0') {
@@ -223,7 +223,7 @@ big_integer big_integer::divide(const big_integer& value) const {
     if (value == zero_value) {
         // Division by zero.
     } else if (value == one_value) {
-        division = (*this);
+        division = std::move(*this);
     } else if (compare(value) == 0) {
         division = 1;
     } else {
@@ -268,14 +268,14 @@ big_integer big_integer::pow(const big_integer& value) const {
     big_integer temp;
 
     if (value == zero_value) {
-        temp = one_value;
+        temp = std::move(one_value);
     } else if (value == one_value) {
-        temp = (*this);
+        temp = std::move(*this);
     } else {
-        big_integer initial_value{*this};
-        temp = (*this);
+        big_integer initial_value = std::move(*this);
+        temp = std::move(*this);
 
-        for (big_integer i = one_value; i < value; i++)
+        for (big_integer i = std::move(one_value); i < value; i++)
             temp *= initial_value;
     }
     return temp;
@@ -285,7 +285,7 @@ big_integer big_integer::modulus(const big_integer& value) const {
     return subtract(value.multiply(divide(value)));
 }
 
-big_integer::size_type big_integer::bit_length() const {
+std::size_t big_integer::bit_length() const {
     return to_string(2).length();
 }
 
@@ -324,7 +324,7 @@ big_integer big_integer::negate() const {
 }
 
 big_integer big_integer::absolute() const {
-    return {is_positive() ? (*this) : negate()};
+    return {is_positive() ? std::move(*this) : negate()};
 }
 
 bool big_integer::is_positive() const {
@@ -336,74 +336,74 @@ bool big_integer::is_negative() const {
 }
 
 void big_integer::swap(big_integer &value) {
-    big_integer tmp = (*this);
-    (*this) = value;
-    value = tmp;
+    big_integer tmp = std::move(*this);
+    *this = std::move(value);
+    value = std::move(tmp);
 }
 
-big_integer big_integer::operator+(const big_integer& value) {
+big_integer big_integer::operator+(const big_integer& value) const {
     return add(value);
 }
 
-big_integer big_integer::operator+(const std::int32_t& value) {
+big_integer big_integer::operator+(const std::int32_t& value) const {
     return add(big_integer{value});
 }
 
-big_integer big_integer::operator+(const std::int64_t& value) {
+big_integer big_integer::operator+(const std::int64_t& value) const {
     return add(big_integer{value});
 }
 
-big_integer big_integer::operator-(const big_integer& value) {
+big_integer big_integer::operator-(const big_integer& value) const {
     return subtract(value);
 }
 
-big_integer big_integer::operator-(const std::int32_t& value) {
+big_integer big_integer::operator-(const std::int32_t& value) const {
     return subtract(value);
 }
 
-big_integer big_integer::operator-(const std::int64_t& value) {
+big_integer big_integer::operator-(const std::int64_t& value) const {
     return subtract(value);
 }
 
-big_integer big_integer::operator*(const big_integer& value) {
+big_integer big_integer::operator*(const big_integer& value) const {
     return multiply(value);
 }
 
-big_integer big_integer::operator*(const std::int32_t& value) {
+big_integer big_integer::operator*(const std::int32_t& value) const {
     return multiply(value);
 }
 
-big_integer big_integer::operator*(const std::int64_t& value) {
+big_integer big_integer::operator*(const std::int64_t& value) const {
     return multiply(value);
 }
 
-big_integer big_integer::operator/(const big_integer& value) {
+big_integer big_integer::operator/(const big_integer& value) const {
     return divide(value);
 }
 
-big_integer big_integer::operator/(const std::int32_t& value) {
+big_integer big_integer::operator/(const std::int32_t& value) const {
     return divide(value);
 }
 
-big_integer big_integer::operator/(const std::int64_t& value) {
+big_integer big_integer::operator/(const std::int64_t& value) const {
     return divide(value);
 }
 
-big_integer big_integer::operator%(const big_integer& value) {
+big_integer big_integer::operator%(const big_integer& value) const {
     return modulus(value);
 }
 
-big_integer big_integer::operator%(const std::int32_t& value) {
+big_integer big_integer::operator%(const std::int32_t& value) const {
     return modulus(value);
 }
 
-big_integer big_integer::operator%(const std::int64_t& value) {
+big_integer big_integer::operator%(const std::int64_t& value) const {
     return modulus(value);
 }
 
 big_integer big_integer::operator<<(const big_integer& value) const {
     auto bitwise_value = to_string(2);
-    for (big_integer i = zero_value; i < value; i++)
+    for (big_integer i = std::move(zero_value); i < value; i++)
         bitwise_value.push_back('0');
 
     return {bitwise_value, 2};
@@ -411,7 +411,7 @@ big_integer big_integer::operator<<(const big_integer& value) const {
 
 big_integer big_integer::operator>>(const big_integer& value) const {
     auto bitwise_value = to_string(2);
-    for (big_integer i = zero_value; i < value && bitwise_value.length() > 0; i++)
+    for (big_integer i = std::move(zero_value); i < value && bitwise_value.length() > 0; i++)
         bitwise_value.pop_back();
 
     if (bitwise_value.empty())
@@ -486,7 +486,7 @@ big_integer& big_integer::operator++() {
 }
 
 const big_integer big_integer::operator++(int) {
-    big_integer before_plus{*this};
+    big_integer before_plus = std::move(*this);
     *this = add(one_value);
     return before_plus;
 }
@@ -497,7 +497,7 @@ big_integer& big_integer::operator--() {
 }
 
 const big_integer big_integer::operator--(int) {
-    big_integer before_minus = (*this);
+    big_integer before_minus = std::move(*this);
     *this = subtract(one_value);
     return before_minus;
 }
@@ -599,7 +599,7 @@ std::string big_integer::to_string(int radix) const {
     if (radix == 10) {
         ss << value_;
     } else {
-        big_integer decimal_value{*this};
+        big_integer decimal_value = std::move(*this);
         big_integer modulo{radix};
 
         std::string value;

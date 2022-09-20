@@ -18,11 +18,11 @@ class big_integer {
 
 public:
     big_integer() = default;
-    big_integer(std::int32_t value);
+    big_integer(const big_integer&& value) noexcept;
+    big_integer(int value);
     big_integer(std::int64_t value);
     big_integer(const char* value, int radix = 10);
     big_integer(const std::string& value, int radix = 10);
-    big_integer(big_integer const &value);
 
     virtual ~big_integer() = default;
 
@@ -32,14 +32,89 @@ public:
     static const big_integer ten_value;
     static const std::string base_char_value;
 
-    using size_type = std::size_t;
-
 public:
-    big_integer& operator=(std::int32_t value);
+    // Assignment operators.
+    big_integer& operator=(const big_integer&& value) noexcept;
+    big_integer& operator=(int value);
     big_integer& operator=(std::int64_t value);
-    big_integer& operator=(std::string value);
     big_integer& operator=(const char* value);
-    big_integer& operator=(const big_integer &value);
+    big_integer& operator=(std::string value);
+
+    big_integer& operator+=(const big_integer& value);
+    big_integer& operator+=(const int& value);
+    big_integer& operator+=(const std::int64_t& value);
+
+    big_integer& operator-=(const big_integer& value);
+    big_integer& operator-=(const int& value);
+    big_integer& operator-=(const std::int64_t& value);
+
+    big_integer& operator*=(const big_integer& value);
+    big_integer& operator*=(const int& value);
+    big_integer& operator*=(const std::int64_t& value);
+
+    // Arithmetic operators.
+    big_integer& operator/=(const big_integer& value);
+    big_integer& operator/=(const int& value);
+    big_integer& operator/=(const std::int64_t& value);
+
+    big_integer operator+(const big_integer& value) const;
+    big_integer operator+(const int& value) const;
+    big_integer operator+(const std::int64_t& value) const;
+
+    big_integer operator-(const big_integer& value) const;
+    big_integer operator-(const int& value) const;
+    big_integer operator-(const std::int64_t& value) const;
+
+    big_integer operator*(const big_integer& value) const;
+    big_integer operator*(const int& value) const;
+    big_integer operator*(const std::int64_t& value) const;
+
+    big_integer operator/(const big_integer& value) const;
+    big_integer operator/(const int& value) const;
+    big_integer operator/(const std::int64_t& value) const;
+
+    big_integer operator%(const big_integer& value) const;
+    big_integer operator%(const int& value) const;
+    big_integer operator%(const std::int64_t& value) const;
+
+    big_integer& operator++();
+    const big_integer operator++(int);
+
+    big_integer& operator--();
+    const big_integer operator--(int);
+
+    // Shift operators.
+    big_integer operator<<(const big_integer& value) const;
+    big_integer operator>>(const big_integer& value) const;
+
+    // Comparison operators.
+    bool operator==(const big_integer& value) const;
+    bool operator==(const int& value) const;
+    bool operator==(const std::int64_t& value) const;
+
+    bool operator!=(const big_integer& value) const;
+    bool operator!=(const int& value) const;
+    bool operator!=(const std::int64_t& value) const;
+
+    bool operator<(const big_integer& value) const;
+    bool operator<(const int& value) const;
+    bool operator<(const std::int64_t& value) const;
+
+    bool operator>(const big_integer& value) const;
+    bool operator>(const int& value) const;
+    bool operator>(const std::int64_t& value) const;
+
+    bool operator<=(const big_integer& value) const;
+    bool operator<=(const int& value) const;
+    bool operator<=(const std::int64_t& value) const;
+
+    bool operator>=(const big_integer& value) const;
+    bool operator>=(const int& value) const;
+    bool operator>=(const std::int64_t& value) const;
+
+    // Stream operators.
+    friend std::ostream& operator<<(std::ostream& os, const big_integer& value);
+    friend std::istream& operator>>(std::istream& is, big_integer& value);
 
 public:
     // Basic arithmetic.
@@ -64,7 +139,7 @@ public:
 
     // Modification and checking.
     [[nodiscard]]
-    size_type bit_length() const;
+    std::size_t bit_length() const;
 
     [[nodiscard]]
     int compare(const big_integer& value) const;
@@ -82,79 +157,6 @@ public:
     bool is_negative() const;
 
     void swap(big_integer& value);
-
-    // Operators.
-    big_integer operator+(const big_integer& value);
-    big_integer operator+(const std::int32_t& value);
-    big_integer operator+(const std::int64_t& value);
-
-    big_integer operator-(const big_integer& value);
-    big_integer operator-(const std::int32_t& value);
-    big_integer operator-(const std::int64_t& value);
-
-    big_integer operator*(const big_integer& value);
-    big_integer operator*(const std::int32_t& value);
-    big_integer operator*(const std::int64_t& value);
-
-    big_integer operator/(const big_integer& value);
-    big_integer operator/(const std::int32_t& value);
-    big_integer operator/(const std::int64_t& value);
-
-    big_integer operator%(const big_integer& value);
-    big_integer operator%(const std::int32_t& value);
-    big_integer operator%(const std::int64_t& value);
-
-    big_integer operator<<(const big_integer& value) const;
-    big_integer operator>>(const big_integer& value) const;
-
-    big_integer& operator+=(const big_integer& value);
-    big_integer& operator+=(const std::int32_t& value);
-    big_integer& operator+=(const std::int64_t& value);
-
-    big_integer& operator-=(const big_integer& value);
-    big_integer& operator-=(const std::int32_t& value);
-    big_integer& operator-=(const std::int64_t& value);
-
-    big_integer& operator*=(const big_integer& value);
-    big_integer& operator*=(const std::int32_t& value);
-    big_integer& operator*=(const std::int64_t& value);
-
-    big_integer& operator/=(const big_integer& value);
-    big_integer& operator/=(const std::int32_t& value);
-    big_integer& operator/=(const std::int64_t& value);
-
-    big_integer& operator++();
-    const big_integer operator++(int);
-
-    big_integer& operator--();
-    const big_integer operator--(int);
-
-    bool operator==(const big_integer& value) const;
-    bool operator==(const std::int32_t& value) const;
-    bool operator==(const std::int64_t& value) const;
-
-    bool operator!=(const big_integer& value) const;
-    bool operator!=(const std::int32_t& value) const;
-    bool operator!=(const std::int64_t& value) const;
-
-    bool operator<(const big_integer& value) const;
-    bool operator<(const std::int32_t& value) const;
-    bool operator<(const std::int64_t& value) const;
-
-    bool operator>(const big_integer& value) const;
-    bool operator>(const std::int32_t& value) const;
-    bool operator>(const std::int64_t& value) const;
-
-    bool operator<=(const big_integer& value) const;
-    bool operator<=(const std::int32_t& value) const;
-    bool operator<=(const std::int64_t& value) const;
-
-    bool operator>=(const big_integer& value) const;
-    bool operator>=(const std::int32_t& value) const;
-    bool operator>=(const std::int64_t& value) const;
-
-    friend std::ostream& operator<<(std::ostream& os, const big_integer& value);
-    friend std::istream& operator>>(std::istream& is, big_integer& right);
 
     [[nodiscard]]
     std::string to_string(int radix = 10) const;
