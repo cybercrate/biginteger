@@ -9,11 +9,11 @@ const std::string big_integer::base_char_value{"0123456789abcdefghijklmnopqrstuv
 
 big_integer::big_integer(const big_integer&& value) noexcept { *this = std::move(value); }
 
-big_integer::big_integer(std::int32_t value) : signed_{value < 0} { *this = value; }
+big_integer::big_integer(int value) : signed_{value < 0} { *this = value; }
 
 big_integer::big_integer(std::int64_t value) : signed_{value < 0} { *this = value; }
 
-big_integer::big_integer(const char *value, int radix) : radix_{radix} { *this = value; }
+big_integer::big_integer(const char* value, int radix) : radix_{radix} { *this = value; }
 
 big_integer::big_integer(const std::string& value, int radix) : radix_{radix} { *this = value; }
 
@@ -24,7 +24,7 @@ big_integer& big_integer::operator=(const big_integer&& value) noexcept {
     return *this;
 }
 
-big_integer& big_integer::operator=(std::int32_t value) {
+big_integer& big_integer::operator=(int value) {
     *this = std::to_string(value);
     return *this;
 }
@@ -34,7 +34,7 @@ big_integer& big_integer::operator=(std::int64_t value) {
     return *this;
 }
 
-big_integer &big_integer::operator=(const char* value) {
+big_integer& big_integer::operator=(const char* value) {
     *this = std::string{value};
     return *this;
 }
@@ -345,7 +345,7 @@ big_integer big_integer::operator+(const big_integer& value) const {
     return add(value);
 }
 
-big_integer big_integer::operator+(const std::int32_t& value) const {
+big_integer big_integer::operator+(const int& value) const {
     return add(big_integer{value});
 }
 
@@ -357,7 +357,7 @@ big_integer big_integer::operator-(const big_integer& value) const {
     return subtract(value);
 }
 
-big_integer big_integer::operator-(const std::int32_t& value) const {
+big_integer big_integer::operator-(const int& value) const {
     return subtract(value);
 }
 
@@ -369,7 +369,7 @@ big_integer big_integer::operator*(const big_integer& value) const {
     return multiply(value);
 }
 
-big_integer big_integer::operator*(const std::int32_t& value) const {
+big_integer big_integer::operator*(const int& value) const {
     return multiply(value);
 }
 
@@ -381,7 +381,7 @@ big_integer big_integer::operator/(const big_integer& value) const {
     return divide(value);
 }
 
-big_integer big_integer::operator/(const std::int32_t& value) const {
+big_integer big_integer::operator/(const int& value) const {
     return divide(value);
 }
 
@@ -393,7 +393,7 @@ big_integer big_integer::operator%(const big_integer& value) const {
     return modulus(value);
 }
 
-big_integer big_integer::operator%(const std::int32_t& value) const {
+big_integer big_integer::operator%(const int& value) const {
     return modulus(value);
 }
 
@@ -425,7 +425,7 @@ big_integer& big_integer::operator+=(const big_integer& value) {
     return (*this);
 }
 
-big_integer& big_integer::operator+=(const std::int32_t& value) {
+big_integer& big_integer::operator+=(const int& value) {
     *this = add(value);
     return (*this);
 }
@@ -440,7 +440,7 @@ big_integer& big_integer::operator-=(const big_integer& value) {
     return *this;
 }
 
-big_integer& big_integer::operator-=(const std::int32_t& value) {
+big_integer& big_integer::operator-=(const int& value) {
     *this = subtract(value);
     return *this;
 }
@@ -455,7 +455,7 @@ big_integer& big_integer::operator*=(const big_integer& value) {
     return *this;
 }
 
-big_integer& big_integer::operator*=(const std::int32_t& value) {
+big_integer& big_integer::operator*=(const int& value) {
     *this = multiply(value);
     return *this;
 }
@@ -470,7 +470,7 @@ big_integer& big_integer::operator/=(const big_integer& value) {
     return *this;
 }
 
-big_integer& big_integer::operator/=(const std::int32_t& value) {
+big_integer& big_integer::operator/=(const int& value) {
     *this = divide(value);
     return *this;
 }
@@ -506,7 +506,7 @@ bool big_integer::operator==(const big_integer& value) const {
     return compare(value) == 0;
 }
 
-bool big_integer::operator==(const std::int32_t& value) const {
+bool big_integer::operator==(const int& value) const {
     return compare(value) == 0;
 }
 
@@ -518,7 +518,7 @@ bool big_integer::operator!=(const big_integer& value) const {
     return compare(value) != 0;
 }
 
-bool big_integer::operator!=(const std::int32_t& value) const {
+bool big_integer::operator!=(const int& value) const {
     return compare(value) != 0;
 }
 
@@ -530,7 +530,7 @@ bool big_integer::operator<(const big_integer& value) const {
     return compare(value) == -1;
 }
 
-bool big_integer::operator<(const std::int32_t& value) const {
+bool big_integer::operator<(const int& value) const {
     return compare(value) == -1;
 }
 
@@ -542,7 +542,7 @@ bool big_integer::operator>(const big_integer& value) const {
     return compare(value) == 1;
 }
 
-bool big_integer::operator>(const std::int32_t& value) const {
+bool big_integer::operator>(const int& value) const {
     return compare(value) == 1;
 }
 
@@ -555,7 +555,7 @@ bool big_integer::operator<=(const big_integer& value) const {
     return (cmp == -1) || (cmp == 0);
 }
 
-bool big_integer::operator<=(const std::int32_t& value) const {
+bool big_integer::operator<=(const int& value) const {
     int cmp = compare(value);
     return (cmp == -1) || (cmp == 0);
 }
@@ -570,7 +570,7 @@ bool big_integer::operator>=(const big_integer& value) const {
     return (cmp == 0) || (cmp == 1);
 }
 
-bool big_integer::operator>=(const std::int32_t& value) const {
+bool big_integer::operator>=(const int& value) const {
     auto cmp = compare(value);
     return (cmp == 0) || (cmp == 1);
 }
