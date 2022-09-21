@@ -72,31 +72,32 @@ public:
 
         if (radix_ == 10) {
             value_ = value;
-        } else {
-            // Convert to base ten to use trivial algorithm.
-            char last_char = value.back();
-            int last = ('0' <= last_char) && (last_char <= '9')
-                ? (last_char - '0')
-                : (tolower(last_char) - 'a') + 10;
-
-            auto value_length = static_cast<std::int64_t>(value.length());
-
-            big_integer pow{value_length - 1};
-            big_integer converted_value{last};
-            big_integer radix_value{radix_};
-
-            for (int i = 0; i < value_length - 1; i++) {
-                auto c = value.at(i);
-                int current_value = ('0' <= c) && (c <= '9')
-                    ? (c - '0')
-                    : (tolower(c) - 'a') + 10;
-
-                converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
-            }
-            *this = signed_
-                ? converted_value.negate()
-                : std::move(converted_value);
+            return *this;
         }
+        // Convert to base ten to use trivial algorithm.
+        char last_char = value.back();
+        int last = ('0' <= last_char) && (last_char <= '9')
+            ? (last_char - '0')
+            : (tolower(last_char) - 'a') + 10;
+
+        auto value_length = static_cast<std::int64_t>(value.length());
+
+        big_integer pow{value_length - 1};
+        big_integer converted_value{last};
+        big_integer radix_value{radix_};
+
+        for (int i = 0; i < value_length - 1; i++) {
+            auto c = value.at(i);
+            int current_value = ('0' <= c) && (c <= '9')
+                ? (c - '0')
+                : (tolower(c) - 'a') + 10;
+
+            converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
+        }
+        *this = signed_
+            ? converted_value.negate()
+            : std::move(converted_value);
+
         return *this;
     }
 
@@ -313,33 +314,33 @@ public:
     }
 
     bool operator<=(const big_integer& value) const {
-        auto cmp = compare(value);
-        return (cmp == -1) || (cmp == 0);
+        auto compared = compare(value);
+        return (compared == -1) || (compared == 0);
     }
 
     bool operator<=(const int& value) const {
-        auto cmp = compare(value);
-        return (cmp == -1) || (cmp == 0);
+        auto compared = compare(value);
+        return (compared == -1) || (compared == 0);
     }
 
     bool operator<=(const std::int64_t& value) const {
-        auto cmp = compare(value);
-        return (cmp == -1) || (cmp == 0);
+        auto compared = compare(value);
+        return (compared == -1) || (compared == 0);
     }
 
     bool operator>=(const big_integer& value) const {
-        auto cmp = compare(value);
-        return (cmp == 0) || (cmp == 1);
+        auto compared = compare(value);
+        return (compared == 0) || (compared == 1);
     }
 
     bool operator>=(const int& value) const {
-        auto cmp = compare(value);
-        return (cmp == 0) || (cmp == 1);
+        auto compared = compare(value);
+        return (compared == 0) || (compared == 1);
     }
 
     bool operator>=(const std::int64_t& value) const {
-        auto cmp = compare(value);
-        return (cmp == 0) || (cmp == 1);
+        auto compared = compare(value);
+        return (compared == 0) || (compared == 1);
     }
 
     // Stream operators.
@@ -359,13 +360,11 @@ public:
     // Basic arithmetic.
     [[nodiscard]]
     big_integer add(const big_integer& value) const {
-        if (signed_ && !value.signed_) {
-            // (-a)+(+b)
-            return value.subtract(negate());
-        } else if (!signed_ && value.signed_) {
-            // (+a)+(-b)
-            return subtract(value.negate());
-        }
+        if (signed_ && !value.signed_)
+            return value.subtract(negate()); // (-a)+(+b)
+        else if (!signed_ && value.signed_)
+            return subtract(value.negate()); // (+a)+(-b)
+
         // (+a)+(+b) or (-a)+(-b)
         auto sum = value_;
         auto added = value.value_;
@@ -403,14 +402,14 @@ public:
 
     [[nodiscard]]
     big_integer subtract(const big_integer& value) const {
-        if ((signed_ && !value.signed_) || !signed_ && value.signed_) {
-            // (-a)-(+b) or (+a)-(-b)
+        // (-a)-(+b) or (+a)-(-b)
+        if ((signed_ && !value.signed_) || !signed_ && value.signed_)
             return add(value.negate());
-        }
-        if (signed_) {
-            // (+a)-(+b) or (-a)-(-b)
+
+        // (+a)-(+b) or (-a)-(-b)
+        if (signed_)
             return add(value.negate());
-        }
+
         bool invert_sign = (compare(value) == -1);
 
         std::string sub = invert_sign ? value.value_ : value_;
@@ -489,13 +488,13 @@ public:
 
     [[nodiscard]]
     big_integer divide(const big_integer& value) const {
-        if (value == value_from<0>()) {
-            // todo: division by zero
-        } else if (value == value_from<1>()) {
+        if (value == value_from<0>())
+            return {}; // todo: division by zero
+        else if (value == value_from<1>())
             return *this;
-        } else if (compare(value) == 0) {
+        else if (compare(value) == 0)
             return 1;
-        }
+
         auto dividend = value_;
         std::ranges::reverse(dividend);
 
@@ -528,17 +527,17 @@ public:
         if (bool positive = (signed_ && value.signed_) || (!signed_ && !value.signed_); !positive)
             return big_integer{quotient}.negate();
 
-        return big_integer{quotient};
+        return quotient;
     }
 
     // Complex arithmetic.
     [[nodiscard]]
     big_integer pow(const big_integer& value) const {
-        if (value == value_from<0>()) {
+        if (value == value_from<0>())
             return std::move(value_from<1>());
-        } else if (value == value_from<1>()) {
+        else if (value == value_from<1>())
             return *this;
-        }
+
         auto initial_value{*this};
         auto temp{*this};
 
@@ -561,43 +560,36 @@ public:
 
     [[nodiscard]]
     int compare(const big_integer& value) const {
-        int comparison;
+        if (signed_ && !value.signed_)
+            return -1; // -a, +b
+        else if (!signed_ && value.signed_)
+            return 1; // +a, -b
 
-        if (signed_ && !value.signed_) {
-            // -a, +b
-            comparison = -1;
-        } else if (!signed_ && value.signed_) {
-            // +a, -b
-            comparison = 1;
-        } else {
-            // +a, +b or -a, -b
-            if (value_.length() < value.value_.length()) {
-                comparison = -1;
-            } else if (value_.length() > value.value_.length()) {
-                comparison = 1;
-            } else {
-                bool positive = !signed_;
+        // +a, +b or -a, -b
+        if (value_.length() < value.value_.length())
+            return -1;
+        else if (value_.length() > value.value_.length())
+            return 1;
 
-                if (value_ < value.value_)
-                    comparison = (positive ? -1 : 1);
-                else if (value_ > value.value_)
-                    comparison = (positive ? 1 : -1);
-                else
-                    comparison = 0;
-            }
-        }
-        return comparison;
+        bool positive = !signed_;
+
+        if (value_ < value.value_)
+            return positive ? -1 : 1;
+        else if (value_ > value.value_)
+            return positive ? 1 : -1;
+
+        return {};
     }
 
     [[nodiscard]]
     big_integer negate() const {
         std::string value{value_};
-        return {(signed_ ? value : value.insert(0, 1, '-'))};
+        return signed_ ? value : value.insert(0, 1, '-');
     }
 
     [[nodiscard]]
     big_integer absolute() const {
-        return {is_positive() ? *this : negate()};
+        return is_positive() ? *this : negate();
     }
 
     [[nodiscard]]
@@ -611,9 +603,7 @@ public:
     }
 
     void swap(big_integer& value) {
-        auto temp{std::move(*this)};
-        *this = std::move(value);
-        value = std::move(temp);
+        std::swap(*this, value);
     }
 
     template<std::int64_t value>
@@ -648,22 +638,23 @@ public:
 
         if (radix == 10) {
             ss << value_;
-        } else {
-            auto decimal_value{*this};
-            big_integer modulo{radix};
-
-            std::string value;
-
-            while (decimal_value != value_from<0>()) {
-                big_integer remain = {decimal_value.modulus(modulo)};
-                decimal_value /= modulo;
-
-                auto c = base_char_value().at(std::stoi(remain.to_string()));
-                value.push_back(c);
-            }
-            std::ranges::reverse(value);
-            ss << value;
+            return ss.str();
         }
+        auto decimal_value{*this};
+        big_integer modulo{radix};
+
+        std::string value;
+
+        while (decimal_value != value_from<0>()) {
+            auto remain{decimal_value.modulus(modulo)};
+            decimal_value /= modulo;
+
+            auto c = base_char_value().at(std::stoi(remain.to_string()));
+            value.push_back(c);
+        }
+        std::ranges::reverse(value);
+
+        ss << value;
         return ss.str();
     }
 
