@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "big_integer/big_integer.h"
 
 using namespace wingmann::numerics;
@@ -10,7 +12,7 @@ big_integer::big_integer(std::int64_t value) : signed_{value < 0} { *this = valu
 
 big_integer::big_integer(const char* value, int radix) : radix_{radix} { *this = value; }
 
-big_integer::big_integer(const std::string& value, int radix) : radix_{radix} { *this = value; }
+big_integer::big_integer(std::string value, int radix) : radix_{radix} { *this = std::move(value); }
 
 big_integer& big_integer::operator=(const big_integer&& value) noexcept {
     this->radix_ = value.radix_;

@@ -24,7 +24,7 @@ public:
     big_integer(int value);
     big_integer(std::int64_t value);
     big_integer(const char* value, int radix = 10);
-    big_integer(const std::string& value, int radix = 10);
+    big_integer(std::string value, int radix = 10);
 
     virtual ~big_integer() = default;
 
@@ -155,7 +155,7 @@ public:
     void swap(big_integer& value);
 
     template<std::int64_t value>
-    static auto value_from() {
+    static big_integer value_from() {
         return std::to_string(value);
     }
 
