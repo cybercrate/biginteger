@@ -17,5 +17,4 @@ set(PROJECT_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
 find_package(GTest CONFIGS REQUIRED)
 
-add_subdirectory(src)
 add_subdirectory(test)
