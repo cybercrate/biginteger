@@ -3,7 +3,9 @@
 
 #include <string>
 #include <cmath>
+#include <concepts>
 #include <algorithm>
+#include <optional>
 #include <ostream>
 #include <sstream>
 #include <vector>
@@ -25,12 +27,6 @@ public:
     big_integer(const std::string& value, int radix = 10);
 
     virtual ~big_integer() = default;
-
-public:
-    static const big_integer zero_value;
-    static const big_integer one_value;
-    static const big_integer ten_value;
-    static const std::string base_char_value;
 
 public:
     // Assignment operators.
@@ -158,8 +154,36 @@ public:
 
     void swap(big_integer& value);
 
+    template<std::int64_t value>
+    static auto value_from() {
+        return std::to_string(value);
+    }
+
+    template<std::integral T>
+    std::optional<T> to_integer() {
+        try {
+            return static_cast<T>(std::stoll(to_string()));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
+    template<std::floating_point T>
+    std::optional<T> to_floating() {
+        try {
+            return static_cast<T>(std::stod(to_string()));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
     [[nodiscard]]
     std::string to_string(int radix = 10) const;
+
+private:
+    static std::string base_char_value();
 };
 
 } // namespace wingmann::numerics

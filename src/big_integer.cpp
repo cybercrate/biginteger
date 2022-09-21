@@ -2,11 +2,6 @@
 
 using namespace wingmann::numerics;
 
-const big_integer big_integer::zero_value{"0"};
-const big_integer big_integer::one_value{"1"};
-const big_integer big_integer::ten_value{"10"};
-const std::string big_integer::base_char_value{"0123456789abcdefghijklmnopqrstuv"};
-
 big_integer::big_integer(const big_integer&& value) noexcept { *this = std::move(value); }
 
 big_integer::big_integer(int value) : signed_{value < 0} { *this = value; }
@@ -78,6 +73,257 @@ big_integer& big_integer::operator=(std::string value) {
     return *this;
 }
 
+big_integer& big_integer::operator+=(const big_integer& value) {
+    *this = add(value);
+    return (*this);
+}
+
+big_integer& big_integer::operator+=(const int& value) {
+    *this = add(value);
+    return (*this);
+}
+
+big_integer& big_integer::operator+=(const std::int64_t& value) {
+    *this = add(value);
+    return (*this);
+}
+
+big_integer& big_integer::operator-=(const big_integer& value) {
+    *this = subtract(value);
+    return *this;
+}
+
+big_integer& big_integer::operator-=(const int& value) {
+    *this = subtract(value);
+    return *this;
+}
+
+big_integer& big_integer::operator-=(const std::int64_t& value) {
+    *this = subtract(value);
+    return *this;
+}
+
+big_integer& big_integer::operator*=(const big_integer& value) {
+    *this = multiply(value);
+    return *this;
+}
+
+big_integer& big_integer::operator*=(const int& value) {
+    *this = multiply(value);
+    return *this;
+}
+
+big_integer& big_integer::operator*=(const std::int64_t& value) {
+    *this = multiply(value);
+    return *this;
+}
+
+big_integer& big_integer::operator/=(const big_integer& value) {
+    *this = divide(value);
+    return *this;
+}
+
+big_integer& big_integer::operator/=(const int& value) {
+    *this = divide(value);
+    return *this;
+}
+
+big_integer& big_integer::operator/=(const std::int64_t& value) {
+    *this = divide(value);
+    return *this;
+}
+
+big_integer big_integer::operator+(const big_integer& value) const {
+    return add(value);
+}
+
+big_integer big_integer::operator+(const int& value) const {
+    return add(value);
+}
+
+big_integer big_integer::operator+(const std::int64_t& value) const {
+    return add(value);
+}
+
+big_integer big_integer::operator-(const big_integer& value) const {
+    return subtract(value);
+}
+
+big_integer big_integer::operator-(const int& value) const {
+    return subtract(value);
+}
+
+big_integer big_integer::operator-(const std::int64_t& value) const {
+    return subtract(value);
+}
+
+big_integer big_integer::operator*(const big_integer& value) const {
+    return multiply(value);
+}
+
+big_integer big_integer::operator*(const int& value) const {
+    return multiply(value);
+}
+
+big_integer big_integer::operator*(const std::int64_t& value) const {
+    return multiply(value);
+}
+
+big_integer big_integer::operator/(const big_integer& value) const {
+    return divide(value);
+}
+
+big_integer big_integer::operator/(const int& value) const {
+    return divide(value);
+}
+
+big_integer big_integer::operator/(const std::int64_t& value) const {
+    return divide(value);
+}
+
+big_integer big_integer::operator%(const big_integer& value) const {
+    return modulus(value);
+}
+
+big_integer big_integer::operator%(const int& value) const {
+    return modulus(value);
+}
+
+big_integer big_integer::operator%(const std::int64_t& value) const {
+    return modulus(value);
+}
+
+big_integer& big_integer::operator++() {
+    *this = add(value_from<1>());
+    return *this;
+}
+
+const big_integer big_integer::operator++(int) {
+    big_integer before_plus = std::move(*this);
+    *this = add(value_from<1>());
+    return before_plus;
+}
+
+big_integer& big_integer::operator--() {
+    *this = subtract(value_from<1>());
+    return *this;
+}
+
+const big_integer big_integer::operator--(int) {
+    big_integer before_minus = std::move(*this);
+    *this = subtract(value_from<1>());
+    return before_minus;
+}
+
+big_integer big_integer::operator<<(const big_integer& value) const {
+    auto bitwise_value = to_string(2);
+    for (big_integer i = value_from<0>(); i < value; i++)
+        bitwise_value.push_back('0');
+
+    return {bitwise_value, 2};
+}
+
+big_integer big_integer::operator>>(const big_integer& value) const {
+    auto bitwise_value = to_string(2);
+    for (big_integer i = value_from<0>(); i < value && bitwise_value.length() > 0; i++)
+        bitwise_value.pop_back();
+
+    if (bitwise_value.empty())
+        bitwise_value.push_back('0');
+
+    return {bitwise_value, 2};
+}
+
+bool big_integer::operator==(const big_integer& value) const {
+    return compare(value) == 0;
+}
+
+bool big_integer::operator==(const int& value) const {
+    return compare(value) == 0;
+}
+
+bool big_integer::operator==(const std::int64_t& value) const {
+    return compare(value) == 0;
+}
+
+bool big_integer::operator!=(const big_integer& value) const {
+    return compare(value) != 0;
+}
+
+bool big_integer::operator!=(const int& value) const {
+    return compare(value) != 0;
+}
+
+bool big_integer::operator!=(const std::int64_t& value) const {
+    return compare(value) != 0;
+}
+
+bool big_integer::operator<(const big_integer& value) const {
+    return compare(value) == -1;
+}
+
+bool big_integer::operator<(const int& value) const {
+    return compare(value) == -1;
+}
+
+bool big_integer::operator<(const std::int64_t& value) const {
+    return compare(value) == -1;
+}
+
+bool big_integer::operator>(const big_integer& value) const {
+    return compare(value) == 1;
+}
+
+bool big_integer::operator>(const int& value) const {
+    return compare(value) == 1;
+}
+
+bool big_integer::operator>(const std::int64_t& value) const {
+    return compare(value) == 1;
+}
+
+bool big_integer::operator<=(const big_integer& value) const {
+    int cmp = compare(value);
+    return (cmp == -1) || (cmp == 0);
+}
+
+bool big_integer::operator<=(const int& value) const {
+    int cmp = compare(value);
+    return (cmp == -1) || (cmp == 0);
+}
+
+bool big_integer::operator<=(const std::int64_t& value) const {
+    int cmp = compare(value);
+    return (cmp == -1) || (cmp == 0);
+}
+
+bool big_integer::operator>=(const big_integer& value) const {
+    auto cmp = compare(value);
+    return (cmp == 0) || (cmp == 1);
+}
+
+bool big_integer::operator>=(const int& value) const {
+    auto cmp = compare(value);
+    return (cmp == 0) || (cmp == 1);
+}
+
+bool big_integer::operator>=(const std::int64_t& value) const {
+    auto cmp = compare(value);
+    return (cmp == 0) || (cmp == 1);
+}
+
+std::ostream &wingmann::numerics::operator<<(std::ostream& os, const big_integer& value) {
+    os << value.to_string();
+    return os;
+}
+
+std::istream &wingmann::numerics::operator>>(std::istream& is, big_integer& value) {
+    std::string input;
+    is >> input;
+    value = input;
+    return is;
+}
+
 big_integer big_integer::add(const big_integer& value) const {
     big_integer addition;
 
@@ -106,7 +352,7 @@ big_integer big_integer::add(const big_integer& value) const {
         char carry{'0'};
 
         for (char& c : sum) {
-            c = (carry - '0') + (c - '0') + (added.at(index) - '0') + '0';
+            c = static_cast<char>((carry - '0') + (c - '0') + (added.at(index) - '0') + '0');
             if (c > '9') {
                 c -= 10;
                 carry = '1';
@@ -220,9 +466,9 @@ big_integer big_integer::multiply(const big_integer& value) const {
 big_integer big_integer::divide(const big_integer& value) const {
     big_integer division;
 
-    if (value == zero_value) {
+    if (value == value_from<0>()) {
         // Division by zero.
-    } else if (value == one_value) {
+    } else if (value == value_from<1>()) {
         division = std::move(*this);
     } else if (compare(value) == 0) {
         division = 1;
@@ -246,7 +492,6 @@ big_integer big_integer::divide(const big_integer& value) const {
 
                 while (bi_abs.multiply(n) <= bi_dividend)
                     n++;
-
                 n--;
                 quotient.append(n.to_string());
                 current_quotient = bi_dividend.subtract(bi_abs.multiply(n)).to_string();
@@ -267,15 +512,15 @@ big_integer big_integer::divide(const big_integer& value) const {
 big_integer big_integer::pow(const big_integer& value) const {
     big_integer temp;
 
-    if (value == zero_value) {
-        temp = std::move(one_value);
-    } else if (value == one_value) {
+    if (value == value_from<0>()) {
+        temp = std::move(value_from<1>());
+    } else if (value == value_from<1>()) {
         temp = std::move(*this);
     } else {
         big_integer initial_value = std::move(*this);
         temp = std::move(*this);
 
-        for (big_integer i = std::move(one_value); i < value; i++)
+        for (big_integer i = value_from<1>(); i < value; i++)
             temp *= initial_value;
     }
     return temp;
@@ -319,7 +564,7 @@ int big_integer::compare(const big_integer& value) const {
 }
 
 big_integer big_integer::negate() const {
-    std::string value = value_;
+    std::string value{value_};
     return {(signed_ ? value : value.insert(0, 1, '-'))};
 }
 
@@ -341,257 +586,6 @@ void big_integer::swap(big_integer &value) {
     value = std::move(tmp);
 }
 
-big_integer big_integer::operator+(const big_integer& value) const {
-    return add(value);
-}
-
-big_integer big_integer::operator+(const int& value) const {
-    return add(big_integer{value});
-}
-
-big_integer big_integer::operator+(const std::int64_t& value) const {
-    return add(big_integer{value});
-}
-
-big_integer big_integer::operator-(const big_integer& value) const {
-    return subtract(value);
-}
-
-big_integer big_integer::operator-(const int& value) const {
-    return subtract(value);
-}
-
-big_integer big_integer::operator-(const std::int64_t& value) const {
-    return subtract(value);
-}
-
-big_integer big_integer::operator*(const big_integer& value) const {
-    return multiply(value);
-}
-
-big_integer big_integer::operator*(const int& value) const {
-    return multiply(value);
-}
-
-big_integer big_integer::operator*(const std::int64_t& value) const {
-    return multiply(value);
-}
-
-big_integer big_integer::operator/(const big_integer& value) const {
-    return divide(value);
-}
-
-big_integer big_integer::operator/(const int& value) const {
-    return divide(value);
-}
-
-big_integer big_integer::operator/(const std::int64_t& value) const {
-    return divide(value);
-}
-
-big_integer big_integer::operator%(const big_integer& value) const {
-    return modulus(value);
-}
-
-big_integer big_integer::operator%(const int& value) const {
-    return modulus(value);
-}
-
-big_integer big_integer::operator%(const std::int64_t& value) const {
-    return modulus(value);
-}
-
-big_integer big_integer::operator<<(const big_integer& value) const {
-    auto bitwise_value = to_string(2);
-    for (big_integer i = std::move(zero_value); i < value; i++)
-        bitwise_value.push_back('0');
-
-    return {bitwise_value, 2};
-}
-
-big_integer big_integer::operator>>(const big_integer& value) const {
-    auto bitwise_value = to_string(2);
-    for (big_integer i = std::move(zero_value); i < value && bitwise_value.length() > 0; i++)
-        bitwise_value.pop_back();
-
-    if (bitwise_value.empty())
-        bitwise_value.push_back('0');
-
-    return {bitwise_value, 2};
-}
-
-big_integer& big_integer::operator+=(const big_integer& value) {
-    *this = add(value);
-    return (*this);
-}
-
-big_integer& big_integer::operator+=(const int& value) {
-    *this = add(value);
-    return (*this);
-}
-
-big_integer& big_integer::operator+=(const std::int64_t& value) {
-    *this = add(value);
-    return (*this);
-}
-
-big_integer& big_integer::operator-=(const big_integer& value) {
-    *this = subtract(value);
-    return *this;
-}
-
-big_integer& big_integer::operator-=(const int& value) {
-    *this = subtract(value);
-    return *this;
-}
-
-big_integer& big_integer::operator-=(const std::int64_t& value) {
-    *this = subtract(value);
-    return *this;
-}
-
-big_integer& big_integer::operator*=(const big_integer& value) {
-    *this = multiply(value);
-    return *this;
-}
-
-big_integer& big_integer::operator*=(const int& value) {
-    *this = multiply(value);
-    return *this;
-}
-
-big_integer& big_integer::operator*=(const std::int64_t& value) {
-    *this = multiply(value);
-    return *this;
-}
-
-big_integer& big_integer::operator/=(const big_integer& value) {
-    *this = divide(value);
-    return *this;
-}
-
-big_integer& big_integer::operator/=(const int& value) {
-    *this = divide(value);
-    return *this;
-}
-
-big_integer& big_integer::operator/=(const std::int64_t& value) {
-    *this = divide(value);
-    return *this;
-}
-
-big_integer& big_integer::operator++() {
-    *this = add(one_value);
-    return *this;
-}
-
-const big_integer big_integer::operator++(int) {
-    big_integer before_plus = std::move(*this);
-    *this = add(one_value);
-    return before_plus;
-}
-
-big_integer& big_integer::operator--() {
-    *this = subtract(one_value);
-    return *this;
-}
-
-const big_integer big_integer::operator--(int) {
-    big_integer before_minus = std::move(*this);
-    *this = subtract(one_value);
-    return before_minus;
-}
-
-bool big_integer::operator==(const big_integer& value) const {
-    return compare(value) == 0;
-}
-
-bool big_integer::operator==(const int& value) const {
-    return compare(value) == 0;
-}
-
-bool big_integer::operator==(const std::int64_t& value) const {
-    return compare(value) == 0;
-}
-
-bool big_integer::operator!=(const big_integer& value) const {
-    return compare(value) != 0;
-}
-
-bool big_integer::operator!=(const int& value) const {
-    return compare(value) != 0;
-}
-
-bool big_integer::operator!=(const std::int64_t& value) const {
-    return compare(value) != 0;
-}
-
-bool big_integer::operator<(const big_integer& value) const {
-    return compare(value) == -1;
-}
-
-bool big_integer::operator<(const int& value) const {
-    return compare(value) == -1;
-}
-
-bool big_integer::operator<(const std::int64_t& value) const {
-    return compare(value) == -1;
-}
-
-bool big_integer::operator>(const big_integer& value) const {
-    return compare(value) == 1;
-}
-
-bool big_integer::operator>(const int& value) const {
-    return compare(value) == 1;
-}
-
-bool big_integer::operator>(const std::int64_t& value) const {
-    return compare(value) == 1;
-}
-
-bool big_integer::operator<=(const big_integer& value) const {
-    int cmp = compare(value);
-    return (cmp == -1) || (cmp == 0);
-}
-
-bool big_integer::operator<=(const int& value) const {
-    int cmp = compare(value);
-    return (cmp == -1) || (cmp == 0);
-}
-
-bool big_integer::operator<=(const std::int64_t& value) const {
-    int cmp = compare(value);
-    return (cmp == -1) || (cmp == 0);
-}
-
-bool big_integer::operator>=(const big_integer& value) const {
-    auto cmp = compare(value);
-    return (cmp == 0) || (cmp == 1);
-}
-
-bool big_integer::operator>=(const int& value) const {
-    auto cmp = compare(value);
-    return (cmp == 0) || (cmp == 1);
-}
-
-bool big_integer::operator>=(const std::int64_t& value) const {
-    auto cmp = compare(value);
-    return (cmp == 0) || (cmp == 1);
-}
-
-std::ostream &wingmann::numerics::operator<<(std::ostream& os, const big_integer& value) {
-    os << value.to_string();
-    return os;
-}
-
-std::istream &wingmann::numerics::operator>>(std::istream& is, big_integer& value) {
-    std::string input;
-    is >> input;
-    value = input;
-    return is;
-}
-
 std::string big_integer::to_string(int radix) const {
     std::stringstream ss;
     if (signed_) ss << '-';
@@ -604,15 +598,19 @@ std::string big_integer::to_string(int radix) const {
 
         std::string value;
 
-        while (decimal_value != zero_value) {
+        while (decimal_value != value_from<0>()) {
             big_integer remain = decimal_value.modulus(modulo);
             decimal_value /= modulo;
 
-            auto c = base_char_value.at(std::stoi(remain.to_string()));
+            auto c = base_char_value().at(std::stoi(remain.to_string()));
             value.push_back(c);
         }
         std::reverse(value.begin(), value.end());
         ss << value;
     }
     return ss.str();
+}
+
+std::string big_integer::base_char_value()  {
+    return "0123456789abcdefghijklmnopqrstuv";
 }
