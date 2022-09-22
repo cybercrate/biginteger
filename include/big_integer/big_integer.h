@@ -32,199 +32,200 @@ public:
 
 public:
     // Assignment operators.
-    big_integer& operator=(const big_integer& value) noexcept {
-        this->radix_ = value.radix_;
-        this->value_ = value.value_;
-        this->signed_ = value.signed_;
+    big_integer& operator=(const big_integer& rhs) noexcept {
+        this->radix_ = rhs.radix_;
+        this->value_ = rhs.value_;
+        this->signed_ = rhs.signed_;
         return *this;
     }
 
-    big_integer& operator=(const big_integer&& value) noexcept {
-        this->radix_ = value.radix_;
-        this->value_ = value.value_;
-        this->signed_ = value.signed_;
+    big_integer& operator=(const big_integer&& rhs) noexcept {
+        this->radix_ = rhs.radix_;
+        this->value_ = rhs.value_;
+        this->signed_ = rhs.signed_;
         return *this;
     }
 
-    big_integer& operator=(int value) {
-        *this = std::to_string(value);
+    big_integer& operator=(int rhs) {
+        *this = std::to_string(rhs);
         return *this;
     }
 
-    big_integer& operator=(std::int64_t value) {
-        *this = std::to_string(value);
+    big_integer& operator=(std::int64_t rhs) {
+        *this = std::to_string(rhs);
         return *this;
     }
 
-    big_integer& operator=(const char* value) {
-        *this = std::string{value};
+    big_integer& operator=(const char* rhs) {
+        *this = std::string{rhs};
         return *this;
     }
 
-    big_integer& operator=(std::string value) {
-        signed_ = value.starts_with('-');
-        if (signed_)
-            value.erase(0, 1);
+    big_integer& operator=(std::string rhs) {
+        this->signed_ = rhs.starts_with('-');
+        if (this->signed_)
+            rhs.erase(0, 1);
 
         // Remove leading zero.
-        while (value.starts_with('0') && (value.length() != 1))
-            value.erase(0, 1);
+        while (rhs.starts_with('0') && (rhs.length() != 1))
+            rhs.erase(0, 1);
 
-        if (radix_ == 10) {
-            value_ = value;
+        if (this->radix_ == 10) {
+            this->value_ = rhs;
             return *this;
         }
         // Convert to base ten to use trivial algorithm.
-        char last_char = value.back();
+        char last_char = rhs.back();
         int last = ('0' <= last_char) && (last_char <= '9')
             ? (last_char - '0')
             : (tolower(last_char) - 'a') + 10;
 
-        auto value_length = static_cast<std::int64_t>(value.length());
+        auto value_length = static_cast<std::int64_t>(rhs.length());
 
         big_integer pow{value_length - 1};
         big_integer converted_value{last};
-        big_integer radix_value{radix_};
+        big_integer radix_value{this->radix_};
 
         for (int i = 0; i < value_length - 1; i++) {
-            auto c = value.at(i);
+            auto c = rhs.at(i);
             int current_value = ('0' <= c) && (c <= '9')
                 ? (c - '0')
                 : (tolower(c) - 'a') + 10;
 
             converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
         }
-        *this = signed_
+        *this = this->signed_
             ? converted_value.negate()
             : std::move(converted_value);
 
         return *this;
     }
 
-    big_integer& operator+=(const big_integer& value) {
-        *this = add(value);
+    big_integer& operator+=(const big_integer& rhs) {
+        *this = add(rhs);
         return *this;
     }
 
-    big_integer& operator+=(const int& value) {
-        *this = add(value);
+    big_integer& operator+=(const int& rhs) {
+        *this = add(rhs);
         return *this;
     }
 
-    big_integer& operator+=(const std::int64_t& value) {
-        *this = add(value);
+    big_integer& operator+=(const std::int64_t& rhs) {
+        *this = add(rhs);
         return *this;
     }
 
-    big_integer& operator-=(const big_integer& value) {
-        *this = subtract(value);
+    big_integer& operator-=(const big_integer& rhs) {
+        *this = subtract(rhs);
         return *this;
     }
 
-    big_integer& operator-=(const int& value) {
-        *this = subtract(value);
+    big_integer& operator-=(const int& rhs) {
+        *this = subtract(rhs);
         return *this;
     }
 
-    big_integer& operator-=(const std::int64_t& value) {
-        *this = subtract(value);
+    big_integer& operator-=(const std::int64_t& rhs) {
+        *this = subtract(rhs);
         return *this;
     }
 
-    big_integer& operator*=(const big_integer& value) {
-        *this = multiply(value);
+    big_integer& operator*=(const big_integer& rhs) {
+        *this = multiply(rhs);
         return *this;
     }
 
-    big_integer& operator*=(const int& value) {
-        *this = multiply(value);
+    big_integer& operator*=(const int& rhs) {
+        *this = multiply(rhs);
         return *this;
     }
 
-    big_integer& operator*=(const std::int64_t& value) {
-        *this = multiply(value);
+    big_integer& operator*=(const std::int64_t& rhs) {
+        *this = multiply(rhs);
         return *this;
     }
 
-    big_integer& operator/=(const big_integer& value) {
-        *this = divide(value);
+    big_integer& operator/=(const big_integer& rhs) {
+        *this = divide(rhs);
         return *this;
     }
 
-    big_integer& operator/=(const int& value) {
-        *this = divide(value);
+    big_integer& operator/=(const int& rhs) {
+        *this = divide(rhs);
         return *this;
     }
 
-    big_integer& operator/=(const std::int64_t& value) {
-        *this = divide(value);
+    big_integer& operator/=(const std::int64_t& rhs) {
+        *this = divide(rhs);
         return *this;
     }
 
     // Arithmetic operators.
-    big_integer operator+(const big_integer& value) const {
-        return add(value);
+    big_integer operator+(const big_integer& rhs) const {
+        return add(rhs);
     }
 
-    big_integer operator+(const int& value) const {
-        return add(value);
+    big_integer operator+(const int& rhs) const {
+        return add(rhs);
     }
 
-    big_integer operator+(const std::int64_t& value) const {
-        return add(value);
+    big_integer operator+(const std::int64_t& rhs) const {
+        return add(rhs);
     }
 
-    big_integer operator-(const big_integer& value) const {
-        return subtract(value);
+    big_integer operator-(const big_integer& rhs) const {
+        return subtract(rhs);
     }
 
-    big_integer operator-(const int& value) const {
-        return subtract(value);
+    big_integer operator-(const int& rhs) const {
+        return subtract(rhs);
     }
 
-    big_integer operator-(const std::int64_t& value) const {
-        return subtract(value);
+    big_integer operator-(const std::int64_t& rhs) const {
+        return subtract(rhs);
     }
 
-    big_integer operator*(const big_integer& value) const {
-        return multiply(value);
+    big_integer operator*(const big_integer& rhs) const {
+        return multiply(rhs);
     }
 
-    big_integer operator*(const int& value) const {
-        return multiply(value);
+    big_integer operator*(const int& rhs) const {
+        return multiply(rhs);
     }
 
-    big_integer operator*(const std::int64_t& value) const {
-        return multiply(value);
+    big_integer operator*(const std::int64_t& rhs) const {
+        return multiply(rhs);
     }
 
-    big_integer operator/(const big_integer& value) const {
-        return divide(value);
+    big_integer operator/(const big_integer& rhs) const {
+        return divide(rhs);
     }
 
-    big_integer operator/(const int& value) const {
-        return divide(value);
+    big_integer operator/(const int& rhs) const {
+        return divide(rhs);
     }
 
-    big_integer operator/(const std::int64_t& value) const {
-        return divide(value);
+    big_integer operator/(const std::int64_t& rhs) const {
+        return divide(rhs);
     }
 
-    big_integer operator%(const big_integer& value) const {
-        return modulus(value);
+    big_integer operator%(const big_integer& rhs) const {
+        return mod(rhs);
     }
 
-    big_integer operator%(const int& value) const {
-        return modulus(value);
+    big_integer operator%(const int& rhs) const {
+        return mod(rhs);
     }
 
-    big_integer operator%(const std::int64_t& value) const {
-        return modulus(value);
+    big_integer operator%(const std::int64_t& rhs) const {
+        return mod(rhs);
     }
 
     // Increment operators.
     big_integer& operator++() {
-        return *this = add(value_from<1>());
+        *this = add(value_from<1>());
+        return *this;
     }
 
     const big_integer operator++(int) {
@@ -235,7 +236,8 @@ public:
 
     // Decrement operators.
     big_integer& operator--() {
-        return *this = subtract(value_from<1>());
+        *this = subtract(value_from<1>());
+        return *this;
     }
 
     const big_integer operator--(int) {
@@ -245,17 +247,17 @@ public:
     }
 
     // Shift operators.
-    big_integer operator<<(const big_integer& value) const {
+    big_integer operator<<(const big_integer& rhs) const {
         auto bitwise_value = to_string(2);
-        for (auto i = value_from<0>(); i < value; i++)
+        for (auto i = value_from<0>(); i < rhs; i++)
             bitwise_value.push_back('0');
 
         return {bitwise_value, 2};
     }
 
-    big_integer operator>>(const big_integer& value) const {
+    big_integer operator>>(const big_integer& rhs) const {
         auto bitwise_value = to_string(2);
-        for (auto i = value_from<0>(); i < value && bitwise_value.length() > 0; i++)
+        for (auto i = value_from<0>(); i < rhs && bitwise_value.length() > 0; i++)
             bitwise_value.pop_back();
 
         if (bitwise_value.empty())
@@ -265,81 +267,81 @@ public:
     }
 
     // Comparison operators.
-    bool operator==(const big_integer& value) const {
-        return compare(value) == 0;
+    bool operator==(const big_integer& rhs) const {
+        return compare(rhs) == 0;
     }
 
-    bool operator==(const int& value) const {
-        return compare(value) == 0;
+    bool operator==(const int& rhs) const {
+        return compare(rhs) == 0;
     }
 
-    bool operator==(const std::int64_t& value) const {
-        return compare(value) == 0;
+    bool operator==(const std::int64_t& rhs) const {
+        return compare(rhs) == 0;
     }
 
-    bool operator!=(const big_integer& value) const {
-        return compare(value) != 0;
+    bool operator!=(const big_integer& rhs) const {
+        return compare(rhs) != 0;
     }
 
-    bool operator!=(const int& value) const {
-        return compare(value) != 0;
+    bool operator!=(const int& rhs) const {
+        return compare(rhs) != 0;
     }
 
-    bool operator!=(const std::int64_t& value) const {
-        return compare(value) != 0;
+    bool operator!=(const std::int64_t& rhs) const {
+        return compare(rhs) != 0;
     }
 
-    bool operator<(const big_integer& value) const {
-        return compare(value) == -1;
+    bool operator<(const big_integer& rhs) const {
+        return compare(rhs) == -1;
     }
 
-    bool operator<(const int& value) const {
-        return compare(value) == -1;
+    bool operator<(const int& rhs) const {
+        return compare(rhs) == -1;
     }
 
-    bool operator<(const std::int64_t& value) const {
-        return compare(value) == -1;
+    bool operator<(const std::int64_t& rhs) const {
+        return compare(rhs) == -1;
     }
 
-    bool operator>(const big_integer& value) const {
-        return compare(value) == 1;
+    bool operator>(const big_integer& rhs) const {
+        return compare(rhs) == 1;
     }
 
-    bool operator>(const int& value) const {
-        return compare(value) == 1;
+    bool operator>(const int& rhs) const {
+        return compare(rhs) == 1;
     }
 
-    bool operator>(const std::int64_t& value) const {
-        return compare(value) == 1;
+    bool operator>(const std::int64_t& rhs) const {
+        return compare(rhs) == 1;
     }
 
-    bool operator<=(const big_integer& value) const {
-        auto compared = compare(value);
+    bool operator<=(const big_integer& rhs) const {
+        auto compared = compare(rhs);
         return (compared == -1) || (compared == 0);
     }
 
-    bool operator<=(const int& value) const {
-        auto compared = compare(value);
+    bool operator<=(const int& rhs) const {
+        auto compared = compare(rhs);
         return (compared == -1) || (compared == 0);
     }
 
-    bool operator<=(const std::int64_t& value) const {
-        auto compared = compare(value);
+    bool operator<=(const std::int64_t& rhs) const {
+        auto compared = compare(rhs);
         return (compared == -1) || (compared == 0);
     }
 
-    bool operator>=(const big_integer& value) const {
-        auto compared = compare(value);
+    bool operator>=(const big_integer& rhs) const {
+        auto compared = compare(rhs);
         return (compared == 0) || (compared == 1);
     }
 
-    bool operator>=(const int& value) const {
-        auto compared = compare(value);
+    bool operator>=(const int& rhs) const {
+        auto compared = compare(rhs);
         return (compared == 0) || (compared == 1);
     }
 
-    bool operator>=(const std::int64_t& value) const {
-        auto compared = compare(value);
+    bool operator>=(const std::int64_t& rhs) const {
+        auto compared = compare(rhs);
         return (compared == 0) || (compared == 1);
     }
 
@@ -359,33 +361,36 @@ public:
 public:
     // Basic arithmetic.
     [[nodiscard]]
-    big_integer add(const big_integer& value) const {
-        if (signed_ && !value.signed_)
-            return value.subtract(negate()); // (-a)+(+b)
-        else if (!signed_ && value.signed_)
-            return subtract(value.negate()); // (+a)+(-b)
+    big_integer add(const big_integer& rhs) const {
+        if (this->signed_ && !rhs.signed_)
+            return rhs.subtract(negate()); // (-a)+(+b)
+        else if (!this->signed_ && rhs.signed_)
+            return subtract(rhs.negate()); // (+a)+(-b)
 
         // (+a)+(+b) or (-a)+(-b)
-        auto sum = value_;
-        auto added = value.value_;
+        auto lhs_value = this->value_;
+        auto rhs_value = rhs.value_;
 
-        auto difference_length = std::abs(int(sum.length() - added.length()));
+        auto difference_length = std::abs(
+            static_cast<int>(lhs_value.length() - rhs_value.length()));
 
-        if (sum.length() > added.length())
-            added.insert(0, difference_length, '0');
+        if (lhs_value.length() > rhs_value.length())
+            rhs_value.insert(0, difference_length, '0');
         else
-            sum.insert(0, difference_length, '0');
+            lhs_value.insert(0, difference_length, '0');
 
-        std::ranges::reverse(sum);
-        std::ranges::reverse(added);
+        std::ranges::reverse(lhs_value);
+        std::ranges::reverse(rhs_value);
 
         int index{};
         char carry{'0'};
 
-        for (char& c : sum) {
-            c = static_cast<char>((carry - '0') + (c - '0') + (added.at(index) - '0') + '0');
-            if (c > '9') {
-                c -= 10;
+        for (char& lhs_char : lhs_value) {
+            lhs_char = static_cast<char>(
+                (carry - '0') + (lhs_char - '0') + (rhs_value.at(index) - '0') + '0');
+
+            if (lhs_char > '9') {
+                lhs_char -= 10;
                 carry = '1';
             } else {
                 carry = '0';
@@ -393,163 +398,164 @@ public:
             index++;
         }
         if (carry > '0')
-            sum.append(1, carry);
+            lhs_value.append(1, carry);
 
-        std::ranges::reverse(sum);
+        std::ranges::reverse(lhs_value);
 
-        return signed_ ? big_integer{sum}.negate() : sum;
+        return this->signed_ ? big_integer{lhs_value}.negate() : lhs_value;
     }
 
     [[nodiscard]]
-    big_integer subtract(const big_integer& value) const {
+    big_integer subtract(const big_integer& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
-        if ((signed_ && !value.signed_) || !signed_ && value.signed_)
-            return add(value.negate());
+        if ((this->signed_ && !rhs.signed_) || !this->signed_ && rhs.signed_)
+            return add(rhs.negate());
 
         // (+a)-(+b) or (-a)-(-b)
-        if (signed_)
-            return add(value.negate());
+        if (this->signed_)
+            return add(rhs.negate());
 
-        bool invert_sign = (compare(value) == -1);
+        bool inverted_sign = (compare(rhs) == -1);
 
-        std::string sub = invert_sign ? value.value_ : value_;
-        std::string removed = invert_sign ? value_ : value.value_;
+        std::string subtracted = inverted_sign ? rhs.value_ : this->value_;
+        std::string removed = inverted_sign ? this->value_ : rhs.value_;
 
-        auto difference_length = std::abs(int(sub.length() - removed.length()));
+        auto diff_length = std::abs(static_cast<int>(subtracted.length() - removed.length()));
 
-        if (sub.size() > removed.size())
-            removed.insert(0, difference_length, '0');
+        if (subtracted.size() > removed.size())
+            removed.insert(0, diff_length, '0');
         else
-            sub.insert(0, difference_length, '0');
+            subtracted.insert(0, diff_length, '0');
 
-        std::ranges::reverse(sub);
+        std::ranges::reverse(subtracted);
         std::ranges::reverse(removed);
 
         int index{};
 
-        for (char& c : sub) {
-            if (c < removed.at(index)) {
-                c += 10;
-                sub[index + 1]--;
+        for (char& symbol : subtracted) {
+            if (symbol < removed.at(index)) {
+                symbol += 10;
+                subtracted[index + 1]--;
             }
-            c = static_cast<char>((c - '0') - (removed.at(index) - '0') + '0');
+            symbol = static_cast<char>((symbol - '0') - (removed.at(index) - '0') + '0');
             index++;
         }
-        std::ranges::reverse(sub);
+        std::ranges::reverse(subtracted);
 
-        while (sub.front() == '0' && sub.length() != 1)
-            sub.erase(0, 1);
+        while (subtracted.front() == '0' && subtracted.length() != 1)
+            subtracted.erase(0, 1);
 
-        return invert_sign ? big_integer{sub}.negate() : sub;
+        return inverted_sign ? big_integer{subtracted}.negate() : subtracted;
     }
 
     [[nodiscard]]
-    big_integer multiply(const big_integer& value) const {
-        big_integer temp;
+    big_integer multiply(const big_integer& rhs) const {
+        auto lhs_value = this->value_;
+        auto rhs_value = rhs.value_;
 
-        auto mul = value_;
-        auto multiplied = value.value_;
-
-        std::ranges::reverse(mul);
-        std::ranges::reverse(multiplied);
+        std::ranges::reverse(lhs_value);
+        std::ranges::reverse(rhs_value);
 
         int step{};
         char carry{'0'};
 
-        for (const char& c1 : mul) {
-            auto current_operation = std::string{}.insert(0, step, '0');
+        big_integer temp;
 
-            for (const char& c2 : multiplied) {
-                unsigned char c_value = ((c1 - '0') * (c2 - '0')) + (carry - '0') + '0';
+        for (const auto& lhs_char : lhs_value) {
+            auto operation = std::string{}.insert(0, step, '0');
+
+            for (const auto& rhs_char : rhs_value) {
+                std::uint8_t result = ((lhs_char - '0') * (rhs_char - '0')) + (carry - '0') + '0';
                 carry = '0';
 
-                if (c_value > '9') {
-                    while (c_value > '9') {
-                        c_value -= 10;
+                if (result > '9') {
+                    while (result > '9') {
+                        result -= 10;
                         carry++;
                     }
                 }
-                current_operation.insert(0, 1, static_cast<char>(c_value));
+                operation.insert(0, 1, static_cast<char>(result));
             }
 
             if (carry > '0') {
-                current_operation.insert(0, 1, carry);
+                operation.insert(0, 1, carry);
                 carry = '0';
             }
-            temp += current_operation;
+            temp += operation;
             step++;
         }
-
-        if (auto positive = (signed_ && value.signed_) || (!signed_ && !value.signed_); !positive)
+        if (auto positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_); !positive)
             temp = temp.negate();
 
         return temp;
     }
 
     [[nodiscard]]
-    big_integer divide(const big_integer& value) const {
-        if (value == value_from<0>())
-            return {}; // todo: division by zero
-        else if (value == value_from<1>())
+    big_integer divide(const big_integer& rhs) const {
+        if (rhs == value_from<0>())
+            return {};
+        else if (rhs == value_from<1>())
             return *this;
-        else if (compare(value) == 0)
+        else if (compare(rhs) == 0)
             return 1;
 
-        auto dividend = value_;
-        std::ranges::reverse(dividend);
+        auto lhs_value = this->value_;
+        std::ranges::reverse(lhs_value);
 
-        auto absolute_value = value.absolute();
+        auto rhs_abs = rhs.abs();
 
-        std::string quotient;
-        std::string current_quotient;
+        std::string lhs_quotient;
+        std::string rhs_quotient;
 
         do {
-            current_quotient.push_back(dividend.back());
-            dividend.pop_back();
+            lhs_quotient.push_back(lhs_value.back());
+            lhs_value.pop_back();
 
-            big_integer dividend_value{current_quotient};
+            big_integer dividend_value{lhs_quotient};
 
-            if (dividend_value >= absolute_value) {
-                big_integer n{2};
-
-                while (absolute_value.multiply(n) <= dividend_value)
-                    n++;
-                n--;
-                quotient.append(n.to_string());
-                current_quotient = dividend_value
-                    .subtract(absolute_value.multiply(n))
-                    .to_string();
-            } else {
-                quotient.push_back('0');
+            if (dividend_value < rhs_abs) {
+                rhs_quotient.push_back('0');
+                continue;
             }
-        } while (!dividend.empty());
+            big_integer number{2};
 
-        if (bool positive = (signed_ && value.signed_) || (!signed_ && !value.signed_); !positive)
-            return big_integer{quotient}.negate();
+            while (rhs_abs.multiply(number) <= dividend_value)
+                number++;
 
-        return quotient;
+            number--;
+            rhs_quotient.append(number.to_string());
+            lhs_quotient = dividend_value
+                .subtract(rhs_abs.multiply(number))
+                .to_string();
+        } while (!lhs_value.empty());
+
+        bool positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
+        if (!positive)
+            return big_integer{rhs_quotient}.negate();
+
+        return rhs_quotient;
     }
 
     // Complex arithmetic.
     [[nodiscard]]
-    big_integer pow(const big_integer& value) const {
-        if (value == value_from<0>())
+    big_integer pow(const big_integer& rhs) const {
+        if (rhs == value_from<0>())
             return std::move(value_from<1>());
-        else if (value == value_from<1>())
+        else if (rhs == value_from<1>())
             return *this;
 
-        auto initial_value{*this};
+        auto init_value{*this};
         auto temp{*this};
 
-        for (auto i = value_from<1>(); i < value; i++)
-            temp *= initial_value;
+        for (auto i = value_from<1>(); i < rhs; i++)
+            temp *= init_value;
 
         return temp;
     }
 
     [[nodiscard]]
-    big_integer modulus(const big_integer& value) const {
-        return subtract(value.multiply(divide(value)));
+    big_integer mod(const big_integer& rhs) const {
+        return subtract(rhs.multiply(divide(rhs)));
     }
 
     // Modification and checking.
@@ -559,23 +565,23 @@ public:
     }
 
     [[nodiscard]]
-    int compare(const big_integer& value) const {
-        if (signed_ && !value.signed_)
+    int compare(const big_integer& rhs) const {
+        if (this->signed_ && !rhs.signed_)
             return -1; // -a, +b
-        else if (!signed_ && value.signed_)
+        else if (!this->signed_ && rhs.signed_)
             return 1; // +a, -b
 
         // +a, +b or -a, -b
-        if (value_.length() < value.value_.length())
+        if (this->value_.length() < rhs.value_.length())
             return -1;
-        else if (value_.length() > value.value_.length())
+        else if (this->value_.length() > rhs.value_.length())
             return 1;
 
-        bool positive = !signed_;
+        bool positive = !this->signed_;
 
-        if (value_ < value.value_)
+        if (this->value_ < rhs.value_)
             return positive ? -1 : 1;
-        else if (value_ > value.value_)
+        else if (this->value_ > rhs.value_)
             return positive ? 1 : -1;
 
         return {};
@@ -583,27 +589,27 @@ public:
 
     [[nodiscard]]
     big_integer negate() const {
-        std::string value{value_};
-        return signed_ ? value : value.insert(0, 1, '-');
+        std::string value{this->value_};
+        return this->signed_ ? value : value.insert(0, 1, '-');
     }
 
     [[nodiscard]]
-    big_integer absolute() const {
+    big_integer abs() const {
         return is_positive() ? *this : negate();
     }
 
     [[nodiscard]]
     bool is_positive() const {
-        return !signed_;
+        return !this->signed_;
     }
 
     [[nodiscard]]
     bool is_negative() const {
-        return signed_;
+        return !is_positive();
     }
 
-    void swap(big_integer& value) {
-        std::swap(*this, value);
+    void swap(big_integer& rhs) {
+        std::swap(*this, rhs);
     }
 
     template<std::int64_t value>
@@ -634,10 +640,10 @@ public:
     [[nodiscard]]
     std::string to_string(int radix = 10) const {
         std::stringstream ss;
-        if (signed_) ss << '-';
+        if (this->signed_) ss << '-';
 
         if (radix == 10) {
-            ss << value_;
+            ss << this->value_;
             return ss.str();
         }
         auto decimal_value{*this};
@@ -646,11 +652,12 @@ public:
         std::string value;
 
         while (decimal_value != value_from<0>()) {
-            auto remain{decimal_value.modulus(modulo)};
+            auto remainder= decimal_value.mod(modulo);
             decimal_value /= modulo;
 
-            auto c = base_char_value().at(std::stoi(remain.to_string()));
-            value.push_back(c);
+            // Doesn't throw exception
+            auto symbol = base_char_value().at(std::stoi(remainder.to_string()));
+            value.push_back(symbol);
         }
         std::ranges::reverse(value);
 
