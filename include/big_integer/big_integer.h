@@ -330,7 +330,7 @@ public:
     big_integer operator>>(const big_integer& rhs) const {
         auto bitwise_value = to_string(2);
 
-        for (auto i = value_from<0>(); i < rhs && bitwise_value.length() > 0; i++)
+        for (auto i = value_from<0>(); (i < rhs) && (bitwise_value.length() > 0); i++)
             bitwise_value.pop_back();
 
         if (bitwise_value.empty())
@@ -341,20 +341,22 @@ public:
 
     // Comparison operators ------------------------------------------------------------------------
 
-    /// @brief Compares the current value and right side operand.
+    /// @brief Three-way comparison operator.
+    /// Compares the current value and right side operand.
     ///
     /// @param rhs The value to compere with the current value.
     /// @return    Result of comparison.
     ///
-    std::partial_ordering operator<=>(const big_integer& rhs) const { return compare(rhs); }
+    std::strong_ordering operator<=>(const big_integer& rhs) const { return compare(rhs); }
 
-    /// @brief Compares the current value and right side operand.
+    /// @brief Equal operator.
+    /// Compares the current value and right side operand.
     ///
     /// @param rhs The value to compare with the current value.
     /// @return    Result of comparison.
     ///
     auto operator==(const big_integer& rhs) const {
-        return compare(rhs) == std::partial_ordering::equivalent;
+        return compare(rhs) == std::strong_ordering::equivalent;
     }
 
     // Stream operators ----------------------------------------------------------------------------
@@ -405,13 +407,12 @@ public:
         auto lhs_value = this->value_;
         auto rhs_value = rhs.value_;
 
-        auto difference_length = std::abs(
-            static_cast<int>(lhs_value.length() - rhs_value.length()));
+        auto diff_length = std::abs(static_cast<int>(lhs_value.length() - rhs_value.length()));
 
         if (lhs_value.length() > rhs_value.length())
-            rhs_value.insert(0, difference_length, '0');
+            rhs_value.insert(0, diff_length, '0');
         else
-            lhs_value.insert(0, difference_length, '0');
+            lhs_value.insert(0, diff_length, '0');
 
         std::ranges::reverse(lhs_value);
         std::ranges::reverse(rhs_value);
@@ -454,7 +455,7 @@ public:
         if (this->signed_)
             return add(rhs.negate());
 
-        bool inverted_sign = (compare(rhs) == std::partial_ordering::less);
+        bool inverted_sign = (compare(rhs) == std::strong_ordering::less);
 
         std::string subtracted = inverted_sign ? rhs.value_ : this->value_;
         std::string removed = inverted_sign ? this->value_ : rhs.value_;
@@ -543,13 +544,13 @@ public:
     ///
     [[nodiscard]]
     big_integer divide(const big_integer& rhs) const {
-        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
+        if (rhs == value_from<0>())
             throw std::invalid_argument("divide by zero");
 
-        if (rhs <=> value_from<1>() == std::partial_ordering::equivalent)
+        if (rhs == value_from<1>())
             return *this;
 
-        if (compare(rhs) == std::partial_ordering::equivalent)
+        if (compare(rhs) == std::strong_ordering::equivalent)
             return 1;
 
         auto lhs_value = this->value_;
@@ -596,7 +597,7 @@ public:
     ///
     [[nodiscard]]
     big_integer mod(const big_integer& rhs) const {
-        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
+        if (rhs == value_from<0>())
             throw std::invalid_argument("mod by zero");
 
         return subtract(rhs.multiply(divide(rhs)));
@@ -611,10 +612,10 @@ public:
     ///
     [[nodiscard]]
     big_integer pow(const big_integer& rhs) const {
-        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
+        if (rhs == value_from<0>())
             return std::move(value_from<1>());
 
-        if (rhs <=> value_from<1>() == std::partial_ordering::equivalent)
+        if (rhs == value_from<1>())
             return *this;
 
         auto init_value{*this};
@@ -640,29 +641,29 @@ public:
     /// @return    If equals, 0 else if the current value less, -1, otherwise 1.
     ///
     [[nodiscard]]
-    std::partial_ordering compare(const big_integer& rhs) const {
+    std::strong_ordering compare(const big_integer& rhs) const {
         // -a, +b
-        if (this->signed_ && !rhs.signed_) return std::partial_ordering::less;
+        if (this->signed_ && !rhs.signed_) return std::strong_ordering::less;
 
         // +a, -b
-        if (!this->signed_ && rhs.signed_) return std::partial_ordering::greater;
+        if (!this->signed_ && rhs.signed_) return std::strong_ordering::greater;
 
         // +a, +b or -a, -b
         if (this->value_.length() < rhs.value_.length())
-            return std::partial_ordering::less;
+            return std::strong_ordering::less;
 
         if (this->value_.length() > rhs.value_.length())
-            return std::partial_ordering::greater;
+            return std::strong_ordering::greater;
 
         bool positive = !this->signed_;
 
         if (this->value_ < rhs.value_)
-            return positive ? std::partial_ordering::less : std::partial_ordering::greater;
+            return positive ? std::strong_ordering::less : std::strong_ordering::greater;
 
         if (this->value_ > rhs.value_)
-            return positive ? std::partial_ordering::greater : std::partial_ordering::less;
+            return positive ? std::strong_ordering::greater : std::strong_ordering::less;
 
-        return std::partial_ordering::equivalent;
+        return std::strong_ordering::equivalent;
     }
 
     /// @brief Negate the current value.
@@ -758,7 +759,7 @@ public:
 
         std::string value;
 
-        while (decimal_value <=> value_from<0>() == std::partial_ordering::unordered) {
+        while (decimal_value != value_from<0>()) {
             auto remainder= decimal_value.mod(modulo);
             decimal_value /= modulo;
 
@@ -773,8 +774,9 @@ public:
     }
 
 private:
-    // Returns base char value.
-    static std::string base_char_value() { return "0123456789ABCDEF"; }
+    // Returns the base char values of a system of numeration.
+    // Allowed numeration systems from 2 to 16.
+    static constexpr std::string base_char_value() { return "0123456789ABCDEF"; }
 };
 
 } // namespace wingmann::numerics
