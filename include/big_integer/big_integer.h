@@ -76,7 +76,7 @@ public:
 public:
     // Assignment operators ------------------------------------------------------------------------
 
-    /// @brief Copy-assignment operator.
+    /// @brief Copy assignment operator.
     ///
     /// @param rhs Value to copy.
     /// @return    Constructed object.
@@ -88,7 +88,7 @@ public:
         return *this;
     }
 
-    /// @brief Move-assignment operator.
+    /// @brief Move assignment operator.
     ///
     /// @param rhs Value to move.
     /// @return    Constructed object.
@@ -102,7 +102,7 @@ public:
 
     /// @brief Assignment operator.
     ///
-    /// @param rhs Value to initialize.
+    /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
     big_integer& operator=(int rhs) {
@@ -112,7 +112,7 @@ public:
 
     /// @brief Assignment operator.
     ///
-    /// @param rhs Value to initialize.
+    /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
     big_integer& operator=(std::int64_t rhs) {
@@ -122,7 +122,7 @@ public:
 
     /// @brief Assignment operator.
     ///
-    /// @param rhs Value to initialize.
+    /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
     big_integer& operator=(const char* rhs) {
@@ -132,7 +132,7 @@ public:
 
     /// @brief Assignment operator.
     ///
-    /// @param rhs Value to initialize.
+    /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
     big_integer& operator=(std::string rhs) {
@@ -170,10 +170,7 @@ public:
 
             converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
         }
-        *this = this->signed_
-            ? converted_value.negate()
-            : std::move(converted_value);
-
+        *this = this->signed_ ? converted_value.negate() : std::move(converted_value);
         return *this;
     }
 
@@ -190,28 +187,6 @@ public:
         return *this;
     }
 
-    /// @brief Addition assignment operator.
-    /// Adds the value to the current value and assigns the result.
-    ///
-    /// @param rhs The value to add to the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator+=(const int& rhs) {
-        *this = add(rhs);
-        return *this;
-    }
-
-    /// @brief Addition assignment operator.
-    /// Adds the value to the current value and assigns the result.
-    ///
-    /// @param rhs The value to add to the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator+=(const std::int64_t& rhs) {
-        *this = add(rhs);
-        return *this;
-    }
-
     /// @brief Subtraction assignment operator.
     /// Subtracts the value of the right operand from the current value and assigns the result.
     ///
@@ -219,28 +194,6 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator-=(const big_integer& rhs) {
-        *this = subtract(rhs);
-        return *this;
-    }
-
-    /// @brief Subtraction assignment operator.
-    /// Subtracts the value of the right operand from the current value and assigns the result.
-    ///
-    /// @param rhs The value to subtract from the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator-=(const int& rhs) {
-        *this = subtract(rhs);
-        return *this;
-    }
-
-    /// @brief Subtraction assignment operator.
-    /// Subtracts the value of the right operand from the current value and assigns the result.
-    ///
-    /// @param rhs The value to subtract from the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator-=(const std::int64_t& rhs) {
         *this = subtract(rhs);
         return *this;
     }
@@ -256,28 +209,6 @@ public:
         return *this;
     }
 
-    /// @brief Multiplication assignment operator.
-    /// Multiplies the current value by the value of the right operand and assigns the result.
-    ///
-    /// @param rhs The value to multiply by current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator*=(const int& rhs) {
-        *this = multiply(rhs);
-        return *this;
-    }
-
-    /// @brief Multiplication assignment operator.
-    /// Multiplies the current value by the value of the right operand and assigns the result.
-    ///
-    /// @param rhs The value to multiply by current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator*=(const std::int64_t& rhs) {
-        *this = multiply(rhs);
-        return *this;
-    }
-
     /// @brief Division assignment operator.
     /// Divides the current value by the value of the right operand and assigns the result.
     ///
@@ -285,28 +216,6 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator/=(const big_integer& rhs) {
-        *this = divide(rhs);
-        return *this;
-    }
-
-    /// @brief Division assignment operator.
-    /// Divides the current value by the value of the right operand and assigns the result.
-    ///
-    /// @param rhs The value by which to divide the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator/=(const int& rhs) {
-        *this = divide(rhs);
-        return *this;
-    }
-
-    /// @brief Division assignment operator.
-    /// Divides the current value by the value of the right operand and assigns the result.
-    ///
-    /// @param rhs The value by which to divide the current value.
-    /// @return    Modified object.
-    ///
-    big_integer& operator/=(const std::int64_t& rhs) {
         *this = divide(rhs);
         return *this;
     }
@@ -323,30 +232,6 @@ public:
         return *this;
     }
 
-    /// @brief Modulus assignment operator.
-    /// Gets the remainder of the current value divided by the value of the right operand and
-    /// assigns the result.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Modified object.
-    ///
-    big_integer& operator%=(const int& rhs) {
-        *this = mod(rhs);
-        return *this;
-    }
-
-    /// @brief Modulus assignment operator.
-    /// Gets the remainder of the current value divided by the value of the right operand and
-    /// assigns the result.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Modified object.
-    ///
-    big_integer& operator%=(const std::int64_t& rhs) {
-        *this = mod(rhs);
-        return *this;
-    }
-
     // Arithmetic operators ------------------------------------------------------------------------
 
     /// @brief Plus operator.
@@ -356,40 +241,12 @@ public:
     ///
     big_integer operator+(const big_integer& rhs) const { return add(rhs); }
 
-    /// @brief Plus operator.
-    ///
-    /// @param rhs The right side operand for addition to current value.
-    /// @return    Result of addition.
-    ///
-    big_integer operator+(const int& rhs) const { return add(rhs); }
-
-    /// @brief Plus operator.
-    ///
-    /// @param rhs The right side operand for addition to current value.
-    /// @return    Result of addition.
-    ///
-    big_integer operator+(const std::int64_t& rhs) const { return add(rhs); }
-
     /// @brief Minus operator.
     ///
     /// @param rhs The right side operand for subtract from current value.
     /// @return    Result of subtraction.
     ///
     big_integer operator-(const big_integer& rhs) const { return subtract(rhs); }
-
-    /// @brief Minus operator.
-    ///
-    /// @param rhs The right side operand for subtract from current value.
-    /// @return    Result of subtraction.
-    ///
-    big_integer operator-(const int& rhs) const { return subtract(rhs); }
-
-    /// @brief Minus operator.
-    ///
-    /// @param rhs The right side operand for subtract from current value.
-    /// @return    Result of subtraction.
-    ///
-    big_integer operator-(const std::int64_t& rhs) const { return subtract(rhs); }
 
     /// @brief Multiply operator.
     ///
@@ -398,20 +255,6 @@ public:
     ///
     big_integer operator*(const big_integer& rhs) const { return multiply(rhs); }
 
-    /// @brief Multiply operator.
-    ///
-    /// @param rhs The right operand for multiplication by the current value.
-    /// @return    Result of multiplication.
-    ///
-    big_integer operator*(const int& rhs) const { return multiply(rhs); }
-
-    /// @brief Multiply operator.
-    ///
-    /// @param rhs The right operand for multiplication by the current value.
-    /// @return    Result of multiplication.
-    ///
-    big_integer operator*(const std::int64_t& rhs) const { return multiply(rhs); }
-
     /// @brief Division operator.
     ///
     /// @param rhs The right operand by which to divide the current value.
@@ -419,40 +262,12 @@ public:
     ///
     big_integer operator/(const big_integer& rhs) const { return divide(rhs); }
 
-    /// @brief Division operator.
-    ///
-    /// @param rhs The right operand by which to divide the current value.
-    /// @return    Result of division.
-    ///
-    big_integer operator/(const int& rhs) const { return divide(rhs); }
-
-    /// @brief Division operator.
-    ///
-    /// @param rhs The right operand by which to divide the current value.
-    /// @return    Result of division.
-    ///
-    big_integer operator/(const std::int64_t& rhs) const { return divide(rhs); }
-
     /// @brief Modulus operator.
     ///
     /// @param rhs The right operand for taking the remainder.
     /// @return    Remainder of division current value by right side value.
     ///
     big_integer operator%(const big_integer& rhs) const { return mod(rhs); }
-
-    /// @brief Modulus operator.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Remainder of division current value by right side value.
-    ///
-    big_integer operator%(const int& rhs) const { return mod(rhs); }
-
-    /// @brief Modulus operator.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Remainder of division current value by right side value.
-    ///
-    big_integer operator%(const std::int64_t& rhs) const { return mod(rhs); }
 
     // Increment operators -------------------------------------------------------------------------
 
@@ -532,143 +347,15 @@ public:
     /// @param rhs The value to compere with the current value.
     /// @return    Result of comparison.
     ///
-    bool operator==(const big_integer& rhs) const { return compare(rhs) == 0; }
+    std::partial_ordering operator<=>(const big_integer& rhs) const { return compare(rhs); }
 
     /// @brief Compares the current value and right side operand.
     ///
-    /// @param rhs The value to compere with the current value.
+    /// @param rhs The value to compare with the current value.
     /// @return    Result of comparison.
     ///
-    bool operator==(const int& rhs) const { return compare(rhs) == 0; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator==(const std::int64_t& rhs) const { return compare(rhs) == 0; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator!=(const big_integer& rhs) const { return compare(rhs) != 0; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator!=(const int& rhs) const { return compare(rhs) != 0; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator!=(const std::int64_t& rhs) const { return compare(rhs) != 0; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<(const big_integer& rhs) const { return compare(rhs) == -1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<(const int& rhs) const { return compare(rhs) == -1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<(const std::int64_t& rhs) const { return compare(rhs) == -1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>(const big_integer& rhs) const { return compare(rhs) == 1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>(const int& rhs) const { return compare(rhs) == 1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>(const std::int64_t& rhs) const { return compare(rhs) == 1; }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<=(const big_integer& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == -1) || (compared == 0);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<=(const int& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == -1) || (compared == 0);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator<=(const std::int64_t& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == -1) || (compared == 0);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>=(const big_integer& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == 0) || (compared == 1);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>=(const int& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == 0) || (compared == 1);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    bool operator>=(const std::int64_t& rhs) const {
-        auto compared = compare(rhs);
-        return (compared == 0) || (compared == 1);
+    auto operator==(const big_integer& rhs) const {
+        return compare(rhs) == std::partial_ordering::equivalent;
     }
 
     // Stream operators ----------------------------------------------------------------------------
@@ -707,10 +394,13 @@ public:
     ///
     [[nodiscard]]
     big_integer add(const big_integer& rhs) const {
+        // (-a)+(+b)
         if (this->signed_ && !rhs.signed_)
-            return rhs.subtract(negate()); // (-a)+(+b)
-        else if (!this->signed_ && rhs.signed_)
-            return subtract(rhs.negate()); // (+a)+(-b)
+            return rhs.subtract(negate());
+
+        // (+a)+(-b)
+        if (!this->signed_ && rhs.signed_)
+            return subtract(rhs.negate());
 
         // (+a)+(+b) or (-a)+(-b)
         auto lhs_value = this->value_;
@@ -747,7 +437,9 @@ public:
 
         std::ranges::reverse(lhs_value);
 
-        return this->signed_ ? big_integer{lhs_value}.negate() : lhs_value;
+        return this->signed_
+            ? big_integer{lhs_value}.negate()
+            : lhs_value;
     }
 
     /// @brief Subtraction.
@@ -758,14 +450,14 @@ public:
     [[nodiscard]]
     big_integer subtract(const big_integer& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
-        if ((this->signed_ && !rhs.signed_) || !this->signed_ && rhs.signed_)
+        if ((this->signed_ && !rhs.signed_) || (!this->signed_ && rhs.signed_))
             return add(rhs.negate());
 
         // (+a)-(+b) or (-a)-(-b)
         if (this->signed_)
             return add(rhs.negate());
 
-        bool inverted_sign = (compare(rhs) == -1);
+        bool inverted_sign = (compare(rhs) == std::partial_ordering::less);
 
         std::string subtracted = inverted_sign ? rhs.value_ : this->value_;
         std::string removed = inverted_sign ? this->value_ : rhs.value_;
@@ -839,9 +531,10 @@ public:
             temp += operation;
             step++;
         }
+
         auto positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
         if (!positive)
-            temp = temp.negate();
+            return temp.negate();
 
         return temp;
     }
@@ -853,11 +546,13 @@ public:
     ///
     [[nodiscard]]
     big_integer divide(const big_integer& rhs) const {
-        if (rhs == value_from<0>())
+        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
             throw std::invalid_argument("divide by zero");
-        else if (rhs == value_from<1>())
+
+        if (rhs <=> value_from<1>() == std::partial_ordering::equivalent)
             return *this;
-        else if (compare(rhs) == 0)
+
+        if (compare(rhs) == std::partial_ordering::equivalent)
             return 1;
 
         auto lhs_value = this->value_;
@@ -878,7 +573,7 @@ public:
                 rhs_quotient.push_back('0');
                 continue;
             }
-            big_integer number{2};
+            auto number{value_from<2>()};
 
             while (rhs_abs.multiply(number) <= dividend_value)
                 number++;
@@ -904,7 +599,7 @@ public:
     ///
     [[nodiscard]]
     big_integer mod(const big_integer& rhs) const {
-        if (rhs == value_from<0>())
+        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
             throw std::invalid_argument("mod by zero");
 
         return subtract(rhs.multiply(divide(rhs)));
@@ -919,9 +614,10 @@ public:
     ///
     [[nodiscard]]
     big_integer pow(const big_integer& rhs) const {
-        if (rhs == value_from<0>())
+        if (rhs <=> value_from<0>() == std::partial_ordering::equivalent)
             return std::move(value_from<1>());
-        else if (rhs == value_from<1>())
+
+        if (rhs <=> value_from<1>() == std::partial_ordering::equivalent)
             return *this;
 
         auto init_value{*this};
@@ -947,26 +643,29 @@ public:
     /// @return    If equals, 0 else if the current value less, -1, otherwise 1.
     ///
     [[nodiscard]]
-    int compare(const big_integer& rhs) const {
-        if (this->signed_ && !rhs.signed_)
-            return -1; // -a, +b
-        else if (!this->signed_ && rhs.signed_)
-            return 1; // +a, -b
+    std::partial_ordering compare(const big_integer& rhs) const {
+        // -a, +b
+        if (this->signed_ && !rhs.signed_) return std::partial_ordering::less;
+
+        // +a, -b
+        if (!this->signed_ && rhs.signed_) return std::partial_ordering::greater;
 
         // +a, +b or -a, -b
         if (this->value_.length() < rhs.value_.length())
-            return -1;
-        else if (this->value_.length() > rhs.value_.length())
-            return 1;
+            return std::partial_ordering::less;
+
+        if (this->value_.length() > rhs.value_.length())
+            return std::partial_ordering::greater;
 
         bool positive = !this->signed_;
 
         if (this->value_ < rhs.value_)
-            return positive ? -1 : 1;
-        else if (this->value_ > rhs.value_)
-            return positive ? 1 : -1;
+            return positive ? std::partial_ordering::less : std::partial_ordering::greater;
 
-        return {};
+        if (this->value_ > rhs.value_)
+            return positive ? std::partial_ordering::greater : std::partial_ordering::less;
+
+        return std::partial_ordering::equivalent;
     }
 
     /// @brief Negate the current value.
@@ -1004,19 +703,21 @@ public:
     void swap(big_integer& rhs) { std::swap(*this, rhs); }
 
     /// @brief Big integer value from primitive integral types.
+    ///
     /// @tparam value Integral value.
-    /// @return Converted value from integral.
+    /// @return       Converted value from integral.
     template<std::int64_t value>
     static big_integer value_from() { return std::to_string(value); }
 
     /// @brief Converts to primitive integral value.
+    ///
     /// @tparam T Type of integral value to which to convert.
-    /// @return Integral value.
+    /// @return   Integral value.
     ///
     template<std::integral T>
-    std::optional<T> to_integer() {
+    std::optional<T> to_integer(int radix = 10) {
         try {
-            return static_cast<T>(std::stoll(to_string()));
+            return static_cast<T>(std::stoll(to_string(radix)));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
@@ -1024,13 +725,14 @@ public:
     }
 
     /// @brief Converts to primitive floating point value.
+    ///
     /// @tparam T Type of floating point value to which to convert.
-    /// @return Floating point value.
+    /// @return   Floating point value.
     ///
     template<std::floating_point T>
-    std::optional<T> to_floating() {
+    std::optional<T> to_floating(int radix = 10) {
         try {
-            return static_cast<T>(std::stod(to_string()));
+            return static_cast<T>(std::stod(to_string(radix)));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
@@ -1038,8 +740,9 @@ public:
     }
 
     /// @brief Converts to string representation.
+    ///
     /// @param radix The base of a system of numeration.
-    /// @return Converted string.
+    /// @return      Converted string.
     ///
     [[nodiscard]]
     std::string to_string(int radix = 10) const {
@@ -1058,7 +761,7 @@ public:
 
         std::string value;
 
-        while (decimal_value != value_from<0>()) {
+        while (decimal_value <=> value_from<0>() == std::partial_ordering::unordered) {
             auto remainder= decimal_value.mod(modulo);
             decimal_value /= modulo;
 
