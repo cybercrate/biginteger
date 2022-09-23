@@ -37,3 +37,7 @@ TEST(big_integer, divide_big_nubers) {
 
     EXPECT_EQ(a / b, "-1065671924559511415122777219324972312367557120547789829150597");
 }
+
+TEST(big_integer, divide_throw) {
+    EXPECT_THROW(big_integer{} / 0, std::invalid_argument);
+}

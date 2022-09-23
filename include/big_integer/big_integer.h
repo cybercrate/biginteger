@@ -14,7 +14,6 @@
 #include <ranges>
 #include <sstream>
 #include <vector>
-#include <cctype>
 
 namespace wingmann::numerics {
 
@@ -437,9 +436,7 @@ public:
 
         std::ranges::reverse(lhs_value);
 
-        return this->signed_
-            ? big_integer{lhs_value}.negate()
-            : lhs_value;
+        return this->signed_ ? big_integer{lhs_value}.negate() : lhs_value;
     }
 
     /// @brief Subtraction.
