@@ -270,7 +270,9 @@ public:
 
     // Increment operators -------------------------------------------------------------------------
 
-    /// @brief Increments the current value.
+    /// @brief Prefix increment operator.
+    /// Increments the current value.
+    ///
     /// @return Modified object.
     ///
     big_integer& operator++() {
@@ -278,7 +280,9 @@ public:
         return *this;
     }
 
-    /// @brief Increments the current value after returns copy.
+    /// @brief Postfix increment operator.
+    /// Increments the current value after returns copy.
+    ///
     /// @return Copy of current value.
     ///
     const big_integer operator++(int) {
@@ -289,7 +293,9 @@ public:
 
     // Decrement operators -------------------------------------------------------------------------
 
-    /// @brief Decrements the current value.
+    /// @brief Prefix decrement operator.
+    /// Decrements the current value.
+    ///
     /// @return Modified object.
     ///
     big_integer& operator--() {
@@ -297,7 +303,9 @@ public:
         return *this;
     }
 
-    /// @brief Decrements the current value after returns copy.
+    /// @brief Postfix decrement operator.
+    /// Decrements the current value after returns copy.
+    ///
     /// @return Copy of current value.
     ///
     const big_integer operator--(int) {
@@ -308,7 +316,8 @@ public:
 
     // Shift operators -----------------------------------------------------------------------------
 
-    /// @brief Shifts the current value to left on right operand value.
+    /// @brief Left shift operator.
+    /// Shifts the current value to left on right operand value.
     ///
     /// @param rhs The value to shift on.
     /// @return    Shifted current value.
@@ -322,7 +331,8 @@ public:
         return {bitwise_value, 2};
     }
 
-    /// @brief Shifts the current value to right on right operand value.
+    /// @brief Right shift operator.
+    /// Shifts the current value to right on right operand value.
     ///
     /// @param rhs The value to shift on.
     /// @return    Shifted current value.
