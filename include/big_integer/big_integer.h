@@ -53,6 +53,11 @@ public:
     ///
     big_integer(std::int64_t value) : signed_{value < 0} { *this = value; }
 
+    /// @brief Constructs from primitive integral.
+    /// @param value Integral value.
+    ///
+    big_integer(std::uint64_t value) : signed_{value < 0} { *this = value; }
+
     /// @brief Constructs from string literal.
     ///
     /// @param value String literal value.
@@ -115,6 +120,16 @@ public:
     /// @return    Constructed object.
     ///
     big_integer& operator=(std::int64_t rhs) {
+        *this = std::to_string(rhs);
+        return *this;
+    }
+
+    /// @brief Assignment operator.
+    ///
+    /// @param rhs The value from which to construct.
+    /// @return    Constructed object.
+    ///
+    big_integer& operator=(std::uint64_t rhs) {
         *this = std::to_string(rhs);
         return *this;
     }
