@@ -188,6 +188,7 @@ public:
         return *this;
     }
 
+public:
     // Additional assignment operators -------------------------------------------------------------
 
     /// @brief Addition assignment operator.
@@ -268,6 +269,7 @@ public:
         return *this;
     }
 
+public:
     // Arithmetic operators ------------------------------------------------------------------------
 
     /// @brief Plus operator.
@@ -305,6 +307,7 @@ public:
     ///
     big_integer operator%(const big_integer& rhs) const { return mod(rhs); }
 
+public:
     // Increment operators -------------------------------------------------------------------------
 
     /// @brief Prefix increment operator.
@@ -328,6 +331,7 @@ public:
         return before_plus;
     }
 
+public:
     // Decrement operators -------------------------------------------------------------------------
 
     /// @brief Prefix decrement operator.
@@ -351,6 +355,7 @@ public:
         return before_minus;
     }
 
+public:
     // Shift operators -----------------------------------------------------------------------------
 
     /// @brief Left shift operator.
@@ -386,6 +391,7 @@ public:
         return {bitwise_value, 2};
     }
 
+public:
     // Comparison operators ------------------------------------------------------------------------
 
     /// @brief Three-way comparison operator.
@@ -406,6 +412,7 @@ public:
         return compare(rhs) == std::strong_ordering::equivalent;
     }
 
+public:
     // Stream operators ----------------------------------------------------------------------------
 
     /// @brief Outputs the value to the output stream.
@@ -650,6 +657,7 @@ public:
         return subtract(rhs.multiply(divide(rhs)));
     }
 
+public:
     // Complex arithmetic --------------------------------------------------------------------------
 
     /// @brief Rises the current value to the power of the right operand.
@@ -674,6 +682,7 @@ public:
         return temp;
     }
 
+public:
     // Modification and checking -------------------------------------------------------------------
 
     /// @brief Gets the binary size of value.
@@ -754,18 +763,63 @@ public:
     template<std::int64_t value>
     static big_integer value_from() { return std::to_string(value); }
 
+public:
     // Conversion methods --------------------------------------------------------------------------
+
+    template<std::integral T>
+    std::optional<T> to_integer(int radix = 10) const;
+
+    template<> [[nodiscard]] std::optional<std::int8_t> to_integer<int8_t>(int) const = delete;
+    template<> [[nodiscard]] std::optional<std::uint8_t> to_integer<uint8_t>(int) const = delete;
+    template<> [[nodiscard]] std::optional<std::int16_t> to_integer<int16_t>(int) const = delete;
+    template<> [[nodiscard]] std::optional<std::uint16_t> to_integer<uint16_t>(int) const = delete;
+    template<> [[nodiscard]] std::optional<unsigned> to_integer<unsigned>(int) const = delete;
+
+    template<std::floating_point T>
+    std::optional<T> to_floating(int radix = 10) const;
 
     /// @brief Converts to primitive integral value.
     ///
     /// @tparam T Type of integral value to which to convert.
-    /// @return   Integral value.
+    /// @return   If converted, then integral value otherwise std::nullopt
     ///
-    template<std::integral T>
+    template<>
     [[nodiscard]]
-    std::optional<T> to_integer(int radix = 10) const {
+    std::optional<int> to_integer<int>(int radix) const {
         try {
-            return static_cast<T>(std::stoll(to_string(radix)));
+            return std::stoi(to_string(radix));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
+    /// @brief Converts to primitive integral value.
+    ///
+    /// @tparam T Type of integral value to which to convert.
+    /// @return   If converted, then integral value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<std::int64_t> to_integer<std::int64_t>(int radix) const {
+        try {
+            return std::stoll(to_string(radix));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
+    /// @brief Converts to primitive integral value.
+    ///
+    /// @tparam T Type of integral value to which to convert.
+    /// @return   If converted, then integral value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<std::uint64_t> to_integer<std::uint64_t>(int radix) const {
+        try {
+            return std::stoull(to_string(radix));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
@@ -775,14 +829,45 @@ public:
     /// @brief Converts to primitive floating point value.
     ///
     /// @tparam T Type of floating point value to which to convert.
-    /// @return   Floating point value.
+    /// @return   If converted, then floating point value otherwise std::nullopt
     ///
-
-    template<std::floating_point T>
+    template<>
     [[nodiscard]]
-    std::optional<T> to_floating(int radix = 10) const {
+    std::optional<float> to_floating<float>(int radix) const {
         try {
-            return static_cast<T>(std::stold(to_string(radix)));
+            return std::stof(to_string(radix));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
+    /// @brief Converts to primitive floating point value.
+    ///
+    /// @tparam T Type of floating point value to which to convert.
+    /// @return   If converted, then floating point value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<double> to_floating<double>(int radix) const {
+        try {
+            return std::stod(to_string(radix));
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
+    /// @brief Converts to primitive floating point value.
+    ///
+    /// @tparam T Type of floating point value to which to convert.
+    /// @return   If converted, then floating point value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<long double> to_floating<long double>(int radix) const {
+        try {
+            return std::stold(to_string(radix));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
