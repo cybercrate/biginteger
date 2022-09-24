@@ -754,12 +754,15 @@ public:
     template<std::int64_t value>
     static big_integer value_from() { return std::to_string(value); }
 
+    // Conversion methods --------------------------------------------------------------------------
+
     /// @brief Converts to primitive integral value.
     ///
     /// @tparam T Type of integral value to which to convert.
     /// @return   Integral value.
     ///
     template<std::integral T>
+    [[nodiscard]]
     std::optional<T> to_integer(int radix = 10) const {
         try {
             return static_cast<T>(std::stoll(to_string(radix)));
