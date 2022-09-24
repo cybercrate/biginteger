@@ -246,6 +246,28 @@ public:
         return *this;
     }
 
+    /// @brief Left shift assignment operator.
+    /// Shifts the current value to left on right operand value and assigns the result.
+    ///
+    /// @param rhs The value to shift on.
+    /// @return    Modified object.
+    ///
+    big_integer& operator<<=(const big_integer& rhs) {
+        *this = operator<<(rhs);
+        return *this;
+    }
+
+    /// @brief Left shift assignment operator.
+    /// Shifts the current value to left on right operand value and assigns the result.
+    ///
+    /// @param rhs The value to shift on.
+    /// @return    SModified object.
+    ///
+    big_integer& operator>>=(const big_integer& rhs) {
+        *this = operator>>(rhs);
+        return *this;
+    }
+
     // Arithmetic operators ------------------------------------------------------------------------
 
     /// @brief Plus operator.
@@ -738,7 +760,7 @@ public:
     /// @return   Integral value.
     ///
     template<std::integral T>
-    std::optional<T> to_integer(int radix = 10) {
+    std::optional<T> to_integer(int radix = 10) const {
         try {
             return static_cast<T>(std::stoll(to_string(radix)));
         } catch (std::out_of_range&) {
@@ -752,10 +774,12 @@ public:
     /// @tparam T Type of floating point value to which to convert.
     /// @return   Floating point value.
     ///
+
     template<std::floating_point T>
-    std::optional<T> to_floating(int radix = 10) {
+    [[nodiscard]]
+    std::optional<T> to_floating(int radix = 10) const {
         try {
-            return static_cast<T>(std::stod(to_string(radix)));
+            return static_cast<T>(std::stold(to_string(radix)));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
