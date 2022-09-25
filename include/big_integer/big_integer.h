@@ -179,7 +179,7 @@ public:
             auto c = rhs.at(i);
             int current_value = ('0' <= c) && (c <= '9')
                 ? (c - '0')
-                : (tolower(c) - 'a') + 10;
+                : (std::tolower(c) - 'a') + 10;
 
             converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
         }
@@ -688,10 +688,12 @@ public:
     [[nodiscard]]
     std::strong_ordering compare(const big_integer& rhs) const {
         // -a, +b
-        if (this->signed_ && !rhs.signed_) return std::strong_ordering::less;
+        if (this->signed_ && !rhs.signed_)
+            return std::strong_ordering::less;
 
         // +a, -b
-        if (!this->signed_ && rhs.signed_) return std::strong_ordering::greater;
+        if (!this->signed_ && rhs.signed_)
+            return std::strong_ordering::greater;
 
         // +a, +b or -a, -b
         if (this->value_.length() < rhs.value_.length())
@@ -718,7 +720,8 @@ public:
     ///
     [[nodiscard]]
     big_integer negate() const {
-        if (value_ == "0") return *this;
+        if (*this == value_from<0>())
+            return *this;
 
         std::string value{this->value_};
         return this->signed_ ? value : value.insert(0, 1, '-');
@@ -761,7 +764,7 @@ public:
     ///
     /// @return Boolean representation of current value.
     ///
-    explicit operator bool() const { return to_string() != value_from<0>(); }
+    explicit operator bool() const { return *this != value_from<0>(); }
 
     /// @brief Converts to primitive integral value.
     ///
@@ -910,7 +913,7 @@ public:
             decimal_value /= modulo;
 
             // Doesn't throw exception
-            auto symbol = base_char_value().at(std::stoi(remainder.to_string()));
+            auto symbol = base_chars().at(std::stoi(remainder.to_string()));
             value.push_back(symbol);
         }
         std::ranges::reverse(value);
@@ -922,7 +925,7 @@ public:
 private:
     // Returns the base char values of a system of numeration.
     // Allowed numeration systems from 2 to 16.
-    static constexpr std::string base_char_value() { return "0123456789ABCDEF"; }
+    static constexpr std::string base_chars() { return "0123456789ABCDEF"; }
 };
 
 } // namespace wingmann::numerics
