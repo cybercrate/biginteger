@@ -171,7 +171,7 @@ public:
 
         auto value_length = static_cast<std::int64_t>(rhs.length());
 
-        big_integer pow{value_length - 1};
+        big_integer power{value_length - 1};
         big_integer converted_value{last};
         big_integer radix_value{this->radix_};
 
@@ -181,9 +181,9 @@ public:
                 ? (c - '0')
                 : (std::tolower(c) - 'a') + 10;
 
-            converted_value += big_integer{current_value}.multiply(radix_value.pow(pow--));
+            converted_value += multiply(current_value, pow(radix_value, power--));
         }
-        *this = this->signed_ ? converted_value.negate() : std::move(converted_value);
+        *this = this->signed_ ? negate(converted_value) : std::move(converted_value);
         return *this;
     }
 
@@ -196,7 +196,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator+=(const big_integer& rhs) {
-        *this = add(rhs);
+        *this = add(*this, rhs);
         return *this;
     }
 
@@ -207,7 +207,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator-=(const big_integer& rhs) {
-        *this = subtract(rhs);
+        *this = subtract(*this, rhs);
         return *this;
     }
 
@@ -218,7 +218,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator*=(const big_integer& rhs) {
-        *this = multiply(rhs);
+        *this = multiply(*this, rhs);
         return *this;
     }
 
@@ -229,7 +229,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator/=(const big_integer& rhs) {
-        *this = divide(rhs);
+        *this = divide(*this, rhs);
         return *this;
     }
 
@@ -241,7 +241,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator%=(const big_integer& rhs) {
-        *this = mod(rhs);
+        *this = mod(*this, rhs);
         return *this;
     }
 
@@ -274,35 +274,35 @@ public:
     /// @param rhs The right side operand for addition to current value.
     /// @return    Result of addition.
     ///
-    big_integer operator+(const big_integer& rhs) const { return add(rhs); }
+    big_integer operator+(const big_integer& rhs) const { return add(*this ,rhs); }
 
     /// @brief Minus operator.
     ///
     /// @param rhs The right side operand for subtract from current value.
     /// @return    Result of subtraction.
     ///
-    big_integer operator-(const big_integer& rhs) const { return subtract(rhs); }
+    big_integer operator-(const big_integer& rhs) const { return subtract(*this ,rhs); }
 
     /// @brief Multiply operator.
     ///
     /// @param rhs The right operand for multiplication by the current value.
     /// @return    Result of multiplication.
     ///
-    big_integer operator*(const big_integer& rhs) const { return multiply(rhs); }
+    big_integer operator*(const big_integer& rhs) const { return multiply(*this ,rhs); }
 
     /// @brief Division operator.
     ///
     /// @param rhs The right operand by which to divide the current value.
     /// @return    Result of division.
     ///
-    big_integer operator/(const big_integer& rhs) const { return divide(rhs); }
+    big_integer operator/(const big_integer& rhs) const { return divide(*this ,rhs); }
 
     /// @brief Modulus operator.
     ///
     /// @param rhs The right operand for taking the remainder.
     /// @return    Remainder of division current value by right side value.
     ///
-    big_integer operator%(const big_integer& rhs) const { return mod(rhs); }
+    big_integer operator%(const big_integer& rhs) const { return mod(*this ,rhs); }
 
 // Increment operators -----------------------------------------------------------------------------
 
@@ -312,7 +312,7 @@ public:
     /// @return Modified object.
     ///
     big_integer& operator++() {
-        *this = add(value_from<1>());
+        *this = add(*this, 1);
         return *this;
     }
 
@@ -323,7 +323,7 @@ public:
     ///
     const big_integer operator++(int) {
         auto before_plus{std::move(*this)};
-        *this = add(value_from<1>());
+        *this = add(*this, 1);
         return before_plus;
     }
 
@@ -335,7 +335,7 @@ public:
     /// @return Modified object.
     ///
     big_integer& operator--() {
-        *this = subtract(value_from<1>());
+        *this = subtract(*this, 1);
         return *this;
     }
 
@@ -346,7 +346,7 @@ public:
     ///
     const big_integer operator--(int) {
         auto before_minus{std::move(*this)};
-        *this = subtract(value_from<1>());
+        *this = subtract(*this, 1);
         return before_minus;
     }
 
@@ -439,7 +439,7 @@ public:
     /// @return    Result of addition.
     ///
     [[nodiscard]]
-    big_integer add(const big_integer& rhs) const {
+    big_integer add(const big_integer& lhs, const big_integer& rhs) const {
         // (-a)+(+b)
         if (this->signed_ && !rhs.signed_)
             return rhs.subtract(negate());
@@ -485,13 +485,21 @@ public:
         return this->signed_ ? big_integer{lhs_value}.negate() : lhs_value;
     }
 
+    /// @brief Addition.
+    ///
+    /// @param rhs The right side operand for addition to current value.
+    /// @return    Result of addition.
+    ///
+    [[nodiscard]]
+    big_integer add(const big_integer& rhs) const { return add (*this, rhs); }
+
     /// @brief Subtraction.
     ///
     /// @param rhs The right side operand for subtract from current value.
     /// @return    Result of subtraction.
     ///
     [[nodiscard]]
-    big_integer subtract(const big_integer& rhs) const {
+    big_integer subtract(const big_integer& lhs, const big_integer& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
         if ((this->signed_ && !rhs.signed_) || (!this->signed_ && rhs.signed_))
             return add(rhs.negate());
@@ -533,13 +541,21 @@ public:
         return inverted_sign ? big_integer{subtracted}.negate() : subtracted;
     }
 
+    /// @brief Subtraction.
+    ///
+    /// @param rhs The right side operand for subtract from current value.
+    /// @return    Result of subtraction.
+    ///
+    [[nodiscard]]
+    big_integer subtract(const big_integer& rhs) const { return subtract(*this, rhs); }
+
     /// @brief Multiplication.
     ///
     /// @param rhs The right operand for multiplication by the current value.
     /// @return    Result of multiplication.
     ///
     [[nodiscard]]
-    big_integer multiply(const big_integer& rhs) const {
+    big_integer multiply(const big_integer& lhs, const big_integer& rhs) const {
         auto lhs_value = this->value_;
         auto rhs_value = rhs.value_;
 
@@ -574,13 +590,17 @@ public:
             temp += operation;
             step++;
         }
-
         auto positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
-        if (!positive)
-            return temp.negate();
-
-        return temp;
+        return (!positive) ? temp.negate() : temp;
     }
+
+    /// @brief Multiplication.
+    ///
+    /// @param rhs The right operand for multiplication by the current value.
+    /// @return    Result of multiplication.
+    ///
+    [[nodiscard]]
+    big_integer multiply(const big_integer& rhs) const { return multiply(*this, rhs); }
 
     /// @brief Division.
     ///
@@ -588,7 +608,7 @@ public:
     /// @return    Result of division.
     ///
     [[nodiscard]]
-    big_integer divide(const big_integer& rhs) const {
+    big_integer divide(const big_integer& lhs, const big_integer& rhs) const {
         if (rhs == value_from<0>())
             throw std::invalid_argument("divide by zero");
 
@@ -629,10 +649,28 @@ public:
         } while (!lhs_value.empty());
 
         bool positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
-        if (!positive)
-            return big_integer{rhs_quotient}.negate();
+        return (!positive) ? big_integer{rhs_quotient}.negate(): rhs_quotient;
+    }
 
-        return rhs_quotient;
+    /// @brief Division.
+    ///
+    /// @param rhs The right operand by which to divide the current value.
+    /// @return    Result of division.
+    ///
+    [[nodiscard]]
+    big_integer divide(const big_integer& rhs) const { return divide(*this, rhs); }
+
+    /// @brief Modulus.
+    ///
+    /// @param rhs The right operand for taking the remainder.
+    /// @return    Remainder of division current value by right side value.
+    ///
+    [[nodiscard]]
+    big_integer mod(const big_integer& lhs, const big_integer& rhs) const {
+        if (rhs == 0)
+            throw std::invalid_argument("mod by zero");
+
+        return subtract(rhs.multiply(divide(rhs)));
     }
 
     /// @brief Modulus.
@@ -641,14 +679,60 @@ public:
     /// @return    Remainder of division current value by right side value.
     ///
     [[nodiscard]]
-    big_integer mod(const big_integer& rhs) const {
-        if (rhs == value_from<0>())
-            throw std::invalid_argument("mod by zero");
-
-        return subtract(rhs.multiply(divide(rhs)));
-    }
+    big_integer mod(const big_integer& rhs) const { return mod(*this, rhs); }
 
 // Complex arithmetic ------------------------------------------------------------------------------
+
+    /// @brief Negate the current value.
+    /// @return If the value is already signed, the current value otherwise changes to the signed value.
+    ///
+    static big_integer negate(const big_integer& value) {
+        if (value == 0)
+            return value;
+        return value.signed_ ? value.value_ : std::string{value.value_}.insert(0, 1, '-');
+    }
+
+    /// @brief Negate the current value.
+    /// @return If the value is already signed, the current value otherwise changes to the signed value.
+    ///
+    [[nodiscard]]
+    big_integer negate() const { return negate(*this); }
+
+    /// @brief Absolutes the current value.
+    /// @return Always unsigned current value.
+    ///
+    static big_integer abs(const big_integer& value) {
+        return value.is_positive() ? value : negate(value);
+    }
+
+    /// @brief Absolutes the current value.
+    /// @return Always unsigned current value.
+    ///
+    [[nodiscard]]
+    big_integer abs() const { return abs(*this); }
+
+    /// @brief Rises the current value to the power of the right operand.
+    ///
+    /// @param rhs Degree.
+    /// @return    Result of power.
+    ///
+    static big_integer pow(const big_integer& base, const big_integer& exp) {
+        if (exp == 0) return 1;
+        if (exp < 0) {
+            if (base == 0) throw std::logic_error("");
+            return abs(base) == 1 ? base : 0;
+        }
+        auto init_exp{exp};
+        auto result{base};
+        auto result_odd{big_integer::value_from<1>()};
+
+        while (init_exp > 1) {
+            if (init_exp % 2) result_odd *= result;
+            result *= result;
+            init_exp /= 2;
+        }
+        return result * result_odd;
+    }
 
     /// @brief Rises the current value to the power of the right operand.
     ///
@@ -656,20 +740,64 @@ public:
     /// @return    Result of power.
     ///
     [[nodiscard]]
-    big_integer pow(const big_integer& rhs) const {
-        if (rhs == value_from<0>())
-            return std::move(value_from<1>());
+    big_integer pow(const big_integer& exp) const { return pow(*this, exp); }
 
-        if (rhs == value_from<1>())
-            return *this;
+    static big_integer pow10(const big_integer& exp) {
+        return pow(10, exp);
+    }
 
-        auto init_value{*this};
-        auto temp{*this};
+    [[nodiscard]]
+    big_integer pow10() const { return pow10(*this); }
 
-        for (auto i = value_from<1>(); i < rhs; i++)
-            temp *= init_value;
+    static big_integer sqrt(const big_integer& value) {
+        if (value < 0)
+            throw std::invalid_argument("cannot compute square root of a negative integer");
 
-        return temp;
+        // Optimisations for small inputs:
+        if (value == 0) return 0;
+        if (value < 4)  return 1;
+        if (value < 9)  return 2;
+        if (value < 16) return 3;
+
+        big_integer previous{-1};
+        // The value for `sqrt_current` is chosen close to that of the actual
+        // square root.
+        // Since a number's square root has at least one less than half as many
+        // digits as the number,
+        //     sqrt_current = 10^(half_the_digits_in_num - 1)
+        big_integer current = pow10(value.to_string().size() / 2 - 1);
+
+        while (abs(current - previous) > 1) {
+            previous = current;
+            current = (value / previous + previous) / 2;
+        }
+        return current;
+    }
+
+    [[nodiscard]]
+    big_integer sqrt() const { return sqrt(*this); }
+
+    static big_integer gcd(const big_integer& lhs, const big_integer& rhs){
+        big_integer abs_lhs = abs(lhs);
+        big_integer abs_rhs = abs(rhs);
+
+        if (abs_rhs == 0) return abs_lhs; // gcd(a, 0) = |a|
+        if (abs_lhs == 0) return abs_rhs; // gcd(0, a) = |a|
+
+        auto remainder{abs_rhs};
+
+        while (remainder != 0) {
+            remainder = abs_lhs % abs_rhs;
+            abs_lhs = abs_rhs; // previous remainder
+            abs_rhs = remainder; // current remainder
+        }
+        return abs_lhs;
+    }
+
+    static big_integer lcm(const big_integer& lhs, const big_integer& rhs) {
+        if (lhs == 0 || rhs == 0)
+            return 0;
+        return abs(lhs * rhs) / gcd(lhs, rhs);
     }
 
 // Modification and checking -----------------------------------------------------------------------
@@ -712,26 +840,6 @@ public:
 
         return std::strong_ordering::equivalent;
     }
-
-    /// @brief Negate the current value.
-    ///
-    /// @return If the value is already signed,
-    /// the current value otherwise changes to the signed value.
-    ///
-    [[nodiscard]]
-    big_integer negate() const {
-        if (*this == value_from<0>())
-            return *this;
-
-        std::string value{this->value_};
-        return this->signed_ ? value : value.insert(0, 1, '-');
-    }
-
-    /// @brief Absolutes the current value.
-    /// @return Always unsigned current value.
-    ///
-    [[nodiscard]]
-    big_integer abs() const { return is_positive() ? *this : negate(); }
 
     /// @brief Checks for value sign.
     /// @return true if value unsigned otherwise false.
@@ -909,7 +1017,7 @@ public:
         std::string value;
 
         while (decimal_value != value_from<0>()) {
-            auto remainder= decimal_value.mod(modulo);
+            auto remainder = mod(decimal_value, modulo);
             decimal_value /= modulo;
 
             // Doesn't throw exception
