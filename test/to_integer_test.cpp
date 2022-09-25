@@ -4,15 +4,26 @@
 
 using namespace wingmann::numerics;
 
-TEST(big_integer, to_integer) {
-    big_integer big_number1{"73992819237283823029830298392932983928938901231283017473489183"};
-    big_integer big_number2{"673282193"};
+TEST(big_integer, to_integer_int_1) {
+    EXPECT_TRUE(big_integer{2147483647}.to_integer<int>().has_value());
+}
 
-    auto integer1 = big_number1.to_integer<int>();
-    auto integer2 = big_number2.to_integer<int>();
+TEST(big_integer, to_integer_int_2) {
+    EXPECT_FALSE(big_integer{2147483648}.to_integer<int>().has_value());
+}
 
-    EXPECT_FALSE(integer1.has_value());
-    EXPECT_TRUE(integer2.has_value());
+TEST(big_integer, to_integer_long_long_1) {
+    EXPECT_TRUE(big_integer{9223372036854775807}.to_integer<std::int64_t>().has_value());
+}
 
-    EXPECT_EQ(integer2.value(), 673282193);
+TEST(big_integer, to_integer_long_long_2) {
+    EXPECT_FALSE(big_integer{"9223372036854775808"}.to_integer<std::int64_t>().has_value());
+}
+
+TEST(big_integer, to_integer_unsigned_long_long_1) {
+    EXPECT_TRUE(big_integer{18446744073709551615UL}.to_integer<std::uint64_t>().has_value());
+}
+
+TEST(big_integer, to_integer_unsigned_long_long_2) {
+    EXPECT_FALSE(big_integer{"18446744073709551616"}.to_integer<std::uint64_t>().has_value());
 }

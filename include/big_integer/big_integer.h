@@ -77,8 +77,7 @@ public:
     /// @brief Destructor.
     virtual ~big_integer() = default;
 
-public:
-    // Assignment operators ------------------------------------------------------------------------
+// Assignment operators ----------------------------------------------------------------------------
 
     /// @brief Copy assignment operator.
     ///
@@ -188,8 +187,7 @@ public:
         return *this;
     }
 
-public:
-    // Additional assignment operators -------------------------------------------------------------
+// Additional assignment operators -----------------------------------------------------------------
 
     /// @brief Addition assignment operator.
     /// Adds the value to the current value and assigns the result.
@@ -269,8 +267,7 @@ public:
         return *this;
     }
 
-public:
-    // Arithmetic operators ------------------------------------------------------------------------
+// Arithmetic operators ----------------------------------------------------------------------------
 
     /// @brief Plus operator.
     ///
@@ -307,8 +304,7 @@ public:
     ///
     big_integer operator%(const big_integer& rhs) const { return mod(rhs); }
 
-public:
-    // Increment operators -------------------------------------------------------------------------
+// Increment operators -----------------------------------------------------------------------------
 
     /// @brief Prefix increment operator.
     /// Increments the current value.
@@ -331,8 +327,7 @@ public:
         return before_plus;
     }
 
-public:
-    // Decrement operators -------------------------------------------------------------------------
+// Decrement operators -----------------------------------------------------------------------------
 
     /// @brief Prefix decrement operator.
     /// Decrements the current value.
@@ -355,8 +350,7 @@ public:
         return before_minus;
     }
 
-public:
-    // Shift operators -----------------------------------------------------------------------------
+// Shift operators ---------------------------------------------------------------------------------
 
     /// @brief Left shift operator.
     /// Shifts the current value to left on right operand value.
@@ -391,8 +385,7 @@ public:
         return {bitwise_value, 2};
     }
 
-public:
-    // Comparison operators ------------------------------------------------------------------------
+// Comparison operators ----------------------------------------------------------------------------
 
     /// @brief Three-way comparison operator.
     /// Compares the current value and right side operand.
@@ -412,8 +405,7 @@ public:
         return compare(rhs) == std::strong_ordering::equivalent;
     }
 
-public:
-    // Stream operators ----------------------------------------------------------------------------
+// Stream operators --------------------------------------------------------------------------------
 
     /// @brief Outputs the value to the output stream.
     ///
@@ -439,8 +431,7 @@ public:
         return is;
     }
 
-public:
-    // Basic arithmetic ----------------------------------------------------------------------------
+// Basic arithmetic --------------------------------------------------------------------------------
 
     /// @brief Addition.
     ///
@@ -657,8 +648,7 @@ public:
         return subtract(rhs.multiply(divide(rhs)));
     }
 
-public:
-    // Complex arithmetic --------------------------------------------------------------------------
+// Complex arithmetic ------------------------------------------------------------------------------
 
     /// @brief Rises the current value to the power of the right operand.
     ///
@@ -682,8 +672,7 @@ public:
         return temp;
     }
 
-public:
-    // Modification and checking -------------------------------------------------------------------
+// Modification and checking -----------------------------------------------------------------------
 
     /// @brief Gets the binary size of value.
     /// @return Bit length.
@@ -729,6 +718,8 @@ public:
     ///
     [[nodiscard]]
     big_integer negate() const {
+        if (value_ == "0") return *this;
+
         std::string value{this->value_};
         return this->signed_ ? value : value.insert(0, 1, '-');
     }
@@ -763,18 +754,36 @@ public:
     template<std::int64_t value>
     static big_integer value_from() { return std::to_string(value); }
 
-public:
-    // Conversion methods --------------------------------------------------------------------------
+// Conversion methods ------------------------------------------------------------------------------
 
+    /// @brief Bool operator.
+    /// Converts current value to boolean representation.
+    ///
+    /// @return Boolean representation of current value.
+    ///
+    explicit operator bool() const { return to_string() != value_from<0>(); }
+
+    /// @brief Converts to primitive integral value.
+    ///
+    /// @tparam T Type of integral value to which to convert.
+    /// @return   If converted, then integral value otherwise std::nullopt
+    ///
     template<std::integral T>
     std::optional<T> to_integer(int radix = 10) const;
 
+    // Removed specialization conversions to some integral types not supported by
+    // std::stoi-like functions.
     template<> [[nodiscard]] std::optional<std::int8_t> to_integer<int8_t>(int) const = delete;
     template<> [[nodiscard]] std::optional<std::uint8_t> to_integer<uint8_t>(int) const = delete;
     template<> [[nodiscard]] std::optional<std::int16_t> to_integer<int16_t>(int) const = delete;
     template<> [[nodiscard]] std::optional<std::uint16_t> to_integer<uint16_t>(int) const = delete;
     template<> [[nodiscard]] std::optional<unsigned> to_integer<unsigned>(int) const = delete;
 
+    /// @brief Converts to primitive floating point value.
+    ///
+    /// @tparam T Type of floating point value to which to convert.
+    /// @return   If converted, then floating point value otherwise std::nullopt
+    ///
     template<std::floating_point T>
     std::optional<T> to_floating(int radix = 10) const;
 
