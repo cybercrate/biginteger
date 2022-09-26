@@ -1051,4 +1051,4 @@ private:
 
 } // namespace wingmann::numerics
 
-#endif // WINGMANN_BIGINTEGER_
+#endif // WINGMANN_BIGINTEGER_H
