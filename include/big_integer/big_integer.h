@@ -331,9 +331,12 @@ public:
     /// @return    Shifted current value.
     ///
     big_integer operator<<(const big_integer& rhs) const {
-        auto bitwise_value = to_string(2);
+        if (rhs.is_negative())
+            throw std::invalid_argument("negative value");
 
-        for (auto i = value_from<0>(); i < rhs; i++)
+        auto bitwise_value = this->to_string(2);
+
+        for (auto i = 0; i < rhs; i++)
             bitwise_value.push_back('0');
 
         return {bitwise_value, 2};
@@ -346,9 +349,12 @@ public:
     /// @return    Shifted current value.
     ///
     big_integer operator>>(const big_integer& rhs) const {
-        auto bitwise_value = to_string(2);
+        if (rhs.is_negative())
+            throw std::invalid_argument("negative value");
 
-        for (auto i = value_from<0>(); (i < rhs) && (bitwise_value.length() > 0); i++)
+        auto bitwise_value = this->to_string(2);
+
+        for (auto i = 0; (i < rhs) && (bitwise_value.length() > 0); i++)
             bitwise_value.pop_back();
 
         if (bitwise_value.empty())
