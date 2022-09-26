@@ -819,40 +819,34 @@ public:
 
         // -a, -b
         if (this->is_negative() && rhs.is_negative()) {
-            if (this->value_.length() < rhs.value_.length())
-                return std::strong_ordering::greater;
-
-            if (this->value_.length() > rhs.value_.length())
-                return std::strong_ordering::less;
-
             if (this->value_.length() == rhs.value_.length()) {
                 if (this->value_ > rhs.value_)
                     return std::strong_ordering::less;
 
-                if (this->value_ == rhs.value_)
-                    return std::strong_ordering::equivalent;
-
-                return std::strong_ordering::greater;
+                return (this->value_ == rhs.value_)
+                    ? std::strong_ordering::equivalent
+                    : std::strong_ordering::greater;
             }
+
+            return (this->value_.length() < rhs.value_.length())
+                ? std::strong_ordering::greater
+                : std::strong_ordering::less;
         }
 
         // +a, +b
         if (this->is_positive() && rhs.is_positive()) {
-            if (this->value_.length() < rhs.value_.length())
-                return std::strong_ordering::less;
-
-            if (this->value_.length() > rhs.value_.length())
-                return std::strong_ordering::greater;
-
             if (this->value_.length() == rhs.value_.length()) {
                 if (this->value_ > rhs.value_)
                     return std::strong_ordering::greater;
 
-                if (this->value_ == rhs.value_)
-                    return std::strong_ordering::equivalent;
-
-                return std::strong_ordering::less;
+                return (this->value_ == rhs.value_)
+                    ? std::strong_ordering::equivalent
+                    : std::strong_ordering::less;
             }
+
+            return (this->value_.length() < rhs.value_.length())
+                ? std::strong_ordering::less
+                : std::strong_ordering::greater;
         }
 
         return std::strong_ordering::equivalent;
@@ -1057,4 +1051,4 @@ private:
 
 } // namespace wingmann::numerics
 
-#endif // WINGMANN_BIGINTEGER_H
+#endif // WINGMANN_BIGINTEGER_
