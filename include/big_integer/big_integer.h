@@ -810,30 +810,55 @@ public:
     /// @brief Compares current value with right side operand.
     ///
     /// @param rhs The value to compare with current value.
-    /// @return    If equals, 0 else if the current value less, -1, otherwise 1.
+    /// @return    Result of comparison.
     ///
     [[nodiscard]]
     std::strong_ordering compare(const big_integer& rhs) const {
         // -a, +b
-        if (this->signed_ && !rhs.signed_)
+        if (this->is_negative() && rhs.is_positive())
             return std::strong_ordering::less;
 
         // +a, -b
-        if (!this->signed_ && rhs.signed_)
+        if (this->is_positive() && rhs.is_negative())
             return std::strong_ordering::greater;
 
-        // +a, +b or -a, -b
-        if (this->value_.length() < rhs.value_.length())
-            return std::strong_ordering::less;
+        // -a, -b
+        if (this->is_negative() && rhs.is_negative()) {
+            if (this->value_.length() < rhs.value_.length())
+                return std::strong_ordering::greater;
 
-        if (this->value_.length() > rhs.value_.length())
-            return std::strong_ordering::greater;
+            if (this->value_.length() > rhs.value_.length())
+                return std::strong_ordering::less;
 
-        if (this->value_ < rhs.value_)
-            return this->signed_ ? std::strong_ordering::greater : std::strong_ordering::less;
+            if (this->value_.length() == rhs.value_.length()) {
+                if (this->value_ > rhs.value_)
+                    return std::strong_ordering::less;
 
-        if (this->value_ > rhs.value_)
-            return this->signed_ ? std::strong_ordering::less : std::strong_ordering::greater;
+                if (this->value_ == rhs.value_)
+                    return std::strong_ordering::equivalent;
+
+                return std::strong_ordering::greater;
+            }
+        }
+
+        // +a, +b
+        if (this->is_positive() && rhs.is_positive()) {
+            if (this->value_.length() < rhs.value_.length())
+                return std::strong_ordering::less;
+
+            if (this->value_.length() > rhs.value_.length())
+                return std::strong_ordering::greater;
+
+            if (this->value_.length() == rhs.value_.length()) {
+                if (this->value_ > rhs.value_)
+                    return std::strong_ordering::greater;
+
+                if (this->value_ == rhs.value_)
+                    return std::strong_ordering::equivalent;
+
+                return std::strong_ordering::less;
+            }
+        }
 
         return std::strong_ordering::equivalent;
     }
