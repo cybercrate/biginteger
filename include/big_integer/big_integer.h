@@ -680,9 +680,12 @@ public:
     /// @return If the value is already signed, the current value otherwise changes to the signed value.
     ///
     static big_integer negate(const big_integer& value) {
-        if (value == 0)
-            return value;
-        return value.signed_ ? value.value_ : std::string{value.value_}.insert(0, 1, '-');
+        if (value == 0) return value;
+        if (value.signed_) return value.value_;
+
+        std::stringstream ss;
+        ss << '-' << value.value_;
+        return ss.str();
     }
 
     /// @brief Negate the current value.
