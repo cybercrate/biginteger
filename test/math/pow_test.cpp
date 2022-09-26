@@ -4,6 +4,10 @@
 
 using namespace wingmann::numerics;
 
-TEST(big_integer, pow) {
+TEST(biginteger_math, pow_1) {
     EXPECT_EQ(big_integer{256}.pow(9), "4722366482869645213696");
+}
+
+TEST(biginteger_math, pow_2) {
+    EXPECT_EQ(big_integer::pow(256, 9), "4722366482869645213696");
 }

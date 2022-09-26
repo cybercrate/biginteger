@@ -77,7 +77,7 @@ public:
     /// @brief Destructor.
     virtual ~big_integer() = default;
 
-// Assignment operators ----------------------------------------------------------------------------
+    // Assignment operators ------------------------------------------------------------------------
 
     /// @brief Copy assignment operator.
     ///
@@ -187,7 +187,7 @@ public:
         return *this;
     }
 
-// Additional assignment operators -----------------------------------------------------------------
+    // Additional assignment operators -------------------------------------------------------------
 
     /// @brief Addition assignment operator.
     /// Adds the value to the current value and assigns the result.
@@ -267,7 +267,7 @@ public:
         return *this;
     }
 
-// Arithmetic operators ----------------------------------------------------------------------------
+    // Arithmetic operators ------------------------------------------------------------------------
 
     /// @brief Plus operator.
     ///
@@ -304,7 +304,7 @@ public:
     ///
     big_integer operator%(const big_integer& rhs) const { return mod(*this ,rhs); }
 
-// Increment operators -----------------------------------------------------------------------------
+    // Increment and decrement operators -----------------------------------------------------------
 
     /// @brief Prefix increment operator.
     /// Increments the current value.
@@ -327,8 +327,6 @@ public:
         return before_plus;
     }
 
-// Decrement operators -----------------------------------------------------------------------------
-
     /// @brief Prefix decrement operator.
     /// Decrements the current value.
     ///
@@ -350,7 +348,7 @@ public:
         return before_minus;
     }
 
-// Shift operators ---------------------------------------------------------------------------------
+    // Shift operators -----------------------------------------------------------------------------
 
     /// @brief Left shift operator.
     /// Shifts the current value to left on right operand value.
@@ -385,7 +383,7 @@ public:
         return {bitwise_value, 2};
     }
 
-// Comparison operators ----------------------------------------------------------------------------
+    // Comparison operators ------------------------------------------------------------------------
 
     /// @brief Three-way comparison operator.
     /// Compares the current value and right side operand.
@@ -405,7 +403,7 @@ public:
         return compare(rhs) == std::strong_ordering::equivalent;
     }
 
-// Stream operators --------------------------------------------------------------------------------
+    // Stream operators ----------------------------------------------------------------------------
 
     /// @brief Outputs the value to the output stream.
     ///
@@ -431,25 +429,24 @@ public:
         return is;
     }
 
-// Basic arithmetic --------------------------------------------------------------------------------
+    // Basic arithmetic ----------------------------------------------------------------------------
 
     /// @brief Addition.
     ///
     /// @param rhs The right side operand for addition to current value.
     /// @return    Result of addition.
     ///
-    [[nodiscard]]
-    big_integer add(const big_integer& lhs, const big_integer& rhs) const {
+    static big_integer add(const big_integer& lhs, const big_integer& rhs) {
         // (-a)+(+b)
-        if (this->signed_ && !rhs.signed_)
-            return rhs.subtract(negate());
+        if (lhs.signed_ && !rhs.signed_)
+            return rhs.subtract(lhs.negate());
 
         // (+a)+(-b)
-        if (!this->signed_ && rhs.signed_)
-            return subtract(rhs.negate());
+        if (!lhs.signed_ && rhs.signed_)
+            return lhs.subtract(rhs.negate());
 
         // (+a)+(+b) or (-a)+(-b)
-        auto lhs_value = this->value_;
+        auto lhs_value = lhs.value_;
         auto rhs_value = rhs.value_;
 
         auto diff_length = std::abs(static_cast<int>(lhs_value.length() - rhs_value.length()));
@@ -482,7 +479,7 @@ public:
 
         std::ranges::reverse(lhs_value);
 
-        return this->signed_ ? big_integer{lhs_value}.negate() : lhs_value;
+        return lhs.signed_ ? big_integer{lhs_value}.negate() : lhs_value;
     }
 
     /// @brief Addition.
@@ -498,20 +495,19 @@ public:
     /// @param rhs The right side operand for subtract from current value.
     /// @return    Result of subtraction.
     ///
-    [[nodiscard]]
-    big_integer subtract(const big_integer& lhs, const big_integer& rhs) const {
+    static big_integer subtract(const big_integer& lhs, const big_integer& rhs) {
         // (-a)-(+b) or (+a)-(-b)
-        if ((this->signed_ && !rhs.signed_) || (!this->signed_ && rhs.signed_))
-            return add(rhs.negate());
+        if ((lhs.signed_ && !rhs.signed_) || (!lhs.signed_ && rhs.signed_))
+            return lhs.add(rhs.negate());
 
         // (+a)-(+b) or (-a)-(-b)
-        if (this->signed_)
-            return add(rhs.negate());
+        if (lhs.signed_)
+            return lhs.add(rhs.negate());
 
-        bool inverted_sign = (compare(rhs) == std::strong_ordering::less);
+        bool inverted_sign = (lhs.compare(rhs) == std::strong_ordering::less);
 
-        std::string subtracted = inverted_sign ? rhs.value_ : this->value_;
-        std::string removed = inverted_sign ? this->value_ : rhs.value_;
+        std::string subtracted = inverted_sign ? rhs.value_ : lhs.value_;
+        std::string removed = inverted_sign ? lhs.value_ : rhs.value_;
 
         auto diff_length = std::abs(static_cast<int>(subtracted.length() - removed.length()));
 
@@ -554,9 +550,8 @@ public:
     /// @param rhs The right operand for multiplication by the current value.
     /// @return    Result of multiplication.
     ///
-    [[nodiscard]]
-    big_integer multiply(const big_integer& lhs, const big_integer& rhs) const {
-        auto lhs_value = this->value_;
+    static big_integer multiply(const big_integer& lhs, const big_integer& rhs) {
+        auto lhs_value = lhs.value_;
         auto rhs_value = rhs.value_;
 
         std::ranges::reverse(lhs_value);
@@ -590,7 +585,7 @@ public:
             temp += operation;
             step++;
         }
-        auto positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
+        auto positive = (lhs.signed_ && rhs.signed_) || (!lhs.signed_ && !rhs.signed_);
         return (!positive) ? temp.negate() : temp;
     }
 
@@ -607,18 +602,17 @@ public:
     /// @param rhs The right operand by which to divide the current value.
     /// @return    Result of division.
     ///
-    [[nodiscard]]
-    big_integer divide(const big_integer& lhs, const big_integer& rhs) const {
-        if (rhs == value_from<0>())
+    static big_integer divide(const big_integer& lhs, const big_integer& rhs) {
+        if (rhs == 0)
             throw std::invalid_argument("divide by zero");
 
-        if (rhs == value_from<1>())
-            return *this;
+        if (rhs == 1)
+            return lhs;
 
-        if (compare(rhs) == std::strong_ordering::equivalent)
+        if (lhs.compare(rhs) == std::strong_ordering::equivalent)
             return 1;
 
-        auto lhs_value = this->value_;
+        auto lhs_value = lhs.value_;
         std::ranges::reverse(lhs_value);
 
         auto rhs_abs = rhs.abs();
@@ -648,7 +642,7 @@ public:
                 .to_string();
         } while (!lhs_value.empty());
 
-        bool positive = (this->signed_ && rhs.signed_) || (!this->signed_ && !rhs.signed_);
+        bool positive = (lhs.signed_ && rhs.signed_) || (!lhs.signed_ && !rhs.signed_);
         return (!positive) ? big_integer{rhs_quotient}.negate(): rhs_quotient;
     }
 
@@ -665,12 +659,11 @@ public:
     /// @param rhs The right operand for taking the remainder.
     /// @return    Remainder of division current value by right side value.
     ///
-    [[nodiscard]]
-    big_integer mod(const big_integer& lhs, const big_integer& rhs) const {
+    static big_integer mod(const big_integer& lhs, const big_integer& rhs) {
         if (rhs == 0)
             throw std::invalid_argument("mod by zero");
 
-        return subtract(rhs.multiply(divide(rhs)));
+        return lhs.subtract(rhs.multiply(lhs.divide(rhs)));
     }
 
     /// @brief Modulus.
@@ -681,7 +674,7 @@ public:
     [[nodiscard]]
     big_integer mod(const big_integer& rhs) const { return mod(*this, rhs); }
 
-// Complex arithmetic ------------------------------------------------------------------------------
+    // Complex arithmetic --------------------------------------------------------------------------
 
     /// @brief Negate the current value.
     /// @return If the value is already signed, the current value otherwise changes to the signed value.
@@ -760,11 +753,6 @@ public:
         if (value < 16) return 3;
 
         big_integer previous{-1};
-        // The value for `sqrt_current` is chosen close to that of the actual
-        // square root.
-        // Since a number's square root has at least one less than half as many
-        // digits as the number,
-        //     sqrt_current = 10^(half_the_digits_in_num - 1)
         big_integer current = pow10(value.to_string().size() / 2 - 1);
 
         while (abs(current - previous) > 1) {
@@ -777,12 +765,18 @@ public:
     [[nodiscard]]
     big_integer sqrt() const { return sqrt(*this); }
 
-    static big_integer gcd(const big_integer& lhs, const big_integer& rhs){
+    /// @brief Computes the greatest common divisor of the left and right operand.
+    ///
+    /// @param lhs Left operand.
+    /// @param rhs Right operand.
+    /// @return    Greatest common divisor.
+    ///
+    static big_integer gcd(const big_integer& lhs, const big_integer& rhs) {
         big_integer abs_lhs = abs(lhs);
         big_integer abs_rhs = abs(rhs);
 
-        if (abs_rhs == 0) return abs_lhs; // gcd(a, 0) = |a|
-        if (abs_lhs == 0) return abs_rhs; // gcd(0, a) = |a|
+        if (abs_rhs == 0) return abs_lhs;
+        if (abs_lhs == 0) return abs_rhs;
 
         auto remainder{abs_rhs};
 
@@ -794,13 +788,35 @@ public:
         return abs_lhs;
     }
 
+    /// @brief Computes the greatest common divisor of the current value and right operand.
+    ///
+    /// @param rhs Right operand.
+    /// @return    Greatest common divisor.
+    ///
+    [[nodiscard]]
+    big_integer gcd(const big_integer& rhs) const { return gcd(*this, rhs); }
+
+    /// @brief Computes the least common multiple of the left and right operand.
+    ///
+    /// @param lhs Left operand.
+    /// @param rhs Right operand.
+    /// @return    Least common multiple.
+    ///
     static big_integer lcm(const big_integer& lhs, const big_integer& rhs) {
         if (lhs == 0 || rhs == 0)
             return 0;
         return abs(lhs * rhs) / gcd(lhs, rhs);
     }
 
-// Modification and checking -----------------------------------------------------------------------
+    /// @brief Computes the least common multiple of the current value and right operand.
+    ///
+    /// @param rhs Right operand.
+    /// @return    Least common multiple.
+    ///
+    [[nodiscard]]
+    big_integer lcm(const big_integer& rhs) const { return lcm(*this, rhs); }
+
+    // Modification and checking -------------------------------------------------------------------
 
     /// @brief Gets the binary size of value.
     /// @return Bit length.
@@ -810,7 +826,7 @@ public:
 
     /// @brief Compares current value with right side operand.
     ///
-    /// @param rhs The value to compare with curren value.
+    /// @param rhs The value to compare with current value.
     /// @return    If equals, 0 else if the current value less, -1, otherwise 1.
     ///
     [[nodiscard]]
@@ -830,13 +846,11 @@ public:
         if (this->value_.length() > rhs.value_.length())
             return std::strong_ordering::greater;
 
-        bool positive = !this->signed_;
-
         if (this->value_ < rhs.value_)
-            return positive ? std::strong_ordering::less : std::strong_ordering::greater;
+            return this->signed_ ? std::strong_ordering::greater : std::strong_ordering::less;
 
         if (this->value_ > rhs.value_)
-            return positive ? std::strong_ordering::greater : std::strong_ordering::less;
+            return this->signed_ ? std::strong_ordering::less : std::strong_ordering::greater;
 
         return std::strong_ordering::equivalent;
     }
@@ -851,12 +865,16 @@ public:
     /// @return If value signed true otherwise false.
     ///
     [[nodiscard]]
-    bool is_negative() const { return !is_positive(); }
+    bool is_negative() const { return this->signed_; }
 
     /// @brief Swaps left and right operands.
     /// @param rhs The value to swap with the current value.
     ///
-    void swap(big_integer& rhs) { std::swap(*this, rhs); }
+    void swap(big_integer& rhs) {
+        if (*this == rhs)
+            return;
+        std::swap(*this, rhs);
+    }
 
     /// @brief Big integer value from primitive integral types.
     ///
@@ -865,14 +883,12 @@ public:
     template<std::int64_t value>
     static big_integer value_from() { return std::to_string(value); }
 
-// Conversion methods ------------------------------------------------------------------------------
+    // Conversion methods --------------------------------------------------------------------------
 
-    /// @brief Bool operator.
-    /// Converts current value to boolean representation.
-    ///
+    /// @brief Bool operator. Converts current value to boolean representation.
     /// @return Boolean representation of current value.
     ///
-    explicit operator bool() const { return *this != value_from<0>(); }
+    explicit operator bool() const { return *this != 0; }
 
     /// @brief Converts to primitive integral value.
     ///
@@ -1001,7 +1017,7 @@ public:
     ///
     [[nodiscard]]
     std::string to_string(int radix = 10) const {
-        if (radix < 2 || radix > 16)
+        if ((radix < 2) || (radix > 16))
             throw std::invalid_argument("incorrect radix");
 
         std::stringstream ss;
@@ -1016,7 +1032,7 @@ public:
 
         std::string value;
 
-        while (decimal_value != value_from<0>()) {
+        while (decimal_value != 0) {
             auto remainder = mod(decimal_value, modulo);
             decimal_value /= modulo;
 

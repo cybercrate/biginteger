@@ -4,11 +4,11 @@
 
 using namespace wingmann::numerics;
 
-TEST(big_integer, decrement_prefix) {
+TEST(biginteger_modification, decrement_prefix) {
     EXPECT_EQ(255, --big_integer{256});
 }
 
-TEST(big_integer, decrement_postfix) {
+TEST(biginteger_modification, decrement_postfix) {
     big_integer number{512};
 
     auto temp = number--;

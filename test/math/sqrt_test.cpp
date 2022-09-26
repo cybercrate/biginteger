@@ -4,6 +4,10 @@
 
 using namespace wingmann::numerics;
 
-TEST(big_integer, sqrt) {
+TEST(biginteger_math, sqrt_1) {
     EXPECT_EQ(big_integer{64}.sqrt(), 8);
+}
+
+TEST(biginteger_math, sqrt_2) {
+    EXPECT_EQ(big_integer::sqrt(64), 8);
 }
