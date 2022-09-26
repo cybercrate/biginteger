@@ -1,10 +1,58 @@
-#include <big_integer/big_integer.h>
+#include "big_integer/big_integer.h"
 
 #include <gtest/gtest.h>
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_math, multiply_1) {
+TEST(biginteger_arithmetic, operator_multiply_pp) {
+    EXPECT_EQ(1'048'576, big_integer{1024} * 1024);
+}
+
+TEST(biginteger_arithmetic, operator_multiply_pn) {
+    EXPECT_EQ(-1'048'576, big_integer{1024} * -1024);
+}
+
+TEST(biginteger_arithmetic, operator_multiply_np) {
+    EXPECT_EQ(-1'048'576, big_integer{-1024} * 1024);
+}
+
+TEST(biginteger_arithmetic, operator_multiply_nn) {
+    EXPECT_EQ(1'048'576, big_integer{-1024} * -1024);
+}
+
+TEST(biginteger_arithmetic, multiply_pp_1) {
+    EXPECT_EQ(1'048'576, big_integer{1024}.multiply(1024));
+}
+
+TEST(biginteger_arithmetic, multiply_pp_2) {
+    EXPECT_EQ(1'048'576, big_integer::multiply(1024, 1024));
+}
+
+TEST(biginteger_arithmetic, multiply_pn_1) {
+    EXPECT_EQ(-1'048'576, big_integer{1024}.multiply(-1024));
+}
+
+TEST(biginteger_arithmetic, multiply_pn_2) {
+    EXPECT_EQ(-1'048'576, big_integer::multiply(1024, -1024));
+}
+
+TEST(biginteger_arithmetic, multiply_np_1) {
+    EXPECT_EQ(-1'048'576, big_integer{-1024}.multiply(1024));
+}
+
+TEST(biginteger_arithmetic, multiply_np_2) {
+    EXPECT_EQ(-1'048'576, big_integer::multiply(-1024, 1024));
+}
+
+TEST(biginteger_arithmetic, multiply_nn_1) {
+    EXPECT_EQ(1'048'576, big_integer{-1024}.multiply(-1024));
+}
+
+TEST(biginteger_arithmetic, multiply_nn_2) {
+    EXPECT_EQ(1'048'576, big_integer::multiply(-1024, -1024));
+}
+
+TEST(biginteger_arithmetic, multiply_1) {
     big_integer a{"47928462746237462535457589801132323"};
     big_integer b{"723896476429342736432472348234678423648793264764"};
 
@@ -14,7 +62,7 @@ TEST(biginteger_math, multiply_1) {
     EXPECT_EQ(a * b, expected);
 }
 
-TEST(biginteger_math, multiply_2) {
+TEST(biginteger_arithmetic, multiply_2) {
     big_integer a =
         "83278678432772049834632746732473264783264732784736674326476732848343264734628374623874326";
     big_integer b = "137297389734304327483946937453742798792429872384727432798427432847737";
@@ -26,7 +74,7 @@ TEST(biginteger_math, multiply_2) {
     EXPECT_EQ(a * b, expected);
 }
 
-TEST(biginteger_math, multiply_negative) {
+TEST(biginteger_arithmetic, multiply_negative) {
     big_integer a{"-39328643647846264872638743247324678324"};
     big_integer b{"273049872348732984783274789347973289"};
 
@@ -35,7 +83,7 @@ TEST(biginteger_math, multiply_negative) {
         "-10738681127693230985943313336820847550063005661139320641322082403269287636");
 }
 
-TEST(biginteger_math, multiply_big_nubers) {
+TEST(biginteger_arithmetic, multiply_big_nubers) {
     big_integer a =
         "-83470328946234832472647364371122002023983749864751122912892393782738361273213892738723821"
         "732362632632731283721382187832189737218387127367367483653657836583253191120032823827327473"

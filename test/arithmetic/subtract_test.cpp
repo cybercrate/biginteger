@@ -1,31 +1,79 @@
-#include <big_integer/big_integer.h>
+#include "big_integer/big_integer.h"
 
 #include <gtest/gtest.h>
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_math, subtract_1) {
+TEST(biginteger_arithmetic, operator_minus_pp) {
+    EXPECT_EQ(0, big_integer{1024} - 1024);
+}
+
+TEST(biginteger_arithmetic, operator_minus_pn) {
+    EXPECT_EQ(2048, big_integer{1024} - -1024);
+}
+
+TEST(biginteger_arithmetic, operator_minus_np) {
+    EXPECT_EQ(-2048, big_integer{-1024} - 1024);
+}
+
+TEST(biginteger_arithmetic, operator_minus_nn) {
+    EXPECT_EQ(0, big_integer{-1024} - -1024);
+}
+
+TEST(biginteger_arithmetic, subtract_pp_1) {
+    EXPECT_EQ(0, big_integer{1024}.subtract(1024));
+}
+
+TEST(biginteger_arithmetic, subtract_pp_2) {
+    EXPECT_EQ(0, big_integer::subtract(1024, 1024));
+}
+
+TEST(biginteger_arithmetic, subtract_pn_1) {
+    EXPECT_EQ(2048, big_integer{1024}.subtract(-1024));
+}
+
+TEST(biginteger_arithmetic, subtract_pn_2) {
+    EXPECT_EQ(2048, big_integer::subtract(1024, -1024));
+}
+
+TEST(biginteger_arithmetic, subtract_np_1) {
+    EXPECT_EQ(-2048, big_integer{-1024}.subtract(1024));
+}
+
+TEST(biginteger_arithmetic, subtract_np_2) {
+    EXPECT_EQ(-2048, big_integer::subtract(-1024, 1024));
+}
+
+TEST(biginteger_arithmetic, subtract_nn_1) {
+    EXPECT_EQ(0, big_integer{-1024}.subtract(-1024));
+}
+
+TEST(biginteger_arithmetic, subtract_nn_2) {
+    EXPECT_EQ(0, big_integer::subtract(-1024, -1024));
+}
+
+TEST(biginteger_arithmetic, subtract_1) {
     big_integer a{"389323749846515441868468446416417872"};
     big_integer b{"9079798797979780928312678"};
 
     EXPECT_EQ(a - b, "389323749837435643070488665488105194");
 }
 
-TEST(biginteger_math, subtract_2) {
+TEST(biginteger_arithmetic, subtract_2) {
     big_integer a{"23749846515441868468446416417872716414841861868188616541687871686188"};
     big_integer b{"23749846515441868468446416417872716414841861868188616541687871686183"};
 
     EXPECT_EQ(a - b, 5);
 }
 
-TEST(biginteger_math, subtract_negative) {
+TEST(biginteger_arithmetic, subtract_negative) {
     big_integer a{"-134684987024161489187436113184467664684"};
     big_integer b{"-23749846515441868468446416417872716414841861868188616541687871686183"};
 
     EXPECT_EQ(a - b, "23749846515441868468446416417738031427817700379001180428503404021499");
 }
 
-TEST(biginteger_math, subtract_big_nubers) {
+TEST(biginteger_arithmetic, subtract_big_nubers) {
     big_integer a =
         "461848481646846848464811468486464282146814684841848648648484894484842982419848949889294189"
         "164842894898919849892884289289489891489482819848949824298439849849788123892498438948348384"
