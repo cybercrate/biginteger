@@ -43,20 +43,15 @@ public:
     ///
     big_integer(const big_integer&& value) noexcept { *this = value; };
 
-    /// @brief Constructs from primitive integral.
-    /// @param value Integral value.
-    ///
-    big_integer(int value) : signed_{value < 0} { *this = value; }
+    /// @brief Destructor.
+    virtual ~big_integer() = default;
 
     /// @brief Constructs from primitive integral.
     /// @param value Integral value.
     ///
-    big_integer(std::int64_t value) : signed_{value < 0} { *this = value; }
-
-    /// @brief Constructs from primitive integral.
-    /// @param value Integral value.
-    ///
-    big_integer(std::uint64_t value) : signed_{value < 0} { *this = value; }
+    template<typename T>
+    requires std::integral<T> && (!std::is_same<T, bool>::value)
+    big_integer(T value) : signed_{value < 0} { *this = value; }
 
     /// @brief Constructs from string literal.
     ///
@@ -73,9 +68,6 @@ public:
     ///
     big_integer(std::string value, int radix = 10)
         : radix_{radix}, signed_{value.starts_with('-')} { *this = std::move(value); }
-
-    /// @brief Destructor.
-    virtual ~big_integer() = default;
 
     // Assignment operators ------------------------------------------------------------------------
 
@@ -108,27 +100,9 @@ public:
     /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(int rhs) {
-        *this = std::to_string(rhs);
-        return *this;
-    }
-
-    /// @brief Assignment operator.
-    ///
-    /// @param rhs The value from which to construct.
-    /// @return    Constructed object.
-    ///
-    big_integer& operator=(std::int64_t rhs) {
-        *this = std::to_string(rhs);
-        return *this;
-    }
-
-    /// @brief Assignment operator.
-    ///
-    /// @param rhs The value from which to construct.
-    /// @return    Constructed object.
-    ///
-    big_integer& operator=(std::uint64_t rhs) {
+    template<typename T>
+    requires std::integral<T> && (!std::is_same<T, bool>::value)
+    big_integer& operator=(T rhs) {
         *this = std::to_string(rhs);
         return *this;
     }
