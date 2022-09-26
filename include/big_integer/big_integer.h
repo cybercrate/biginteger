@@ -157,7 +157,7 @@ public:
 
             converted_value += multiply(current_value, pow(radix_value, power--));
         }
-        *this = this->signed_ ? negate(converted_value) : std::move(converted_value);
+        *this = this->signed_ ? ~converted_value : std::move(converted_value);
         return *this;
     }
 
@@ -296,9 +296,9 @@ public:
     /// @return Copy of current value.
     ///
     const big_integer operator++(int) {
-        auto before_plus{std::move(*this)};
-        *this = add(*this, 1);
-        return before_plus;
+        auto temp{std::move(*this)};
+        ++(*this);
+        return temp;
     }
 
     /// @brief Prefix decrement operator.
@@ -317,9 +317,9 @@ public:
     /// @return Copy of current value.
     ///
     const big_integer operator--(int) {
-        auto before_minus{std::move(*this)};
-        *this = subtract(*this, 1);
-        return before_minus;
+        auto temp{std::move(*this)};
+        --(*this);
+        return temp;
     }
 
     // Shift operators -----------------------------------------------------------------------------
@@ -419,11 +419,11 @@ public:
     static big_integer add(const big_integer& lhs, const big_integer& rhs) {
         // (-a)+(+b)
         if (lhs.signed_ && !rhs.signed_)
-            return rhs.subtract(lhs.negate());
+            return rhs.subtract(~lhs);
 
         // (+a)+(-b)
         if (!lhs.signed_ && rhs.signed_)
-            return lhs.subtract(rhs.negate());
+            return lhs.subtract(~rhs);
 
         // (+a)+(+b) or (-a)+(-b)
         auto lhs_value = lhs.value_;
@@ -459,7 +459,7 @@ public:
 
         std::ranges::reverse(lhs_value);
 
-        return lhs.signed_ ? big_integer{lhs_value}.negate() : lhs_value;
+        return lhs.signed_ ? ~big_integer{lhs_value} : lhs_value;
     }
 
     /// @brief Addition.
@@ -478,11 +478,11 @@ public:
     static big_integer subtract(const big_integer& lhs, const big_integer& rhs) {
         // (-a)-(+b) or (+a)-(-b)
         if ((lhs.signed_ && !rhs.signed_) || (!lhs.signed_ && rhs.signed_))
-            return lhs.add(rhs.negate());
+            return lhs.add(~rhs);
 
         // (+a)-(+b) or (-a)-(-b)
         if (lhs.signed_)
-            return lhs.add(rhs.negate());
+            return lhs.add(~rhs);
 
         bool inverted_sign = (lhs.compare(rhs) == std::strong_ordering::less);
 
@@ -514,7 +514,7 @@ public:
         while (subtracted.front() == '0' && subtracted.length() != 1)
             subtracted.erase(0, 1);
 
-        return inverted_sign ? big_integer{subtracted}.negate() : subtracted;
+        return inverted_sign ? ~big_integer{subtracted} : subtracted;
     }
 
     /// @brief Subtraction.
@@ -566,7 +566,7 @@ public:
             step++;
         }
         auto positive = (lhs.signed_ && rhs.signed_) || (!lhs.signed_ && !rhs.signed_);
-        return (!positive) ? temp.negate() : temp;
+        return (!positive) ? ~temp : temp;
     }
 
     /// @brief Multiplication.
@@ -623,7 +623,7 @@ public:
         } while (!lhs_value.empty());
 
         bool positive = (lhs.signed_ && rhs.signed_) || (!lhs.signed_ && !rhs.signed_);
-        return (!positive) ? big_integer{rhs_quotient}.negate(): rhs_quotient;
+        return (!positive) ? ~big_integer{rhs_quotient} : rhs_quotient;
     }
 
     /// @brief Division.
@@ -656,29 +656,24 @@ public:
 
     // Complex arithmetic --------------------------------------------------------------------------
 
-    /// @brief Negate the current value.
-    /// @return If the value is already signed, the current value otherwise changes to the signed value.
+    /// @brief Operator tilde. Reverses the sign.
+    /// @return If the value is already signed,
+    /// the current value otherwise changes to the signed value.
     ///
-    static big_integer negate(const big_integer& value) {
-        if (value == 0) return value;
-        if (value.signed_) return value.value_;
+    big_integer operator~() const {
+        if (*this == 0) return *this;
+        if (this->signed_) return this->value_;
 
         std::stringstream ss;
-        ss << '-' << value.value_;
+        ss << '-' << this->value_;
         return ss.str();
     }
-
-    /// @brief Negate the current value.
-    /// @return If the value is already signed, the current value otherwise changes to the signed value.
-    ///
-    [[nodiscard]]
-    big_integer negate() const { return negate(*this); }
 
     /// @brief Absolutes the current value.
     /// @return Always unsigned current value.
     ///
     static big_integer abs(const big_integer& value) {
-        return value.is_positive() ? value : negate(value);
+        return value.is_positive() ? value : ~value;
     }
 
     /// @brief Absolutes the current value.
