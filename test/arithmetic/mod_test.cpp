@@ -4,16 +4,12 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_arithmetic, operator_mod_1) {
+TEST(biginteger_arithmetic, operator_mod) {
     EXPECT_EQ(big_integer{64} % 8, 0);
 }
 
-TEST(biginteger_arithmetic, mod_1) {
+TEST(biginteger_arithmetic, mod) {
     EXPECT_EQ(0, big_integer{64}.mod(8));
-}
-
-TEST(biginteger_arithmetic, mod_2) {
-    EXPECT_EQ(0, big_integer::mod(64, 8));
 }
 
 TEST(biginteger_arithmetic, operator_mod_throw) {
