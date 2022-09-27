@@ -76,19 +76,14 @@ public:
     /// @param rhs Value to copy.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer& rhs) noexcept {
-        this->radix_ = rhs.radix_;
-        this->value_ = rhs.value_;
-        this->signed_ = rhs.signed_;
-        return *this;
-    }
+    big_integer& operator=(const big_integer& rhs) & noexcept = default;
 
     /// @brief Move assignment operator.
     ///
     /// @param rhs Value to move.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer&& rhs) noexcept {
+    big_integer& operator=(const big_integer&& rhs) && noexcept {
         this->radix_ = rhs.radix_;
         this->value_ = rhs.value_;
         this->signed_ = rhs.signed_;
@@ -103,7 +98,7 @@ public:
     template<typename T>
     requires std::integral<T> && (!std::is_same<T, bool>::value)
     big_integer& operator=(T rhs) {
-        *this = std::to_string(rhs);
+        *this = std::move(std::to_string(rhs));
         return *this;
     }
 
@@ -157,7 +152,7 @@ public:
 
             converted_value += multiply(current_value, pow(radix_value, power--));
         }
-        *this = this->signed_ ? ~converted_value : std::move(converted_value);
+        *this = this->is_negative() ? ~converted_value : std::move(converted_value);
         return *this;
     }
 
@@ -170,7 +165,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator+=(const big_integer& rhs) {
-        *this = add(*this, rhs);
+        *this = this->add(rhs);
         return *this;
     }
 
@@ -181,7 +176,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator-=(const big_integer& rhs) {
-        *this = subtract(*this, rhs);
+        *this = this->subtract(rhs);
         return *this;
     }
 
@@ -192,7 +187,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator*=(const big_integer& rhs) {
-        *this = multiply(*this, rhs);
+        *this = this->multiply(rhs);
         return *this;
     }
 
@@ -203,7 +198,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator/=(const big_integer& rhs) {
-        *this = divide(*this, rhs);
+        *this = this->divide(rhs);
         return *this;
     }
 
@@ -215,7 +210,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator%=(const big_integer& rhs) {
-        *this = mod(*this, rhs);
+        *this = this->mod(rhs);
         return *this;
     }
 
@@ -226,7 +221,7 @@ public:
     /// @return    Modified object.
     ///
     big_integer& operator<<=(const big_integer& rhs) {
-        *this = operator<<(rhs);
+        *this = this->operator<<(rhs);
         return *this;
     }
 
@@ -237,7 +232,7 @@ public:
     /// @return    SModified object.
     ///
     big_integer& operator>>=(const big_integer& rhs) {
-        *this = operator>>(rhs);
+        *this = this->operator>>(rhs);
         return *this;
     }
 
@@ -248,35 +243,35 @@ public:
     /// @param rhs The right side operand for addition to current value.
     /// @return    Result of addition.
     ///
-    big_integer operator+(const big_integer& rhs) const { return add(*this ,rhs); }
+    big_integer operator+(const big_integer& rhs) const { return this->add(rhs); }
 
     /// @brief Minus operator.
     ///
     /// @param rhs The right side operand for subtract from current value.
     /// @return    Result of subtraction.
     ///
-    big_integer operator-(const big_integer& rhs) const { return subtract(*this ,rhs); }
+    big_integer operator-(const big_integer& rhs) const { return this->subtract(rhs); }
 
     /// @brief Multiply operator.
     ///
     /// @param rhs The right operand for multiplication by the current value.
     /// @return    Result of multiplication.
     ///
-    big_integer operator*(const big_integer& rhs) const { return multiply(*this ,rhs); }
+    big_integer operator*(const big_integer& rhs) const { return this->multiply(rhs); }
 
     /// @brief Division operator.
     ///
     /// @param rhs The right operand by which to divide the current value.
     /// @return    Result of division.
     ///
-    big_integer operator/(const big_integer& rhs) const { return divide(*this ,rhs); }
+    big_integer operator/(const big_integer& rhs) const { return this->divide(rhs); }
 
     /// @brief Modulus operator.
     ///
     /// @param rhs The right operand for taking the remainder.
     /// @return    Remainder of division current value by right side value.
     ///
-    big_integer operator%(const big_integer& rhs) const { return mod(*this ,rhs); }
+    big_integer operator%(const big_integer& rhs) const { return this->mod(rhs); }
 
     // Increment and decrement operators -----------------------------------------------------------
 
@@ -286,7 +281,7 @@ public:
     /// @return Modified object.
     ///
     big_integer& operator++() {
-        *this = add(*this, 1);
+        *this = this->add(1);
         return *this;
     }
 
@@ -307,7 +302,7 @@ public:
     /// @return Modified object.
     ///
     big_integer& operator--() {
-        *this = subtract(*this, 1);
+        *this = this->subtract(1);
         return *this;
     }
 
@@ -371,7 +366,7 @@ public:
     /// @param rhs The value to compere with the current value.
     /// @return    Result of comparison.
     ///
-    std::strong_ordering operator<=>(const big_integer& rhs) const { return compare(rhs); }
+    std::strong_ordering operator<=>(const big_integer& rhs) const { return this->compare(rhs); }
 
     /// @brief Equal operator.
     /// Compares the current value and right side operand.
@@ -380,7 +375,7 @@ public:
     /// @return    Result of comparison.
     ///
     auto operator==(const big_integer& rhs) const {
-        return compare(rhs) == std::strong_ordering::equivalent;
+        return this->compare(rhs) == std::strong_ordering::equivalent;
     }
 
     // Stream operators ----------------------------------------------------------------------------
@@ -468,7 +463,7 @@ public:
     /// @return    Result of addition.
     ///
     [[nodiscard]]
-    big_integer add(const big_integer& rhs) const { return add (*this, rhs); }
+    big_integer add(const big_integer& rhs) const { return add(*this, rhs); }
 
     /// @brief Subtraction.
     ///
@@ -557,7 +552,6 @@ public:
                 }
                 operation.insert(0, 1, static_cast<char>(result));
             }
-
             if (carry > '0') {
                 operation.insert(0, 1, carry);
                 carry = '0';
@@ -685,7 +679,7 @@ public:
     /// @brief Rises the current value to the power of the right operand.
     ///
     /// @param rhs Degree.
-    /// @return    Result of power.
+    /// @return    Result of multiplying the number by itself.
     ///
     static big_integer pow(const big_integer& base, const big_integer& exp) {
         if (exp == 0) return 1;
@@ -708,18 +702,28 @@ public:
     /// @brief Rises the current value to the power of the right operand.
     ///
     /// @param rhs Degree.
-    /// @return    Result of power.
+    /// @return    Result of multiplying the number by itself.
     ///
     [[nodiscard]]
     big_integer pow(const big_integer& exp) const { return pow(*this, exp); }
 
-    static big_integer pow10(const big_integer& exp) {
-        return pow(10, exp);
-    }
+    /// @brief Rises the exponent value to the power of base-10 power
+    ///
+    /// @param exp The exponent value
+    /// @return    Result of power.
+    ///
+    static big_integer pow10(const big_integer& exp) { return pow(10, exp); }
 
+    /// @brief Rises the current value to the power of base-10 power
+    /// @return Result of power.
+    ///
     [[nodiscard]]
     big_integer pow10() const { return pow10(*this); }
 
+    /// @brief Computes square root.
+    ///
+    /// @param value The powered value.
+    /// @return      Square root of a number.
     static big_integer sqrt(const big_integer& value) {
         if (value < 0)
             throw std::invalid_argument("cannot compute square root of a negative integer");
@@ -740,6 +744,9 @@ public:
         return current;
     }
 
+    /// @brief Computes square root.
+    /// @return Square root of a number.
+    ///
     [[nodiscard]]
     big_integer sqrt() const { return sqrt(*this); }
 
@@ -753,8 +760,8 @@ public:
         big_integer abs_lhs = abs(lhs);
         big_integer abs_rhs = abs(rhs);
 
-        if (abs_rhs == 0) return abs_lhs;
-        if (abs_lhs == 0) return abs_rhs;
+        if (abs_rhs == 0 || abs_lhs == 0)
+            return 0;
 
         auto remainder{abs_rhs};
 
@@ -887,6 +894,27 @@ public:
     ///
     explicit operator bool() const { return *this != 0; }
 
+    /// @brief Safe convert to primitive integral.
+    ///
+    /// @tparam T    The type convert to.
+    /// @param pred  Pointer to converter function.
+    /// @param radix The base of a system of numeration.
+    /// @return      Converted integral value.
+    ///
+    template<typename T>
+    requires std::integral<T> || std::floating_point<T>
+    std::optional<T> safe_convert(
+        T (* pred)(const std::string&, std::size_t*, int),
+        int radix = 10) const
+    {
+        try {
+            return pred(this->to_string(radix), nullptr, radix);
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
+        }
+        return std::nullopt;
+    }
+
     /// @brief Converts to primitive integral value.
     ///
     /// @tparam T Type of integral value to which to convert.
@@ -894,22 +922,6 @@ public:
     ///
     template<std::integral T>
     std::optional<T> to_integer(int radix = 10) const;
-
-    // Removed specialization conversions to some integral types not supported by
-    // std::stoi-like functions.
-    template<> [[nodiscard]] std::optional<std::int8_t> to_integer<int8_t>(int) const = delete;
-    template<> [[nodiscard]] std::optional<std::uint8_t> to_integer<uint8_t>(int) const = delete;
-    template<> [[nodiscard]] std::optional<std::int16_t> to_integer<int16_t>(int) const = delete;
-    template<> [[nodiscard]] std::optional<std::uint16_t> to_integer<uint16_t>(int) const = delete;
-    template<> [[nodiscard]] std::optional<unsigned> to_integer<unsigned>(int) const = delete;
-
-    /// @brief Converts to primitive floating point value.
-    ///
-    /// @tparam T Type of floating point value to which to convert.
-    /// @return   If converted, then floating point value otherwise std::nullopt
-    ///
-    template<std::floating_point T>
-    std::optional<T> to_floating(int radix = 10) const;
 
     /// @brief Converts to primitive integral value.
     ///
@@ -919,12 +931,7 @@ public:
     template<>
     [[nodiscard]]
     std::optional<int> to_integer<int>(int radix) const {
-        try {
-            return std::stoi(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
+        return this->safe_convert(std::stoi, radix);
     }
 
     /// @brief Converts to primitive integral value.
@@ -935,12 +942,7 @@ public:
     template<>
     [[nodiscard]]
     std::optional<std::int64_t> to_integer<std::int64_t>(int radix) const {
-        try {
-            return std::stoll(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
+        return this->safe_convert(std::stoll, radix);
     }
 
     /// @brief Converts to primitive integral value.
@@ -951,60 +953,7 @@ public:
     template<>
     [[nodiscard]]
     std::optional<std::uint64_t> to_integer<std::uint64_t>(int radix) const {
-        try {
-            return std::stoull(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
-    }
-
-    /// @brief Converts to primitive floating point value.
-    ///
-    /// @tparam T Type of floating point value to which to convert.
-    /// @return   If converted, then floating point value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<float> to_floating<float>(int radix) const {
-        try {
-            return std::stof(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
-    }
-
-    /// @brief Converts to primitive floating point value.
-    ///
-    /// @tparam T Type of floating point value to which to convert.
-    /// @return   If converted, then floating point value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<double> to_floating<double>(int radix) const {
-        try {
-            return std::stod(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
-    }
-
-    /// @brief Converts to primitive floating point value.
-    ///
-    /// @tparam T Type of floating point value to which to convert.
-    /// @return   If converted, then floating point value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<long double> to_floating<long double>(int radix) const {
-        try {
-            return std::stold(to_string(radix));
-        } catch (std::out_of_range&) {
-        } catch (std::invalid_argument&) {
-        }
-        return std::nullopt;
+        return this->safe_convert(std::stoull, radix);
     }
 
     /// @brief Converts to string representation.
@@ -1018,7 +967,7 @@ public:
             throw std::invalid_argument("incorrect radix");
 
         std::stringstream ss;
-        if (this->signed_) ss << '-';
+        if (this->is_negative()) ss << '-';
 
         if (radix == 10) {
             ss << this->value_;
