@@ -4,14 +4,17 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_comparison, not_equivalent_1) {
+TEST(biginteger_comparison, not_equivalent_1)
+{
     EXPECT_TRUE(big_integer{1024} != big_integer{-1024});
 }
 
-TEST(biginteger_comparison, not_equivalent_2) {
+TEST(biginteger_comparison, not_equivalent_2)
+{
     EXPECT_TRUE(big_integer{-256} != big_integer{256});
 }
 
-TEST(biginteger_comparison, not_equivalent_3) {
+TEST(biginteger_comparison, not_equivalent_3)
+{
     EXPECT_FALSE(big_integer{0} != big_integer{0});
 }

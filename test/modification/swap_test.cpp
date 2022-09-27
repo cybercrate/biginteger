@@ -4,7 +4,8 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_modification, swap_1) {
+TEST(biginteger_modification, swap_1)
+{
     big_integer big_number1{739928192};
     big_integer big_number2{673282193};
 
