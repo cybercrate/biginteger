@@ -83,11 +83,8 @@ public:
     /// @param rhs Value to move.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer&& rhs) noexcept
-    {
-        this->radix_ = rhs.radix_;
+    big_integer& operator=(const big_integer&& rhs) noexcept {
         this->value_ = rhs.value_;
-        this->signed_ = rhs.signed_;
         return *this;
     }
 
@@ -98,9 +95,8 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::is_same<T, bool>::value)
-    big_integer& operator=(T rhs)
-    {
-        *this = std::move(std::to_string(rhs));
+    big_integer& operator=(T rhs) {
+        *this = std::to_string(rhs);
         return *this;
     }
 
@@ -109,8 +105,7 @@ public:
     /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const char* rhs)
-    {
+    big_integer& operator=(const char* rhs) {
         *this = std::string{rhs};
         return *this;
     }
@@ -120,8 +115,7 @@ public:
     /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(std::string rhs)
-    {
+    big_integer& operator=(std::string rhs) {
         if (this->is_negative())
             rhs.erase(0, 1);
 
@@ -157,9 +151,8 @@ public:
             converted_value += big_integer{current_value}.multiply(radix_value.pow(power--));
         }
         *this = this->is_negative()
-                ? std::move(converted_value.negate())
-                : std::move(converted_value);
-
+            ? converted_value.negate()
+            : std::move(converted_value);
         return *this;
     }
 
@@ -171,8 +164,7 @@ public:
     /// @param rhs The value to add to the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator+=(const big_integer& rhs)
-    {
+    big_integer& operator+=(const big_integer& rhs) {
         *this = this->add(rhs);
         return *this;
     }
@@ -183,8 +175,7 @@ public:
     /// @param rhs The value to subtract from the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator-=(const big_integer& rhs)
-    {
+    big_integer& operator-=(const big_integer& rhs) {
         *this = this->subtract(rhs);
         return *this;
     }
@@ -195,8 +186,7 @@ public:
     /// @param rhs The value to multiply by current value.
     /// @return    Modified object.
     ///
-    big_integer& operator*=(const big_integer& rhs)
-    {
+    big_integer& operator*=(const big_integer& rhs) {
         *this = this->multiply(rhs);
         return *this;
     }
@@ -207,8 +197,7 @@ public:
     /// @param rhs The value by which to divide the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator/=(const big_integer& rhs)
-    {
+    big_integer& operator/=(const big_integer& rhs) {
         *this = this->divide(rhs);
         return *this;
     }
@@ -220,8 +209,7 @@ public:
     /// @param rhs The right operand for taking the remainder.
     /// @return    Modified object.
     ///
-    big_integer& operator%=(const big_integer& rhs)
-    {
+    big_integer& operator%=(const big_integer& rhs) {
         *this = this->mod(rhs);
         return *this;
     }
@@ -232,8 +220,7 @@ public:
     /// @param rhs The value to shift on.
     /// @return    Modified object.
     ///
-    big_integer& operator<<=(const big_integer& rhs)
-    {
+    big_integer& operator<<=(const big_integer& rhs) {
         *this = this->left_shift(rhs);
         return *this;
     }
@@ -244,8 +231,7 @@ public:
     /// @param rhs The value to shift on.
     /// @return    SModified object.
     ///
-    big_integer& operator>>=(const big_integer& rhs)
-    {
+    big_integer& operator>>=(const big_integer& rhs) {
         *this = this->right_shift(rhs);
         return *this;
     }
@@ -257,8 +243,7 @@ public:
     ///
     /// @return Modified object.
     ///
-    big_integer& operator++()
-    {
+    big_integer& operator++() {
         *this = this->add(1);
         return *this;
     }
@@ -268,11 +253,10 @@ public:
     ///
     /// @return Copy of current value.
     ///
-    const big_integer operator++(int)
-    {
-        auto temp{std::move(*this)};
+    const big_integer operator++(int) {
+        auto temp{*this};
         ++(*this);
-        return temp;
+        return std::move(temp);
     }
 
     /// @brief Prefix decrement operator.
@@ -280,8 +264,7 @@ public:
     ///
     /// @return Modified object.
     ///
-    big_integer& operator--()
-    {
+    big_integer& operator--() {
         *this = this->subtract(1);
         return *this;
     }
@@ -291,11 +274,10 @@ public:
     ///
     /// @return Copy of current value.
     ///
-    const big_integer operator--(int)
-    {
-        auto temp{std::move(*this)};
+    const big_integer operator--(int) {
+        auto temp{*this};
         --(*this);
-        return temp;
+        return std::move(temp);
     }
 
     // Shift operations -----------------------------------------------------------------------------
@@ -306,8 +288,7 @@ public:
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    big_integer left_shift(const big_integer& rhs) const
-    {
+    big_integer left_shift(const big_integer& rhs) const {
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
 
@@ -325,8 +306,7 @@ public:
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    big_integer right_shift(const big_integer& rhs) const
-    {
+    big_integer right_shift(const big_integer& rhs) const {
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
 
@@ -368,8 +348,7 @@ public:
     /// @return    Result of addition.
     ///
     [[nodiscard]]
-    big_integer add(const big_integer& rhs) const
-    {
+    big_integer add(const big_integer& rhs) const {
         // (-a)+(+b)
         if (this->is_negative() && rhs.is_positive())
             return rhs.subtract(this->negate());
@@ -402,8 +381,7 @@ public:
             if (lhs_char > '9') {
                 lhs_char -= 10;
                 carry = '1';
-            }
-            else {
+            } else {
                 carry = '0';
             }
             index++;
@@ -422,8 +400,7 @@ public:
     /// @return    Result of subtraction.
     ///
     [[nodiscard]]
-    big_integer subtract(const big_integer& rhs) const
-    {
+    big_integer subtract(const big_integer& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
         if ((this->is_negative() && rhs.is_positive()) ||
             (this->is_positive() && rhs.is_negative()))
@@ -474,8 +451,7 @@ public:
     /// @return    Result of multiplication.
     ///
     [[nodiscard]]
-    big_integer multiply(const big_integer& rhs) const
-    {
+    big_integer multiply(const big_integer& rhs) const {
         auto lhs_value = this->value_;
         auto rhs_value = rhs.value_;
 
@@ -520,8 +496,7 @@ public:
     /// @return    Result of division.
     ///
     [[nodiscard]]
-    big_integer divide(const big_integer& rhs) const
-    {
+    big_integer divide(const big_integer& rhs) const {
         if (rhs.equal(0))
             throw std::invalid_argument("divide by zero");
 
@@ -560,7 +535,7 @@ public:
         } while (!lhs_value.empty());
 
         bool positive = (this->is_negative() && rhs.is_negative()) ||
-                        (this->is_positive() && rhs.is_positive());
+            (this->is_positive() && rhs.is_positive());
         return positive ? rhs_quotient : big_integer{rhs_quotient}.negate();
     }
 
@@ -570,8 +545,7 @@ public:
     /// @return    Remainder of division current value by right side value.
     ///
     [[nodiscard]]
-    big_integer mod(const big_integer& rhs) const
-    {
+    big_integer mod(const big_integer& rhs) const {
         if (rhs.equal(0))
             throw std::invalid_argument("mod by zero");
 
@@ -622,8 +596,7 @@ public:
     /// the current value otherwise changes to the signed value.
     ///
     [[nodiscard]]
-    big_integer negate() const
-    {
+    big_integer negate() const {
         if (this->equal(0)) return *this;
         if (this->is_negative()) return this->value_;
 
@@ -644,8 +617,7 @@ public:
     /// @return    Result of multiplying the number by itself.
     ///
     [[nodiscard]]
-    big_integer pow(const big_integer& rhs) const
-    {
+    big_integer pow(const big_integer& rhs) const {
         if (rhs.equal(0))
             return 1;
 
@@ -653,11 +625,11 @@ public:
             if (this->equal(0))
                 throw std::logic_error("");
 
-            return this->abs().equal(1) ? *this : 0;
+            return this->abs().equal(1) ? *this : value_from<0>();
         }
         auto init_exp{rhs};
         auto result{*this};
-        auto result_odd{std::move(big_integer::value_from<1>())};
+        auto result_odd{value_from<1>()};
 
         while (init_exp.compare(1) == std::strong_ordering::greater) {
             if (init_exp.mod(2)) result_odd *= result;
@@ -682,8 +654,7 @@ public:
     /// @return    Greatest common divisor.
     ///
     [[nodiscard]]
-    big_integer gcd(const big_integer& rhs) const
-    {
+    big_integer gcd(const big_integer& rhs) const {
         big_integer abs_lhs = this->abs();
         big_integer abs_rhs = rhs.abs();
 
@@ -697,7 +668,7 @@ public:
             abs_lhs = abs_rhs; // previous remainder
             abs_rhs = remainder; // current remainder
         }
-        return abs_lhs;
+        return std::move(abs_lhs);
     }
 
     /// @brief Computes the least common multiple of the left and right operand.
@@ -707,8 +678,7 @@ public:
     /// @return    Least common multiple.
     ///
     [[nodiscard]]
-    big_integer lcm(const big_integer& rhs) const
-    {
+    big_integer lcm(const big_integer& rhs) const {
         if (this->equal(0) || rhs.equal(0))
             return 0;
         return this->multiply(rhs).abs().divide(this->gcd(rhs));
@@ -722,8 +692,7 @@ public:
     /// @return    Result of comparison.
     ///
     [[nodiscard]]
-    std::strong_ordering compare(const big_integer& rhs) const
-    {
+    std::strong_ordering compare(const big_integer& rhs) const {
         // -a, +b
         if (this->is_negative() && rhs.is_positive())
             return std::strong_ordering::less;
@@ -771,8 +740,7 @@ public:
     /// @return    Result of comparison.
     ///
     [[nodiscard]]
-    bool equal(const big_integer& rhs) const
-    {
+    bool equal(const big_integer& rhs) const {
         return this->compare(rhs) == std::strong_ordering::equivalent;
     }
 
@@ -817,8 +785,7 @@ public:
     /// @brief Swaps left and right operands.
     /// @param rhs The value to swap with the current value.
     ///
-    void swap(big_integer& rhs)
-    {
+    void swap(big_integer& rhs) {
         if (this->equal(rhs))
             return;
         std::swap(*this, rhs);
@@ -832,8 +799,7 @@ public:
     /// @param value The value to put to output.
     /// @return      Output stream.
     ///
-    std::ostream& operator<<(std::ostream& os) const
-    {
+    std::ostream& operator<<(std::ostream& os) const & {
         os << this->to_string();
         return os;
     }
@@ -844,8 +810,7 @@ public:
     /// @param value The value for writing from input stream;
     /// @return      Input stream.
     ///
-    std::istream& operator>>(std::istream& is)
-    {
+    std::istream& operator>>(std::istream& is) & {
         std::string input;
         is >> input;
         *this = input;
@@ -874,15 +839,13 @@ public:
     /// @return      Converted integral value.
     ///
     template<typename T>
-    requires std::integral<T> || std::floating_point<T>
-    std::optional<T> safe_convert(int radix, T (* f)(const std::string&, std::size_t*, int)) const
-    {
+    requires std::integral<T>
+    std::optional<T> safe_convert(int radix, T (*f)(const std::string&, std::size_t*, int)) const {
         try {
             return f(this->to_string(radix), nullptr, radix);
+        } catch (std::out_of_range&) {
+        } catch (std::invalid_argument&) {
         }
-        catch (std::out_of_range&) { }
-        catch (std::invalid_argument&) { }
-
         return std::nullopt;
     }
 
@@ -901,8 +864,7 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<int> to_integer<int>(int radix) const
-    {
+    std::optional<int> to_integer<int>(int radix) const {
         return this->safe_convert(radix, std::stoi);
     }
 
@@ -913,8 +875,7 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<std::int64_t> to_integer<std::int64_t>(int radix) const
-    {
+    std::optional<std::int64_t> to_integer<std::int64_t>(int radix) const {
         return this->safe_convert(radix, std::stoll);
     }
 
@@ -925,8 +886,7 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<std::uint64_t> to_integer<std::uint64_t>(int radix) const
-    {
+    std::optional<std::uint64_t> to_integer<std::uint64_t>(int radix) const {
         return this->safe_convert(radix, std::stoull);
     }
 
@@ -936,8 +896,7 @@ public:
     /// @return      Converted string.
     ///
     [[nodiscard]]
-    std::string to_string(int radix = 10) const
-    {
+    std::string to_string(int radix = 10) const {
         if ((radix < 2) || (radix > 16))
             throw std::invalid_argument("incorrect radix");
 
