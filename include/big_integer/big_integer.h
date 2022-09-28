@@ -1,6 +1,13 @@
 /// @file   big_integer.h
-/// @brief  Arbitrarily large integer implementation.
-/// @author Alexander Shavrov
+/// @author Alexander Shavrov (alexander.shavrov@outlook.com)
+/// @brief  Arbitrary large integer library.
+/// @date   2022-09-28
+/// 
+/// @copyright Copyright (c) 2022
+/// 
+/// This file is distributed under the GNU GPL v3 License.
+/// See LICENSE file for details.
+///
 
 #ifndef WINGMANN_BIGINTEGER_H
 #define WINGMANN_BIGINTEGER_H
