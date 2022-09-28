@@ -1,0 +1,648 @@
+\hypertarget{big__integer_8h_source}{}\doxysection{big\+\_\+integer.\+h}
+\mbox{\hyperlink{big__integer_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#ifndef WINGMANN\_BIGINTEGER\_H}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#define WINGMANN\_BIGINTEGER\_H}}
+\DoxyCodeLine{14 }
+\DoxyCodeLine{15 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include <cmath>}}
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#include <concepts>}}
+\DoxyCodeLine{18 \textcolor{preprocessor}{\#include <optional>}}
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#include <ostream>}}
+\DoxyCodeLine{20 \textcolor{preprocessor}{\#include <ranges>}}
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#include <sstream>}}
+\DoxyCodeLine{22 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{23 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25 \textcolor{keyword}{namespace }wingmann::numerics \{}
+\DoxyCodeLine{26 }
+\DoxyCodeLine{28 \textcolor{keyword}{class }\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \{}
+\DoxyCodeLine{29 \textcolor{keyword}{protected}:}
+\DoxyCodeLine{30     \textcolor{comment}{// The base of a system of numeration.}}
+\DoxyCodeLine{31     \textcolor{keywordtype}{int} radix\_\{10\};}
+\DoxyCodeLine{32 }
+\DoxyCodeLine{33     \textcolor{comment}{// Sign flag.}}
+\DoxyCodeLine{34     \textcolor{keywordtype}{bool} signed\_\{\};}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36     \textcolor{comment}{// String representation of decimal value.}}
+\DoxyCodeLine{37     std::string value\_\{\textcolor{stringliteral}{"{}0"{}}\};}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{keyword}{public}:}
+\DoxyCodeLine{41     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a9cf293ea8e711635841e5134deee6c8a}{big\_integer}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{42 }
+\DoxyCodeLine{46     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a3e258e0fc30fc4bfb218779803fe4e69}{big\_integer}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& value) \{ *\textcolor{keyword}{this} = value; \};}
+\DoxyCodeLine{47 }
+\DoxyCodeLine{51     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a53bccc4399cceaf62b84170fa4c8edfa}{big\_integer}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\&\& value) \textcolor{keyword}{noexcept} \{ *\textcolor{keyword}{this} = value; \};}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{54     \textcolor{keyword}{virtual} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a2cf3e204cb22c43d25dbef1cc3bb25b8}{\string~big\_integer}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{55 }
+\DoxyCodeLine{59     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{60     \textcolor{keyword}{requires} std::integral<T> \&\& (!std::is\_same<T, bool>::value)}
+\DoxyCodeLine{61     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ab94250665b4f458d08fcee229657fa47}{big\_integer}}(T value) : signed\_\{value < 0\} \{ *\textcolor{keyword}{this} = value; \}}
+\DoxyCodeLine{62 }
+\DoxyCodeLine{68     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aee9cbb73848d0dbe4ebd51701b873d12}{big\_integer}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* value, \textcolor{keywordtype}{int} radix = 10)}
+\DoxyCodeLine{69         : radix\_\{radix\}, signed\_\{*value == \textcolor{stringliteral}{'-\/'}\} \{ *\textcolor{keyword}{this} = value; \}}
+\DoxyCodeLine{70 }
+\DoxyCodeLine{76     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7f0dc933043d7ccd2d71f9aec474bc8a}{big\_integer}}(std::string value, \textcolor{keywordtype}{int} radix = 10)}
+\DoxyCodeLine{77         : radix\_\{radix\}, signed\_\{value.starts\_with(\textcolor{stringliteral}{'-\/'})\} \{ *\textcolor{keyword}{this} = std::move(value); \}}
+\DoxyCodeLine{78 }
+\DoxyCodeLine{79     \textcolor{comment}{// Assignment operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{80 }
+\DoxyCodeLine{86     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adbebacff2b94a5261b92ce943d09d1be}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \textcolor{keyword}{noexcept} = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{87 }
+\DoxyCodeLine{93     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a9d16f159bb2c65f56d483f41ee9eb1ae}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\&\& rhs) \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{94         this-\/>value\_ = rhs.value\_;}
+\DoxyCodeLine{95         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{96     \}}
+\DoxyCodeLine{97 }
+\DoxyCodeLine{103     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{104     \textcolor{keyword}{requires} std::integral<T> \&\& (!std::is\_same<T, bool>::value)}
+\DoxyCodeLine{105     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \textcolor{keyword}{operator}=(T rhs) \{}
+\DoxyCodeLine{106         *\textcolor{keyword}{this} = std::to\_string(rhs);}
+\DoxyCodeLine{107         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{108     \}}
+\DoxyCodeLine{109 }
+\DoxyCodeLine{115     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adaaab632e7eb344ce08f36cc29218bb5}{operator=}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs) \{}
+\DoxyCodeLine{116         *\textcolor{keyword}{this} = std::string\{rhs\};}
+\DoxyCodeLine{117         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{118     \}}
+\DoxyCodeLine{119 }
+\DoxyCodeLine{125     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a6fe4ad1317e1e86a707659c3777a5a38}{operator=}}(std::string rhs) \{}
+\DoxyCodeLine{126         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{127             rhs.erase(0, 1);}
+\DoxyCodeLine{128 }
+\DoxyCodeLine{129         \textcolor{keywordflow}{if} (radix\_ < 2 || radix\_ > 16 )}
+\DoxyCodeLine{130             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}incorrect radix"{}});}
+\DoxyCodeLine{131 }
+\DoxyCodeLine{132         \textcolor{comment}{// Remove leading zero.}}
+\DoxyCodeLine{133         \textcolor{keywordflow}{while} (rhs.starts\_with(\textcolor{charliteral}{'0'}) \&\& (rhs.length() != 1))}
+\DoxyCodeLine{134             rhs.erase(0, 1);}
+\DoxyCodeLine{135 }
+\DoxyCodeLine{136         \textcolor{keywordflow}{if} (this-\/>radix\_ == 10) \{}
+\DoxyCodeLine{137             this-\/>value\_ = rhs;}
+\DoxyCodeLine{138             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{139         \}}
+\DoxyCodeLine{140         \textcolor{comment}{// Convert to base ten to use trivial algorithm.}}
+\DoxyCodeLine{141         \textcolor{keywordtype}{char} last\_char = rhs.back();}
+\DoxyCodeLine{142         \textcolor{keywordtype}{int} last = (\textcolor{charliteral}{'0'} <= last\_char) \&\& (last\_char <= \textcolor{charliteral}{'9'})}
+\DoxyCodeLine{143             ? (last\_char -\/ \textcolor{charliteral}{'0'})}
+\DoxyCodeLine{144             : (tolower(last\_char) -\/ \textcolor{charliteral}{'a'}) + 10;}
+\DoxyCodeLine{145 }
+\DoxyCodeLine{146         \textcolor{keyword}{auto} value\_length = \textcolor{keyword}{static\_cast<}std::int64\_t\textcolor{keyword}{>}(rhs.length());}
+\DoxyCodeLine{147 }
+\DoxyCodeLine{148         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} power\{value\_length -\/ 1\};}
+\DoxyCodeLine{149         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} converted\_value\{last\};}
+\DoxyCodeLine{150         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} radix\_value\{this-\/>radix\_\};}
+\DoxyCodeLine{151 }
+\DoxyCodeLine{152         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < value\_length -\/ 1; i++) \{}
+\DoxyCodeLine{153             \textcolor{keyword}{auto} c = rhs.at(i);}
+\DoxyCodeLine{154             \textcolor{keywordtype}{int} current\_value = (\textcolor{charliteral}{'0'} <= c) \&\& (c <= \textcolor{charliteral}{'9'})}
+\DoxyCodeLine{155                 ? (c -\/ \textcolor{charliteral}{'0'})}
+\DoxyCodeLine{156                 : (std::tolower(c) -\/ \textcolor{charliteral}{'a'}) + 10;}
+\DoxyCodeLine{157 }
+\DoxyCodeLine{158             converted\_value += \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\{current\_value\}.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(radix\_value.pow(power-\/-\/));}
+\DoxyCodeLine{159         \}}
+\DoxyCodeLine{160         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()}
+\DoxyCodeLine{161             ? converted\_value.negate()}
+\DoxyCodeLine{162             : std::move(converted\_value);}
+\DoxyCodeLine{163         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{164     \}}
+\DoxyCodeLine{165 }
+\DoxyCodeLine{166     \textcolor{comment}{// Additional assignment operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{167 }
+\DoxyCodeLine{174     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a35f22430ac8bfddba9c56bbdbb4b47df}{operator+=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{175         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(rhs);}
+\DoxyCodeLine{176         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{177     \}}
+\DoxyCodeLine{178 }
+\DoxyCodeLine{185     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ae8b5528a9865056d5bf92b1d838c3100}{operator-\/=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{186         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(rhs);}
+\DoxyCodeLine{187         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{188     \}}
+\DoxyCodeLine{189 }
+\DoxyCodeLine{196     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa1477d5cf0022f60f6d3805437820be5}{operator*=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{197         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(rhs);}
+\DoxyCodeLine{198         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{199     \}}
+\DoxyCodeLine{200 }
+\DoxyCodeLine{207     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a251a8a3f22eb12fda8bbe1ff48361146}{operator/=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{208         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ab82875a803f082f097948d8ecad2b257}{divide}}(rhs);}
+\DoxyCodeLine{209         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{210     \}}
+\DoxyCodeLine{211 }
+\DoxyCodeLine{219     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a6a8f459bd52f18004f6a0448dd431fcf}{operator\%=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{220         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a38594c67456105aee6c91c5bedbcbc69}{mod}}(rhs);}
+\DoxyCodeLine{221         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{222     \}}
+\DoxyCodeLine{223 }
+\DoxyCodeLine{230     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_abd6b520b212d0e41ea13eade9eaf2102}{operator<<=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{231         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a79be406c00bb9fd9377f1817e1b645e6}{left\_shift}}(rhs);}
+\DoxyCodeLine{232         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{233     \}}
+\DoxyCodeLine{234 }
+\DoxyCodeLine{241     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5095882e9d97961bc4b249cde5afee76}{operator>>=}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{242         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a95abe0d80487de7585dc895af361266c}{right\_shift}}(rhs);}
+\DoxyCodeLine{243         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{244     \}}
+\DoxyCodeLine{245 }
+\DoxyCodeLine{246     \textcolor{comment}{// Increment and decrement operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{247 }
+\DoxyCodeLine{253     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ae1ad28b3226c8d177c7bcd1b1753dc10}{operator++}}() \{}
+\DoxyCodeLine{254         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(1);}
+\DoxyCodeLine{255         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{256     \}}
+\DoxyCodeLine{257 }
+\DoxyCodeLine{263     \textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a6e849fa9c22c6ff98ec623ca8de2c173}{operator++}}(\textcolor{keywordtype}{int}) \{}
+\DoxyCodeLine{264         \textcolor{keyword}{auto} temp\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{265         ++(*this);}
+\DoxyCodeLine{266         \textcolor{keywordflow}{return} std::move(temp);}
+\DoxyCodeLine{267     \}}
+\DoxyCodeLine{268 }
+\DoxyCodeLine{274     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a8528825ca0be7855c2a2e8724311e858}{operator-\/-\/}}() \{}
+\DoxyCodeLine{275         *\textcolor{keyword}{this} = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(1);}
+\DoxyCodeLine{276         \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{277     \}}
+\DoxyCodeLine{278 }
+\DoxyCodeLine{284     \textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a10abcc196871a065d983ce599d4f7bcf}{operator-\/-\/}}(\textcolor{keywordtype}{int}) \{}
+\DoxyCodeLine{285         \textcolor{keyword}{auto} temp\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{286         -\/-\/(*this);}
+\DoxyCodeLine{287         \textcolor{keywordflow}{return} std::move(temp);}
+\DoxyCodeLine{288     \}}
+\DoxyCodeLine{289 }
+\DoxyCodeLine{290     \textcolor{comment}{// Shift operations -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{291 }
+\DoxyCodeLine{297     [[nodiscard]]}
+\DoxyCodeLine{298     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a79be406c00bb9fd9377f1817e1b645e6}{left\_shift}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{299         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{300             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}negative value"{}});}
+\DoxyCodeLine{301 }
+\DoxyCodeLine{302         \textcolor{keyword}{auto} bitwise\_value = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}(2);}
+\DoxyCodeLine{303 }
+\DoxyCodeLine{304         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} i = 0; i < rhs; i++)}
+\DoxyCodeLine{305             bitwise\_value.push\_back(\textcolor{charliteral}{'0'});}
+\DoxyCodeLine{306 }
+\DoxyCodeLine{307         \textcolor{keywordflow}{return} \{bitwise\_value, 2\};}
+\DoxyCodeLine{308     \}}
+\DoxyCodeLine{309 }
+\DoxyCodeLine{315     [[nodiscard]]}
+\DoxyCodeLine{316     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a95abe0d80487de7585dc895af361266c}{right\_shift}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{317         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{318             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}negative value"{}});}
+\DoxyCodeLine{319 }
+\DoxyCodeLine{320         \textcolor{keyword}{auto} bitwise\_value = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}(2);}
+\DoxyCodeLine{321 }
+\DoxyCodeLine{322         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} i = 0; (i < rhs) \&\& (bitwise\_value.length() > 0); i++)}
+\DoxyCodeLine{323             bitwise\_value.pop\_back();}
+\DoxyCodeLine{324 }
+\DoxyCodeLine{325         \textcolor{keywordflow}{if} (bitwise\_value.empty())}
+\DoxyCodeLine{326             bitwise\_value.push\_back(\textcolor{charliteral}{'0'});}
+\DoxyCodeLine{327 }
+\DoxyCodeLine{328         \textcolor{keywordflow}{return} \{bitwise\_value, 2\};}
+\DoxyCodeLine{329     \}}
+\DoxyCodeLine{330 }
+\DoxyCodeLine{331     \textcolor{comment}{// Shift operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{332 }
+\DoxyCodeLine{339     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a46429562bd41d81360a98e6ff13f03a0}{operator<<}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a79be406c00bb9fd9377f1817e1b645e6}{left\_shift}}(rhs); \}}
+\DoxyCodeLine{340 }
+\DoxyCodeLine{347     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa2007eb4f8ef2ae05641b22c0c3493a6}{operator>>}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a95abe0d80487de7585dc895af361266c}{right\_shift}}(rhs); \}}
+\DoxyCodeLine{348 }
+\DoxyCodeLine{349 }
+\DoxyCodeLine{350     \textcolor{comment}{// Basic arithmetic -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{351 }
+\DoxyCodeLine{357     [[nodiscard]]}
+\DoxyCodeLine{358     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{359         \textcolor{comment}{// (-\/a)+(+b)}}
+\DoxyCodeLine{360         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}())}
+\DoxyCodeLine{361             \textcolor{keywordflow}{return} rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}());}
+\DoxyCodeLine{362 }
+\DoxyCodeLine{363         \textcolor{comment}{// (+a)+(-\/b)}}
+\DoxyCodeLine{364         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{365             \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}());}
+\DoxyCodeLine{366 }
+\DoxyCodeLine{367         \textcolor{comment}{// (+a)+(+b) or (-\/a)+(-\/b)}}
+\DoxyCodeLine{368         \textcolor{keyword}{auto} lhs\_value = this-\/>value\_;}
+\DoxyCodeLine{369         \textcolor{keyword}{auto} rhs\_value = rhs.value\_;}
+\DoxyCodeLine{370 }
+\DoxyCodeLine{371         \textcolor{keyword}{auto} diff\_length = std::abs(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(lhs\_value.length() -\/ rhs\_value.length()));}
+\DoxyCodeLine{372 }
+\DoxyCodeLine{373         \textcolor{keywordflow}{if} (lhs\_value.length() > rhs\_value.length())}
+\DoxyCodeLine{374             rhs\_value.insert(0, diff\_length, \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{375         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{376             lhs\_value.insert(0, diff\_length, \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{377 }
+\DoxyCodeLine{378         std::ranges::reverse(lhs\_value);}
+\DoxyCodeLine{379         std::ranges::reverse(rhs\_value);}
+\DoxyCodeLine{380 }
+\DoxyCodeLine{381         \textcolor{keywordtype}{int} index\{\};}
+\DoxyCodeLine{382         \textcolor{keywordtype}{char} carry\{\textcolor{charliteral}{'0'}\};}
+\DoxyCodeLine{383 }
+\DoxyCodeLine{384         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{char}\& lhs\_char : lhs\_value) \{}
+\DoxyCodeLine{385             lhs\_char = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(}
+\DoxyCodeLine{386                 (carry -\/ \textcolor{charliteral}{'0'}) + (lhs\_char -\/ \textcolor{charliteral}{'0'}) + (rhs\_value.at(index) -\/ \textcolor{charliteral}{'0'}) + \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{387 }
+\DoxyCodeLine{388             \textcolor{keywordflow}{if} (lhs\_char > \textcolor{charliteral}{'9'}) \{}
+\DoxyCodeLine{389                 lhs\_char -\/= 10;}
+\DoxyCodeLine{390                 carry = \textcolor{charliteral}{'1'};}
+\DoxyCodeLine{391             \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{392                 carry = \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{393             \}}
+\DoxyCodeLine{394             index++;}
+\DoxyCodeLine{395         \}}
+\DoxyCodeLine{396         \textcolor{keywordflow}{if} (carry > \textcolor{charliteral}{'0'})}
+\DoxyCodeLine{397             lhs\_value.append(1, carry);}
+\DoxyCodeLine{398 }
+\DoxyCodeLine{399         std::ranges::reverse(lhs\_value);}
+\DoxyCodeLine{400 }
+\DoxyCodeLine{401         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() ? \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\{lhs\_value\}.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}() : lhs\_value;}
+\DoxyCodeLine{402     \}}
+\DoxyCodeLine{403 }
+\DoxyCodeLine{409     [[nodiscard]]}
+\DoxyCodeLine{410     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{411         \textcolor{comment}{// (-\/a)-\/(+b) or (+a)-\/(-\/b)}}
+\DoxyCodeLine{412         \textcolor{keywordflow}{if} ((this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}()) ||}
+\DoxyCodeLine{413             (this-\/>is\_positive() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()))}
+\DoxyCodeLine{414         \{}
+\DoxyCodeLine{415             \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}());}
+\DoxyCodeLine{416         \}}
+\DoxyCodeLine{417 }
+\DoxyCodeLine{418         \textcolor{comment}{// (+a)-\/(+b) or (-\/a)-\/(-\/b)}}
+\DoxyCodeLine{419         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{420             \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}());}
+\DoxyCodeLine{421 }
+\DoxyCodeLine{422         \textcolor{keywordtype}{bool} inverted\_sign = (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adebf8d6a243358afc0571e5180181d9e}{compare}}(rhs) == std::strong\_ordering::less);}
+\DoxyCodeLine{423 }
+\DoxyCodeLine{424         std::string subtracted = inverted\_sign ? rhs.value\_ : this-\/>value\_;}
+\DoxyCodeLine{425         std::string removed = inverted\_sign ? this-\/>value\_ : rhs.value\_;}
+\DoxyCodeLine{426 }
+\DoxyCodeLine{427         \textcolor{keyword}{auto} diff\_length = std::abs(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(subtracted.length() -\/ removed.length()));}
+\DoxyCodeLine{428 }
+\DoxyCodeLine{429         \textcolor{keywordflow}{if} (subtracted.size() > removed.size())}
+\DoxyCodeLine{430             removed.insert(0, diff\_length, \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{431         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{432             subtracted.insert(0, diff\_length, \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{433 }
+\DoxyCodeLine{434         std::ranges::reverse(subtracted);}
+\DoxyCodeLine{435         std::ranges::reverse(removed);}
+\DoxyCodeLine{436 }
+\DoxyCodeLine{437         \textcolor{keywordtype}{int} index\{\};}
+\DoxyCodeLine{438 }
+\DoxyCodeLine{439         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{char}\& symbol : subtracted) \{}
+\DoxyCodeLine{440             \textcolor{keywordflow}{if} (symbol < removed.at(index)) \{}
+\DoxyCodeLine{441                 symbol += 10;}
+\DoxyCodeLine{442                 subtracted[index + 1]-\/-\/;}
+\DoxyCodeLine{443             \}}
+\DoxyCodeLine{444             symbol = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}((symbol -\/ \textcolor{charliteral}{'0'}) -\/ (removed.at(index) -\/ \textcolor{charliteral}{'0'}) + \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{445             index++;}
+\DoxyCodeLine{446         \}}
+\DoxyCodeLine{447         std::ranges::reverse(subtracted);}
+\DoxyCodeLine{448 }
+\DoxyCodeLine{449         \textcolor{keywordflow}{while} (subtracted.front() == \textcolor{charliteral}{'0'} \&\& subtracted.length() != 1)}
+\DoxyCodeLine{450             subtracted.erase(0, 1);}
+\DoxyCodeLine{451 }
+\DoxyCodeLine{452         \textcolor{keywordflow}{return} inverted\_sign ? \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\{subtracted\}.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}() : subtracted;}
+\DoxyCodeLine{453     \}}
+\DoxyCodeLine{454 }
+\DoxyCodeLine{460     [[nodiscard]]}
+\DoxyCodeLine{461     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{462         \textcolor{keyword}{auto} lhs\_value = this-\/>value\_;}
+\DoxyCodeLine{463         \textcolor{keyword}{auto} rhs\_value = rhs.value\_;}
+\DoxyCodeLine{464 }
+\DoxyCodeLine{465         std::ranges::reverse(lhs\_value);}
+\DoxyCodeLine{466         std::ranges::reverse(rhs\_value);}
+\DoxyCodeLine{467 }
+\DoxyCodeLine{468         \textcolor{keywordtype}{int} step\{\};}
+\DoxyCodeLine{469         \textcolor{keywordtype}{char} carry\{\textcolor{charliteral}{'0'}\};}
+\DoxyCodeLine{470 }
+\DoxyCodeLine{471         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} temp;}
+\DoxyCodeLine{472 }
+\DoxyCodeLine{473         \textcolor{keywordflow}{for} (\textcolor{keyword}{const} \textcolor{keyword}{auto}\& lhs\_char : lhs\_value) \{}
+\DoxyCodeLine{474             \textcolor{keyword}{auto} operation = std::string\{\}.insert(0, step, \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{475 }
+\DoxyCodeLine{476             \textcolor{keywordflow}{for} (\textcolor{keyword}{const} \textcolor{keyword}{auto}\& rhs\_char : rhs\_value) \{}
+\DoxyCodeLine{477                 std::uint8\_t result = ((lhs\_char -\/ \textcolor{charliteral}{'0'}) * (rhs\_char -\/ \textcolor{charliteral}{'0'})) + (carry -\/ \textcolor{charliteral}{'0'}) + \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{478                 carry = \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{479 }
+\DoxyCodeLine{480                 \textcolor{keywordflow}{if} (result > \textcolor{charliteral}{'9'}) \{}
+\DoxyCodeLine{481                     \textcolor{keywordflow}{while} (result > \textcolor{charliteral}{'9'}) \{}
+\DoxyCodeLine{482                         result -\/= 10;}
+\DoxyCodeLine{483                         carry++;}
+\DoxyCodeLine{484                     \}}
+\DoxyCodeLine{485                 \}}
+\DoxyCodeLine{486                 operation.insert(0, 1, \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(result));}
+\DoxyCodeLine{487             \}}
+\DoxyCodeLine{488             \textcolor{keywordflow}{if} (carry > \textcolor{charliteral}{'0'}) \{}
+\DoxyCodeLine{489                 operation.insert(0, 1, carry);}
+\DoxyCodeLine{490                 carry = \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{491             \}}
+\DoxyCodeLine{492             temp += operation;}
+\DoxyCodeLine{493             step++;}
+\DoxyCodeLine{494         \}}
+\DoxyCodeLine{495         \textcolor{keyword}{auto} positive = (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()) ||}
+\DoxyCodeLine{496                         (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}());}
+\DoxyCodeLine{497         \textcolor{keywordflow}{return} positive ? temp :temp.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}();}
+\DoxyCodeLine{498     \}}
+\DoxyCodeLine{499 }
+\DoxyCodeLine{505     [[nodiscard]]}
+\DoxyCodeLine{506     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ab82875a803f082f097948d8ecad2b257}{divide}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{507         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{508             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}divide by zero"{}});}
+\DoxyCodeLine{509 }
+\DoxyCodeLine{510         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(1))}
+\DoxyCodeLine{511             \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{512 }
+\DoxyCodeLine{513         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(rhs))}
+\DoxyCodeLine{514             \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{515 }
+\DoxyCodeLine{516         \textcolor{keyword}{auto} lhs\_value = this-\/>value\_;}
+\DoxyCodeLine{517         std::ranges::reverse(lhs\_value);}
+\DoxyCodeLine{518 }
+\DoxyCodeLine{519         \textcolor{keyword}{auto} rhs\_abs = rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}();}
+\DoxyCodeLine{520 }
+\DoxyCodeLine{521         std::string lhs\_quotient;}
+\DoxyCodeLine{522         std::string rhs\_quotient;}
+\DoxyCodeLine{523 }
+\DoxyCodeLine{524         \textcolor{keywordflow}{do} \{}
+\DoxyCodeLine{525             lhs\_quotient.push\_back(lhs\_value.back());}
+\DoxyCodeLine{526             lhs\_value.pop\_back();}
+\DoxyCodeLine{527 }
+\DoxyCodeLine{528             \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} dividend\_value\{lhs\_quotient\};}
+\DoxyCodeLine{529 }
+\DoxyCodeLine{530             \textcolor{keywordflow}{if} (dividend\_value < rhs\_abs) \{}
+\DoxyCodeLine{531                 rhs\_quotient.push\_back(\textcolor{charliteral}{'0'});}
+\DoxyCodeLine{532                 \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{533             \}}
+\DoxyCodeLine{534             \textcolor{keyword}{auto} number\{value\_from<2>()\};}
+\DoxyCodeLine{535 }
+\DoxyCodeLine{536             \textcolor{keywordflow}{while} (rhs\_abs.multiply(number) <= dividend\_value)}
+\DoxyCodeLine{537                 number++;}
+\DoxyCodeLine{538 }
+\DoxyCodeLine{539             number-\/-\/;}
+\DoxyCodeLine{540             rhs\_quotient.append(number.to\_string());}
+\DoxyCodeLine{541             lhs\_quotient = dividend\_value.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(rhs\_abs.multiply(number)).\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}();}
+\DoxyCodeLine{542         \} \textcolor{keywordflow}{while} (!lhs\_value.empty());}
+\DoxyCodeLine{543 }
+\DoxyCodeLine{544         \textcolor{keywordtype}{bool} positive = (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()) ||}
+\DoxyCodeLine{545             (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}());}
+\DoxyCodeLine{546         \textcolor{keywordflow}{return} positive ? rhs\_quotient : \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\{rhs\_quotient\}.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}();}
+\DoxyCodeLine{547     \}}
+\DoxyCodeLine{548 }
+\DoxyCodeLine{554     [[nodiscard]]}
+\DoxyCodeLine{555     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a38594c67456105aee6c91c5bedbcbc69}{mod}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{556         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{557             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}mod by zero"{}});}
+\DoxyCodeLine{558 }
+\DoxyCodeLine{559         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(this-\/>divide(rhs)));}
+\DoxyCodeLine{560     \}}
+\DoxyCodeLine{561 }
+\DoxyCodeLine{562     \textcolor{comment}{// Arithmetic operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{563 }
+\DoxyCodeLine{569     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_af0746ec429b3066f45d0622d6fb2de4a}{operator+}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_add688269f8a65591e2ee40c6ea118e1b}{add}}(rhs); \}}
+\DoxyCodeLine{570 }
+\DoxyCodeLine{576     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a584929d20da545fae9c3ee29873ddcc9}{operator-\/}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7eee8112f527f98b5f49c48a8f0c436d}{subtract}}(rhs); \}}
+\DoxyCodeLine{577 }
+\DoxyCodeLine{583     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5fec7967bf17c8a0911fbb4b9708bdc6}{operator*}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(rhs); \}}
+\DoxyCodeLine{584 }
+\DoxyCodeLine{590     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ad2e76b608a651386269ccc2406a69137}{operator/}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ab82875a803f082f097948d8ecad2b257}{divide}}(rhs); \}}
+\DoxyCodeLine{591 }
+\DoxyCodeLine{597     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a34867dc75909ee75aee3411cb367a383}{operator\%}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a38594c67456105aee6c91c5bedbcbc69}{mod}}(rhs); \}}
+\DoxyCodeLine{598 }
+\DoxyCodeLine{599     \textcolor{comment}{// Complex arithmetic -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{600 }
+\DoxyCodeLine{605     [[nodiscard]]}
+\DoxyCodeLine{606     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{607         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0)) \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{608         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()) \textcolor{keywordflow}{return} this-\/>value\_;}
+\DoxyCodeLine{609 }
+\DoxyCodeLine{610         std::stringstream ss;}
+\DoxyCodeLine{611         ss << \textcolor{charliteral}{'-\/'} << this-\/>value\_;}
+\DoxyCodeLine{612         \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{613     \}}
+\DoxyCodeLine{614 }
+\DoxyCodeLine{618     [[nodiscard]]}
+\DoxyCodeLine{619     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() ? *this : this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a4eb28bad2c9a237e2db79437889c7434}{negate}}(); \}}
+\DoxyCodeLine{620 }
+\DoxyCodeLine{626     [[nodiscard]]}
+\DoxyCodeLine{627     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a09a3ad59ea5bc21827555811ba121679}{pow}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{628         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{629             \textcolor{keywordflow}{return} 1;}
+\DoxyCodeLine{630 }
+\DoxyCodeLine{631         \textcolor{keywordflow}{if} (rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adebf8d6a243358afc0571e5180181d9e}{compare}}(0) == std::strong\_ordering::less) \{}
+\DoxyCodeLine{632             \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{633                 \textcolor{keywordflow}{throw} std::logic\_error(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{634 }
+\DoxyCodeLine{635             \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}().\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(1) ? *this : value\_from<0>();}
+\DoxyCodeLine{636         \}}
+\DoxyCodeLine{637         \textcolor{keyword}{auto} init\_exp\{rhs\};}
+\DoxyCodeLine{638         \textcolor{keyword}{auto} result\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{639         \textcolor{keyword}{auto} result\_odd\{value\_from<1>()\};}
+\DoxyCodeLine{640 }
+\DoxyCodeLine{641         \textcolor{keywordflow}{while} (init\_exp.compare(1) == std::strong\_ordering::greater) \{}
+\DoxyCodeLine{642             \textcolor{keywordflow}{if} (init\_exp.mod(2)) result\_odd *= result;}
+\DoxyCodeLine{643             result *= result;}
+\DoxyCodeLine{644             init\_exp /= 2;}
+\DoxyCodeLine{645         \}}
+\DoxyCodeLine{646         \textcolor{keywordflow}{return} result.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(result\_odd);}
+\DoxyCodeLine{647     \}}
+\DoxyCodeLine{648 }
+\DoxyCodeLine{654     [[nodiscard]]}
+\DoxyCodeLine{655     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac6f931f0467de0368b6ab48303c74947}{pow10}}()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\{10\}.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a09a3ad59ea5bc21827555811ba121679}{pow}}(*\textcolor{keyword}{this}); \}}
+\DoxyCodeLine{656 }
+\DoxyCodeLine{663     [[nodiscard]]}
+\DoxyCodeLine{664     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a701152636a1de1917e16a5b75cfb3bb6}{gcd}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{665         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} abs\_lhs = this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}();}
+\DoxyCodeLine{666         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} abs\_rhs = rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}();}
+\DoxyCodeLine{667 }
+\DoxyCodeLine{668         \textcolor{keywordflow}{if} (abs\_rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0) || abs\_lhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{669             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{670 }
+\DoxyCodeLine{671         \textcolor{keyword}{auto} remainder\{abs\_rhs\};}
+\DoxyCodeLine{672 }
+\DoxyCodeLine{673         \textcolor{keywordflow}{while} (!remainder.equal(0)) \{}
+\DoxyCodeLine{674             remainder = abs\_lhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a38594c67456105aee6c91c5bedbcbc69}{mod}}(abs\_rhs);}
+\DoxyCodeLine{675             abs\_lhs = abs\_rhs; \textcolor{comment}{// previous remainder}}
+\DoxyCodeLine{676             abs\_rhs = remainder; \textcolor{comment}{// current remainder}}
+\DoxyCodeLine{677         \}}
+\DoxyCodeLine{678         \textcolor{keywordflow}{return} std::move(abs\_lhs);}
+\DoxyCodeLine{679     \}}
+\DoxyCodeLine{680 }
+\DoxyCodeLine{687     [[nodiscard]]}
+\DoxyCodeLine{688     \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a86d92467e48d67cc89910dc5e7331959}{lcm}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{689         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0) || rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0))}
+\DoxyCodeLine{690             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{691         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ac44e55fe3dd6c46db3b07082c04bb0dc}{multiply}}(rhs).\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a1139018c52c101b2686d0ee8d2b624ff}{abs}}().\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_ab82875a803f082f097948d8ecad2b257}{divide}}(this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a701152636a1de1917e16a5b75cfb3bb6}{gcd}}(rhs));}
+\DoxyCodeLine{692     \}}
+\DoxyCodeLine{693 }
+\DoxyCodeLine{694     \textcolor{comment}{// Comparison -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{695 }
+\DoxyCodeLine{701     [[nodiscard]]}
+\DoxyCodeLine{702     std::strong\_ordering \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adebf8d6a243358afc0571e5180181d9e}{compare}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{703         \textcolor{comment}{// -\/a, +b}}
+\DoxyCodeLine{704         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}())}
+\DoxyCodeLine{705             \textcolor{keywordflow}{return} std::strong\_ordering::less;}
+\DoxyCodeLine{706 }
+\DoxyCodeLine{707         \textcolor{comment}{// +a, -\/b}}
+\DoxyCodeLine{708         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}())}
+\DoxyCodeLine{709             \textcolor{keywordflow}{return} std::strong\_ordering::greater;}
+\DoxyCodeLine{710 }
+\DoxyCodeLine{711         \textcolor{comment}{// -\/a, -\/b}}
+\DoxyCodeLine{712         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()) \{}
+\DoxyCodeLine{713             \textcolor{keywordflow}{if} (this-\/>value\_.length() == rhs.value\_.length()) \{}
+\DoxyCodeLine{714                 \textcolor{keywordflow}{if} (this-\/>value\_ > rhs.value\_)}
+\DoxyCodeLine{715                     \textcolor{keywordflow}{return} std::strong\_ordering::less;}
+\DoxyCodeLine{716 }
+\DoxyCodeLine{717                 \textcolor{keywordflow}{return} (this-\/>value\_ == rhs.value\_)}
+\DoxyCodeLine{718                     ? std::strong\_ordering::equivalent}
+\DoxyCodeLine{719                     : std::strong\_ordering::greater;}
+\DoxyCodeLine{720             \}}
+\DoxyCodeLine{721             \textcolor{keywordflow}{return} (this-\/>value\_.length() < rhs.value\_.length())}
+\DoxyCodeLine{722                 ? std::strong\_ordering::greater}
+\DoxyCodeLine{723                 : std::strong\_ordering::less;}
+\DoxyCodeLine{724         \}}
+\DoxyCodeLine{725 }
+\DoxyCodeLine{726         \textcolor{comment}{// +a, +b}}
+\DoxyCodeLine{727         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}() \&\& rhs.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}()) \{}
+\DoxyCodeLine{728             \textcolor{keywordflow}{if} (this-\/>value\_.length() == rhs.value\_.length()) \{}
+\DoxyCodeLine{729                 \textcolor{keywordflow}{if} (this-\/>value\_ > rhs.value\_)}
+\DoxyCodeLine{730                     \textcolor{keywordflow}{return} std::strong\_ordering::greater;}
+\DoxyCodeLine{731 }
+\DoxyCodeLine{732                 \textcolor{keywordflow}{return} (this-\/>value\_ == rhs.value\_)}
+\DoxyCodeLine{733                     ? std::strong\_ordering::equivalent}
+\DoxyCodeLine{734                     : std::strong\_ordering::less;}
+\DoxyCodeLine{735             \}}
+\DoxyCodeLine{736             \textcolor{keywordflow}{return} (this-\/>value\_.length() < rhs.value\_.length())}
+\DoxyCodeLine{737                 ? std::strong\_ordering::less}
+\DoxyCodeLine{738                 : std::strong\_ordering::greater;}
+\DoxyCodeLine{739         \}}
+\DoxyCodeLine{740 }
+\DoxyCodeLine{741         \textcolor{keywordflow}{return} std::strong\_ordering::equivalent;}
+\DoxyCodeLine{742     \}}
+\DoxyCodeLine{743 }
+\DoxyCodeLine{749     [[nodiscard]]}
+\DoxyCodeLine{750     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{751         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adebf8d6a243358afc0571e5180181d9e}{compare}}(rhs) == std::strong\_ordering::equivalent;}
+\DoxyCodeLine{752     \}}
+\DoxyCodeLine{753 }
+\DoxyCodeLine{754     \textcolor{comment}{// Comparison operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{755 }
+\DoxyCodeLine{762     std::strong\_ordering \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_afd302cc2ada75900f393e9992027aed0}{operator<=>}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adebf8d6a243358afc0571e5180181d9e}{compare}}(rhs); \}}
+\DoxyCodeLine{763 }
+\DoxyCodeLine{770     \textcolor{keyword}{auto} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a8dd77310ba32487607915f9f5053d629}{operator==}}(\textcolor{keyword}{const} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs)\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(rhs); \}}
+\DoxyCodeLine{771 }
+\DoxyCodeLine{772     \textcolor{comment}{// Modification and checking -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{773 }
+\DoxyCodeLine{777     [[nodiscard]]}
+\DoxyCodeLine{778     std::size\_t \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a8297be054204c2564f699c9f5f38c767}{bit\_length}}()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}(2).length(); \}}
+\DoxyCodeLine{779 }
+\DoxyCodeLine{783     [[nodiscard]]}
+\DoxyCodeLine{784     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aa86b4b907f6916a134ae31792f518557}{is\_positive}}()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} !this-\/>signed\_; \}}
+\DoxyCodeLine{785 }
+\DoxyCodeLine{789     [[nodiscard]]}
+\DoxyCodeLine{790     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} this-\/>signed\_; \}}
+\DoxyCodeLine{791 }
+\DoxyCodeLine{795     \textcolor{keywordtype}{void} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a82014dc025ecb7374daa555319895899}{swap}}(\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}}\& rhs) \{}
+\DoxyCodeLine{796         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(rhs))}
+\DoxyCodeLine{797             \textcolor{keywordflow}{return};}
+\DoxyCodeLine{798         std::swap(*\textcolor{keyword}{this}, rhs);}
+\DoxyCodeLine{799     \}}
+\DoxyCodeLine{800 }
+\DoxyCodeLine{801     \textcolor{comment}{// Stream operators -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{802 }
+\DoxyCodeLine{809     std::ostream\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_adde4fb1b0df5e624700129aae9b01fcc}{operator<<}}(std::ostream\& os) \textcolor{keyword}{const} \& \{}
+\DoxyCodeLine{810         os << this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}();}
+\DoxyCodeLine{811         \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{812     \}}
+\DoxyCodeLine{813 }
+\DoxyCodeLine{820     std::istream\& \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_aeb14157052605841bf962c4aca9ee28d}{operator>>}}(std::istream\& is) \& \{}
+\DoxyCodeLine{821         std::string input;}
+\DoxyCodeLine{822         is >> input;}
+\DoxyCodeLine{823         *\textcolor{keyword}{this} = input;}
+\DoxyCodeLine{824         \textcolor{keywordflow}{return} is;}
+\DoxyCodeLine{825     \}}
+\DoxyCodeLine{826 }
+\DoxyCodeLine{827     \textcolor{comment}{// Conversion methods -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{828 }
+\DoxyCodeLine{833     \textcolor{keyword}{template}<std::\textcolor{keywordtype}{int}64\_t value>}
+\DoxyCodeLine{834     \textcolor{keyword}{static} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7ddc9b094569fd3828b9134db2894c87}{value\_from}}() \{ \textcolor{keywordflow}{return} std::to\_string(value); \}}
+\DoxyCodeLine{835 }
+\DoxyCodeLine{839     \textcolor{keyword}{explicit} \textcolor{keyword}{operator} bool()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} !this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a7fecd0388392c66536b66c07f21e82fb}{equal}}(0); \}}
+\DoxyCodeLine{840 }
+\DoxyCodeLine{848     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{849     \textcolor{keyword}{requires} std::integral<T>}
+\DoxyCodeLine{850     std::optional<T> \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a202b5b6d508a5da9ba07b9e3c62d82ee}{safe\_convert}}(\textcolor{keywordtype}{int} radix, T (*f)(\textcolor{keyword}{const} std::string\&, std::size\_t*, \textcolor{keywordtype}{int}))\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{851         \textcolor{keywordflow}{try} \{}
+\DoxyCodeLine{852             \textcolor{keywordflow}{return} f(this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}(radix), \textcolor{keyword}{nullptr}, radix);}
+\DoxyCodeLine{853         \} \textcolor{keywordflow}{catch} (std::out\_of\_range\&) \{}
+\DoxyCodeLine{854         \} \textcolor{keywordflow}{catch} (std::invalid\_argument\&) \{}
+\DoxyCodeLine{855         \}}
+\DoxyCodeLine{856         \textcolor{keywordflow}{return} std::nullopt;}
+\DoxyCodeLine{857     \}}
+\DoxyCodeLine{858 }
+\DoxyCodeLine{864     \textcolor{keyword}{template}<std::\textcolor{keywordtype}{int}egral T>}
+\DoxyCodeLine{865     std::optional<T> \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a03b11ac86d6b60cdc1b4d96651bf8269}{to\_integer}}(\textcolor{keywordtype}{int} radix = 10) \textcolor{keyword}{const};}
+\DoxyCodeLine{866 }
+\DoxyCodeLine{872     \textcolor{keyword}{template}<>}
+\DoxyCodeLine{873     [[nodiscard]]}
+\DoxyCodeLine{874     std::optional<int> to\_integer<int>(\textcolor{keywordtype}{int} radix)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{875         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a202b5b6d508a5da9ba07b9e3c62d82ee}{safe\_convert}}(radix, std::stoi);}
+\DoxyCodeLine{876     \}}
+\DoxyCodeLine{877 }
+\DoxyCodeLine{883     \textcolor{keyword}{template}<>}
+\DoxyCodeLine{884     [[nodiscard]]}
+\DoxyCodeLine{885     std::optional<std::int64\_t> to\_integer<std::int64\_t>(\textcolor{keywordtype}{int} radix)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{886         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a202b5b6d508a5da9ba07b9e3c62d82ee}{safe\_convert}}(radix, std::stoll);}
+\DoxyCodeLine{887     \}}
+\DoxyCodeLine{888 }
+\DoxyCodeLine{894     \textcolor{keyword}{template}<>}
+\DoxyCodeLine{895     [[nodiscard]]}
+\DoxyCodeLine{896     std::optional<std::uint64\_t> to\_integer<std::uint64\_t>(\textcolor{keywordtype}{int} radix)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{897         \textcolor{keywordflow}{return} this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a202b5b6d508a5da9ba07b9e3c62d82ee}{safe\_convert}}(radix, std::stoull);}
+\DoxyCodeLine{898     \}}
+\DoxyCodeLine{899 }
+\DoxyCodeLine{905     [[nodiscard]]}
+\DoxyCodeLine{906     std::string \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a5411f99c56f0a885eec20554d29527bc}{to\_string}}(\textcolor{keywordtype}{int} radix = 10)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{907         \textcolor{keywordflow}{if} ((radix < 2) || (radix > 16))}
+\DoxyCodeLine{908             \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}incorrect radix"{}});}
+\DoxyCodeLine{909 }
+\DoxyCodeLine{910         std::stringstream ss;}
+\DoxyCodeLine{911         \textcolor{keywordflow}{if} (this-\/>\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a01999f82b4e576ff6b7b1f7c2a1e6ec3}{is\_negative}}()) ss << \textcolor{charliteral}{'-\/'};}
+\DoxyCodeLine{912 }
+\DoxyCodeLine{913         \textcolor{keywordflow}{if} (radix == 10) \{}
+\DoxyCodeLine{914             ss << this-\/>value\_;}
+\DoxyCodeLine{915             \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{916         \}}
+\DoxyCodeLine{917         \textcolor{keyword}{auto} decimal\_value\{*\textcolor{keyword}{this}\};}
+\DoxyCodeLine{918         \mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer}{big\_integer}} modulo\{radix\};}
+\DoxyCodeLine{919 }
+\DoxyCodeLine{920         std::string value;}
+\DoxyCodeLine{921 }
+\DoxyCodeLine{922         \textcolor{keywordflow}{while} (!decimal\_value.equal(0)) \{}
+\DoxyCodeLine{923             \textcolor{keyword}{auto} remainder = decimal\_value.\mbox{\hyperlink{classwingmann_1_1numerics_1_1big__integer_a38594c67456105aee6c91c5bedbcbc69}{mod}}(modulo);}
+\DoxyCodeLine{924             decimal\_value /= modulo;}
+\DoxyCodeLine{925 }
+\DoxyCodeLine{926             \textcolor{comment}{// Doesn't throw exception}}
+\DoxyCodeLine{927             \textcolor{keyword}{auto} symbol = base\_chars().at(std::stoi(remainder.to\_string()));}
+\DoxyCodeLine{928             value.push\_back(symbol);}
+\DoxyCodeLine{929         \}}
+\DoxyCodeLine{930         std::ranges::reverse(value);}
+\DoxyCodeLine{931 }
+\DoxyCodeLine{932         ss << value;}
+\DoxyCodeLine{933         \textcolor{keywordflow}{return} ss.str();}
+\DoxyCodeLine{934     \}}
+\DoxyCodeLine{935 }
+\DoxyCodeLine{936 \textcolor{keyword}{private}:}
+\DoxyCodeLine{937     \textcolor{comment}{// Returns the base char values of a system of numeration.}}
+\DoxyCodeLine{938     \textcolor{comment}{// Allowed numeration systems from 2 to 16.}}
+\DoxyCodeLine{939     \textcolor{keyword}{static} \textcolor{keyword}{constexpr} std::string base\_chars() \{ \textcolor{keywordflow}{return} \textcolor{stringliteral}{"{}0123456789ABCDEF"{}}; \}}
+\DoxyCodeLine{940 }
+\DoxyCodeLine{947     \textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv) \{}
+\DoxyCodeLine{948 }
+\DoxyCodeLine{949     \}}
+\DoxyCodeLine{950 \};}
+\DoxyCodeLine{951 }
+\DoxyCodeLine{952 \} \textcolor{comment}{// namespace wingmann::numerics}}
+\DoxyCodeLine{953 }
+\DoxyCodeLine{954 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// WINGMANN\_BIGINTEGER\_H}}
+
+\end{DoxyCode}
