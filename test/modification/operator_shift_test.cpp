@@ -4,17 +4,14 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_modification, operator_left_shift_1)
-{
+TEST(biginteger_modification, operator_left_shift_1) {
     EXPECT_EQ(40, big_integer{10} << 2);
 }
 
-TEST(biginteger_modification, operator_left_shift_2)
-{
+TEST(biginteger_modification, operator_left_shift_2) {
     EXPECT_EQ(4096, big_integer{512} << 3);
 }
 
-TEST(biginteger_modification, operator_left_shift_throw)
-{
+TEST(biginteger_modification, operator_left_shift_throw) {
     EXPECT_THROW(big_integer{10} << -2, std::invalid_argument);
 }

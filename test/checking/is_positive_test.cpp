@@ -4,17 +4,14 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_checking, is_positive_1)
-{
+TEST(biginteger_checking, is_positive_1) {
     EXPECT_FALSE(big_integer{-512}.is_positive());
 }
 
-TEST(biginteger_checking, is_positive_2)
-{
+TEST(biginteger_checking, is_positive_2) {
     EXPECT_TRUE(big_integer{256}.is_positive());
 }
 
-TEST(biginteger_checking, is_positive_zero)
-{
+TEST(biginteger_checking, is_positive_zero) {
     EXPECT_TRUE(big_integer{0}.is_positive());
 }
