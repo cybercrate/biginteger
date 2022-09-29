@@ -5,7 +5,8 @@
 using namespace wingmann::numerics;
 
 TEST(biginteger_modification, increment_prefix) {
-    EXPECT_EQ(257, ++big_integer{256});
+    big_integer number{256};
+    EXPECT_EQ(257, ++number);
 }
 
 TEST(biginteger_modification, increment_postfix) {

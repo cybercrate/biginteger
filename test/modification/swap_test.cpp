@@ -5,11 +5,11 @@
 using namespace wingmann::numerics;
 
 TEST(biginteger_modification, swap_1) {
-    big_integer big_number1{739928192};
-    big_integer big_number2{673282193};
+    big_integer number1{739928192};
+    big_integer number2{673282193};
 
-    big_number1.swap(big_number2);
+    number1.swap(number2);
 
-    EXPECT_EQ(big_number1, 673282193);
-    EXPECT_EQ(big_number2, 739928192);
+    EXPECT_EQ(number1, 673282193);
+    EXPECT_EQ(number2, 739928192);
 }

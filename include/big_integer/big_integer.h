@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cmath>
 #include <concepts>
+#include <numeric>
 #include <optional>
 #include <ostream>
 #include <ranges>
@@ -26,9 +27,18 @@ namespace wingmann::numerics {
 
 /// @brief Arbitrarily large integer.
 class big_integer {
+public:
+    /// @brief The base of a system of number.
+    enum class radix_type {
+        binary = 2,
+        octal = 8,
+        decimal = 10,
+        hexadecimal = 16
+    };
+
 protected:
-    // The base of a system of numeration.
-    int radix_{10};
+    // The base of a system of number.
+    radix_type radix_{radix_type::decimal};
 
     // Sign flag.
     bool signed_{};
@@ -63,17 +73,17 @@ public:
     /// @brief Constructs from string literal.
     ///
     /// @param value String literal value.
-    /// @param radix The base of a system of numeration.
+    /// @param radix The base of a system of number.
     ///
-    big_integer(const char* value, int radix = 10)
+    big_integer(const char* value, radix_type radix = radix_type::decimal)
         : radix_{radix}, signed_{*value == '-'} { *this = value; }
 
     /// @brief Constructs from string.
     ///
     /// @param value String value.
-    /// @param radix The base of a system of numeration.
+    /// @param radix The base of a system of number.
     ///
-    big_integer(std::string value, int radix = 10)
+    big_integer(std::string value, radix_type radix = radix_type::decimal)
         : radix_{radix}, signed_{value.starts_with('-')} { *this = std::move(value); }
 
     // Assignment operators ------------------------------------------------------------------------
@@ -83,14 +93,14 @@ public:
     /// @param rhs Value to copy.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer& rhs) noexcept = default;
+    big_integer& operator=(const big_integer& rhs) & noexcept = default;
 
     /// @brief Move assignment operator.
     ///
     /// @param rhs Value to move.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer&& rhs) noexcept {
+    big_integer& operator=(const big_integer&& rhs) & noexcept {
         this->value_ = rhs.value_;
         return *this;
     }
@@ -102,7 +112,7 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::is_same<T, bool>::value)
-    big_integer& operator=(T rhs) {
+    big_integer& operator=(T rhs) & {
         *this = std::to_string(rhs);
         return *this;
     }
@@ -112,7 +122,7 @@ public:
     /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(const char* rhs) {
+    big_integer& operator=(const char* rhs) & {
         *this = std::string{rhs};
         return *this;
     }
@@ -122,18 +132,15 @@ public:
     /// @param rhs The value from which to construct.
     /// @return    Constructed object.
     ///
-    big_integer& operator=(std::string rhs) {
+    big_integer& operator=(std::string rhs) & {
         if (this->is_negative())
             rhs.erase(0, 1);
-
-        if (radix_ < 2 || radix_ > 16 )
-            throw std::invalid_argument("incorrect radix");
 
         // Remove leading zero.
         while (rhs.starts_with('0') && (rhs.length() != 1))
             rhs.erase(0, 1);
 
-        if (this->radix_ == 10) {
+        if (this->radix_ == radix_type::decimal) {
             this->value_ = rhs;
             return *this;
         }
@@ -143,11 +150,11 @@ public:
             ? (last_char - '0')
             : (tolower(last_char) - 'a') + 10;
 
-        auto value_length = static_cast<std::int64_t>(rhs.length());
+        auto value_length = static_cast<std::size_t>(rhs.length());
 
         big_integer power{value_length - 1};
         big_integer converted_value{last};
-        big_integer radix_value{this->radix_};
+        big_integer radix_value{static_cast<int>(this->radix_)};
 
         for (int i = 0; i < value_length - 1; i++) {
             auto c = rhs.at(i);
@@ -171,7 +178,7 @@ public:
     /// @param rhs The value to add to the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator+=(const big_integer& rhs) {
+    big_integer& operator+=(const big_integer& rhs) & {
         *this = this->add(rhs);
         return *this;
     }
@@ -182,7 +189,7 @@ public:
     /// @param rhs The value to subtract from the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator-=(const big_integer& rhs) {
+    big_integer& operator-=(const big_integer& rhs) & {
         *this = this->subtract(rhs);
         return *this;
     }
@@ -193,7 +200,7 @@ public:
     /// @param rhs The value to multiply by current value.
     /// @return    Modified object.
     ///
-    big_integer& operator*=(const big_integer& rhs) {
+    big_integer& operator*=(const big_integer& rhs) & {
         *this = this->multiply(rhs);
         return *this;
     }
@@ -204,7 +211,7 @@ public:
     /// @param rhs The value by which to divide the current value.
     /// @return    Modified object.
     ///
-    big_integer& operator/=(const big_integer& rhs) {
+    big_integer& operator/=(const big_integer& rhs) & {
         *this = this->divide(rhs);
         return *this;
     }
@@ -216,7 +223,7 @@ public:
     /// @param rhs The right operand for taking the remainder.
     /// @return    Modified object.
     ///
-    big_integer& operator%=(const big_integer& rhs) {
+    big_integer& operator%=(const big_integer& rhs) & {
         *this = this->mod(rhs);
         return *this;
     }
@@ -227,7 +234,7 @@ public:
     /// @param rhs The value to shift on.
     /// @return    Modified object.
     ///
-    big_integer& operator<<=(const big_integer& rhs) {
+    big_integer& operator<<=(const big_integer& rhs) & {
         *this = this->left_shift(rhs);
         return *this;
     }
@@ -238,7 +245,7 @@ public:
     /// @param rhs The value to shift on.
     /// @return    SModified object.
     ///
-    big_integer& operator>>=(const big_integer& rhs) {
+    big_integer& operator>>=(const big_integer& rhs) & {
         *this = this->right_shift(rhs);
         return *this;
     }
@@ -250,7 +257,7 @@ public:
     ///
     /// @return Modified object.
     ///
-    big_integer& operator++() {
+    big_integer& operator++() & {
         *this = this->add(1);
         return *this;
     }
@@ -260,7 +267,7 @@ public:
     ///
     /// @return Copy of current value.
     ///
-    const big_integer operator++(int) {
+    big_integer operator++(int) & {
         auto temp{*this};
         ++(*this);
         return std::move(temp);
@@ -271,7 +278,7 @@ public:
     ///
     /// @return Modified object.
     ///
-    big_integer& operator--() {
+    big_integer& operator--() & {
         *this = this->subtract(1);
         return *this;
     }
@@ -281,7 +288,7 @@ public:
     ///
     /// @return Copy of current value.
     ///
-    const big_integer operator--(int) {
+    big_integer operator--(int) & {
         auto temp{*this};
         --(*this);
         return std::move(temp);
@@ -299,12 +306,12 @@ public:
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
 
-        auto bitwise_value = this->to_string(2);
+        auto bitwise_value = this->to_string(radix_type::binary);
 
         for (auto i = 0; i < rhs; i++)
             bitwise_value.push_back('0');
 
-        return {bitwise_value, 2};
+        return {bitwise_value, radix_type::binary};
     }
 
     /// @brief Shifts the current value to right on right operand value.
@@ -317,7 +324,7 @@ public:
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
 
-        auto bitwise_value = this->to_string(2);
+        auto bitwise_value = this->to_string(radix_type::binary);
 
         for (auto i = 0; (i < rhs) && (bitwise_value.length() > 0); i++)
             bitwise_value.pop_back();
@@ -325,7 +332,7 @@ public:
         if (bitwise_value.empty())
             bitwise_value.push_back('0');
 
-        return {bitwise_value, 2};
+        return {bitwise_value, radix_type::binary};
     }
 
     // Shift operators -----------------------------------------------------------------------------
@@ -628,12 +635,12 @@ public:
         if (rhs.equal(0))
             return 1;
 
-        if (rhs.compare(0) == std::strong_ordering::less) {
-            if (this->equal(0))
-                throw std::logic_error("");
+        if (this->equal(0))
+            return 0;
 
-            return this->abs().equal(1) ? *this : value_from<0>();
-        }
+        if (rhs.compare(0) == std::strong_ordering::less)
+            return this->abs().equal(1) ? *this : 0;
+
         auto init_exp{rhs};
         auto result{*this};
         auto result_odd{value_from<1>()};
@@ -771,11 +778,24 @@ public:
 
     // Modification and checking -------------------------------------------------------------------
 
+    /// @brief Check for current value is power of 10.
+    /// @return If is power of 10 true otherwise false.
+    ///
+    bool is_pow10() {
+        if (this->value_[0] > '1')
+            return false;
+
+        for (std::size_t i = 1; i < this->value_.size(); i++)
+            if (this->value_[i] > '0') return false;
+
+        return true;
+    }
+
     /// @brief Gets the binary size of value.
     /// @return Bit length.
     ///
     [[nodiscard]]
-    std::size_t bit_length() const { return to_string(2).length(); }
+    std::size_t bit_length() const { return to_string(radix_type::binary).length(); }
 
     /// @brief Checks for value sign.
     /// @return true if value unsigned otherwise false.
@@ -806,8 +826,8 @@ public:
     /// @param value The value to put to output.
     /// @return      Output stream.
     ///
-    std::ostream& operator<<(std::ostream& os) const & {
-        os << this->to_string();
+    friend std::ostream& operator<<(std::ostream& os, const big_integer& value) {
+        os << value.to_string();
         return os;
     }
 
@@ -817,10 +837,10 @@ public:
     /// @param value The value for writing from input stream;
     /// @return      Input stream.
     ///
-    std::istream& operator>>(std::istream& is) & {
+    friend std::istream& operator>>(std::istream& is, big_integer& value) {
         std::string input;
         is >> input;
-        *this = input;
+        value = input;
         return is;
     }
 
@@ -831,7 +851,7 @@ public:
     /// @tparam value Integral value.
     /// @return       Converted value from integral.
     template<std::int64_t value>
-    static big_integer value_from() { return std::to_string(value); }
+    static big_integer value_from() { return value; }
 
     /// @brief Bool operator. Converts current value to boolean representation.
     /// @return Boolean representation of current value.
@@ -842,14 +862,17 @@ public:
     ///
     /// @tparam T    The type convert to.
     /// @param f     Pointer to converter function.
-    /// @param radix The base of a system of numeration.
+    /// @param radix The base of a system of number.
     /// @return      Converted integral value.
     ///
     template<typename T>
     requires std::integral<T>
-    std::optional<T> safe_convert(int radix, T (*f)(const std::string&, std::size_t*, int)) const {
+    std::optional<T> safe_convert(
+        radix_type radix,
+        T (*f)(const std::string&, std::size_t*, int)) const
+    {
         try {
-            return f(this->to_string(radix), nullptr, radix);
+            return f(this->to_string(radix), nullptr, static_cast<int>(radix));
         } catch (std::out_of_range&) {
         } catch (std::invalid_argument&) {
         }
@@ -862,7 +885,7 @@ public:
     /// @return   If converted, then integral value otherwise std::nullopt
     ///
     template<std::integral T>
-    std::optional<T> to_integer(int radix = 10) const;
+    std::optional<T> to_integer(radix_type radix = radix_type::decimal) const;
 
     /// @brief Converts to primitive integral value.
     ///
@@ -871,7 +894,7 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<int> to_integer<int>(int radix) const {
+    std::optional<int> to_integer<int>(radix_type radix) const {
         return this->safe_convert(radix, std::stoi);
     }
 
@@ -882,7 +905,7 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<std::int64_t> to_integer<std::int64_t>(int radix) const {
+    std::optional<std::int64_t> to_integer<std::int64_t>(radix_type radix) const {
         return this->safe_convert(radix, std::stoll);
     }
 
@@ -893,29 +916,26 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<std::uint64_t> to_integer<std::uint64_t>(int radix) const {
+    std::optional<std::uint64_t> to_integer<std::uint64_t>(radix_type radix) const {
         return this->safe_convert(radix, std::stoull);
     }
 
     /// @brief Converts to string representation.
     ///
-    /// @param radix The base of a system of numeration.
+    /// @param radix The base of a system of number.
     /// @return      Converted string.
     ///
     [[nodiscard]]
-    std::string to_string(int radix = 10) const {
-        if ((radix < 2) || (radix > 16))
-            throw std::invalid_argument("incorrect radix");
-
+    std::string to_string(radix_type radix = radix_type::decimal) const {
         std::stringstream ss;
         if (this->is_negative()) ss << '-';
 
-        if (radix == 10) {
+        if (radix == radix_type::decimal) {
             ss << this->value_;
             return ss.str();
         }
         auto decimal_value{*this};
-        big_integer modulo{radix};
+        big_integer modulo{static_cast<int>(radix)};
 
         std::string value;
 
@@ -934,8 +954,7 @@ public:
     }
 
 private:
-    // Returns the base char values of a system of numeration.
-    // Allowed numeration systems from 2 to 16.
+    // Returns the base char values of a system of number.
     static constexpr std::string base_chars() { return "0123456789ABCDEF"; }
 };
 
