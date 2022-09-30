@@ -73,7 +73,7 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::is_same<T, bool>::value)
-    big_integer(T value) : signed_{value < 0}
+    big_integer(T value)
     {
         *this = value;
     }
@@ -83,8 +83,7 @@ public:
     /// @param value String literal value.
     /// @param radix The base of a system of number.
     ///
-    big_integer(const char* value, radix_type radix = radix_type::decimal)
-        : radix_{radix}, signed_{*value == '-'}
+    big_integer(const char* value, radix_type radix = radix_type::decimal) : radix_{radix}
     {
         *this = value;
     }
@@ -94,8 +93,7 @@ public:
     /// @param value String value.
     /// @param radix The base of a system of number.
     ///
-    big_integer(std::string value, radix_type radix = radix_type::decimal)
-        : radix_{radix}, signed_{value.starts_with('-')}
+    big_integer(std::string value, radix_type radix = radix_type::decimal) : radix_{radix}
     {
         *this = std::move(value);
     }
@@ -151,8 +149,13 @@ public:
     ///
     big_integer& operator=(std::string value) &
     {
+        this->signed_ = value.starts_with('-');
+
         if (this->is_negative())
             remove_sign(value);
+
+        if (!is_valid_number(value, this->radix_))
+            throw std::invalid_argument("value in not valid");
 
         remove_leading_zeros(value);
 
@@ -1044,6 +1047,24 @@ private:
     static constexpr std::string base_chars()
     {
         return "0123456789ABCDEF";
+    }
+
+    // Checks for value is valid.
+    static bool is_valid_number(const std::string& value, radix_type radix)
+    {
+        const auto min{'0'};
+        char max{'9'};
+
+        if (radix == radix_type::binary)
+            max = '1';
+        else if (radix == radix_type::octal)
+            max = '7';
+        else if (radix == radix_type::hexadecimal)
+            max = 'F';
+
+        return std::ranges::all_of(value.cbegin(), value.cend(), [min, max](auto c) {
+            return c >= min && c <= max;
+        });
     }
 
     // Removes first char if its sign.
