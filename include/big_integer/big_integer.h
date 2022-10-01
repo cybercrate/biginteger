@@ -1044,7 +1044,7 @@ public:
 
 private:
     // Returns the base char values of a system of number.
-    static constexpr std::string base_chars()
+    static constexpr auto base_chars()
     {
         return "0123456789ABCDEF";
     }
@@ -1052,18 +1052,17 @@ private:
     // Checks for value is valid.
     static bool is_valid_number(const std::string& value, radix_type radix)
     {
-        const auto min{'0'};
-        char max{'9'};
+        std::pair range{'0', '9'};
 
         if (radix == radix_type::binary)
-            max = '1';
+            range.second = '1';
         else if (radix == radix_type::octal)
-            max = '7';
+            range.second = '7';
         else if (radix == radix_type::hexadecimal)
-            max = 'F';
+            range.second = 'F';
 
-        return std::ranges::all_of(value.cbegin(), value.cend(), [min, max](auto c) {
-            return c >= min && c <= max;
+        return std::ranges::all_of(value, [=](const auto c) {
+            return c >= range.first && c <= range.second;
         });
     }
 
@@ -1117,7 +1116,7 @@ private:
             auto remainder = decimal_value.mod(modulo);
             decimal_value /= modulo;
 
-            auto symbol = base_chars().at(std::stoi(remainder.to_string()));
+            auto symbol = base_chars()[std::stoi(remainder.to_string())];
             result.push_back(symbol);
         }
         std::ranges::reverse(result);
