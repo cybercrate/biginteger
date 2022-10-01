@@ -456,32 +456,36 @@ public:
 
         auto diff_length = std::abs(static_cast<int>(lhs_value.length() - rhs_value.length()));
 
+        const auto min_value{'0'};
+        const auto max_value{'9'};
+
         if (lhs_value.length() > rhs_value.length())
-            rhs_value.insert(0, diff_length, '0');
+            rhs_value.insert(0, diff_length, min_value);
         else
-            lhs_value.insert(0, diff_length, '0');
+            lhs_value.insert(0, diff_length, min_value);
 
         std::ranges::reverse(lhs_value);
         std::ranges::reverse(rhs_value);
 
         std::size_t index{};
-        char carry{'0'};
+        char carry{min_value};
 
         for (char& lhs_char : lhs_value) {
             lhs_char = static_cast<char>(
-                (carry - '0') + (lhs_char - '0') + (rhs_value.at(index) - '0') + '0');
+                (carry - min_value) + (lhs_char - min_value) + (rhs_value.at(index) - min_value) +
+                min_value);
 
-            if (lhs_char > '9') {
+            if (lhs_char > max_value) {
                 lhs_char -= 10;
-                carry = '1';
+                carry = (min_value + 1);
             }
             else {
-                carry = '0';
+                carry = min_value;
             }
             ++index;
         }
 
-        if (carry > '0')
+        if (carry > min_value)
             lhs_value.append(1, carry);
 
         std::ranges::reverse(lhs_value);
@@ -515,10 +519,12 @@ public:
 
         auto diff_length = std::abs(static_cast<int>(subtracted.length() - removed.length()));
 
+        const auto min_value{'0'};
+
         if (subtracted.size() > removed.size())
-            removed.insert(0, diff_length, '0');
+            removed.insert(0, diff_length, min_value);
         else
-            subtracted.insert(0, diff_length, '0');
+            subtracted.insert(0, diff_length, min_value);
 
         std::ranges::reverse(subtracted);
         std::ranges::reverse(removed);
@@ -530,12 +536,14 @@ public:
                 symbol += 10;
                 subtracted[index + 1]--;
             }
-            symbol = static_cast<char>((symbol - '0') - (removed.at(index) - '0') + '0');
+            symbol = static_cast<char>(
+                (symbol - min_value) - (removed.at(index) - min_value) + min_value);
+
             ++index;
         }
         std::ranges::reverse(subtracted);
 
-        while (subtracted.front() == '0' && subtracted.length() != 1)
+        while (subtracted.front() == min_value && subtracted.length() != 1)
             subtracted.erase(0, 1);
 
         return inverted_sign ? value_from(subtracted).negate() : std::move(subtracted);
@@ -555,20 +563,24 @@ public:
         std::ranges::reverse(lhs_value);
         std::ranges::reverse(rhs_value);
 
+        const auto min_value{'0'};
+        const auto max_value{'9'};
+
         int index{};
-        char carry{'0'};
+        char carry{min_value};
 
         auto temp = value_from(0);
 
         for (const auto& lhs_char : lhs_value) {
-            auto operation = std::string{}.insert(0, index, '0');
+            auto operation = std::string{}.insert(0, index, min_value);
 
             for (const auto& rhs_char : rhs_value) {
-                std::uint8_t result = ((lhs_char - '0') * (rhs_char - '0')) + (carry - '0') + '0';
-                carry = '0';
+                std::uint8_t result = ((lhs_char - min_value) * (rhs_char - min_value)) +
+                                      (carry - min_value) + min_value;
+                carry = min_value;
 
-                if (result > '9') {
-                    while (result > '9') {
+                if (result > max_value) {
+                    while (result > max_value) {
                         result -= 10;
                         ++carry;
                     }
@@ -576,9 +588,9 @@ public:
                 operation.insert(0, 1, static_cast<char>(result));
             }
 
-            if (carry > '0') {
+            if (carry > min_value) {
                 operation.insert(0, 1, carry);
-                carry = '0';
+                carry = min_value;
             }
             temp += operation;
             ++index;
@@ -1079,27 +1091,29 @@ private:
             value.erase(0, 1);
     }
 
+    // Converts char to digit.
+    static int char_to_digit(const char value)
+    {
+        return ('0' <= value) && (value <= '9')
+            ? (value - '0')
+            : (std::tolower(value) - 'a') + 10;
+    }
+
     // Converts string value to base ten.
     static std::string convert_to_base_ten(const std::string& value, radix_type radix)
     {
-        char last_char = value.back();
-        int last = ('0' <= last_char) && (last_char <= '9')
-            ? (last_char - '0')
-            : (tolower(last_char) - 'a') + 10;
-
-        auto value_length = static_cast<std::size_t>(value.length());
+        auto last = char_to_digit(value.back());
+        auto value_length = value.length();
 
         auto power = value_from(value_length - 1);
         auto converted_value = value_from(last);
-        auto radix_value = value_from(static_cast<int>(radix));
+        auto radix_value = value_from(static_cast<std::uint8_t>(radix));
+
+        int current;
 
         for (int i = 0; i < value_length - 1; ++i) {
-            auto c = value.at(i);
-            auto current_value = ('0' <= c) && (c <= '9')
-                ? (c - '0')
-                : (std::tolower(c) - 'a') + 10;
-
-            converted_value += value_from(current_value).multiply(radix_value.pow(power--));
+            current = char_to_digit(value.at(i));
+            converted_value += value_from(current).multiply(radix_value.pow(power--));
         }
         return std::move(converted_value.value_);
     }
@@ -1116,8 +1130,8 @@ private:
             auto remainder = decimal_value.mod(modulo);
             decimal_value /= modulo;
 
-            auto symbol = base_chars()[std::stoi(remainder.to_string())];
-            result.push_back(symbol);
+            auto c = base_chars()[std::stoi(remainder.to_string())];
+            result.push_back(c);
         }
         std::ranges::reverse(result);
 
