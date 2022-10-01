@@ -227,23 +227,23 @@ public:
 
     /// @brief Shifts the current value to left on right operand value and assigns the result.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    Modified object.
     ///
     big_integer& operator<<=(const big_integer& rhs) &
     {
-        *this = this->left_shift(rhs);
+        *this = this->shift_left(rhs);
         return *this;
     }
 
     /// @brief Shifts the current value to left on right operand value and assigns the result.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    SModified object.
     ///
     big_integer& operator>>=(const big_integer& rhs) &
     {
-        *this = this->right_shift(rhs);
+        *this = this->shift_right(rhs);
         return *this;
     }
 
@@ -291,11 +291,11 @@ public:
 
     /// @brief Shifts the current value to left on right operand value.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    big_integer left_shift(const big_integer& rhs) const
+    big_integer shift_left(const big_integer& rhs) const
     {
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
@@ -310,11 +310,11 @@ public:
 
     /// @brief Shifts the current value to right on right operand value.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    big_integer right_shift(const big_integer& rhs) const
+    big_integer shift_right(const big_integer& rhs) const
     {
         if (rhs.is_negative())
             throw std::invalid_argument("negative value");
@@ -334,22 +334,22 @@ public:
 
     /// @brief Shifts the current value to left on right operand value.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    Shifted current value.
     ///
     big_integer operator<<(const big_integer& rhs) const
     {
-        return this->left_shift(rhs);
+        return this->shift_left(rhs);
     }
 
     /// @brief Shifts the current value to right on right operand value.
     ///
-    /// @param rhs The value to shift on.
+    /// @param rhs The value to shift_right on.
     /// @return    Shifted current value.
     ///
     big_integer operator>>(const big_integer& rhs) const
     {
-        return this->right_shift(rhs);
+        return this->shift_right(rhs);
     }
 
     // Comparison ----------------------------------------------------------------------------------
