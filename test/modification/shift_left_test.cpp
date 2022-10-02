@@ -16,5 +16,5 @@ TEST(biginteger_modification, shift_left_shift_2)
 
 TEST(biginteger_modification, shift_left_throw)
 {
-    EXPECT_THROW(big_integer{10}.shift_left(-2), std::invalid_argument);
+    EXPECT_THROW(auto temp = big_integer{10}.shift_left(-2), std::invalid_argument);
 }
