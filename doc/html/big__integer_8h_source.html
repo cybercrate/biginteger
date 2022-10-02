@@ -801,125 +801,147 @@ $(function() {
 <div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>    }</div>
 <div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span> </div>
 <div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00990" name="l00990"></a><span class="lineno"><a class="line" href="classwingmann_1_1numerics_1_1big__integer.html#a091863c39f05795dfd603f04e0e2fd52">  990</a></span>    std::optional&lt;int&gt; <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a091863c39f05795dfd603f04e0e2fd52">to_int</a>(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix = radix_type::decimal)</div>
-<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>    {</div>
-<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>        <span class="keywordflow">return</span> this-&gt;safe_convert(radix, std::stoi);</div>
-<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>    }</div>
+<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00992" name="l00992"></a><span class="lineno"><a class="line" href="classwingmann_1_1numerics_1_1big__integer.html#ae82abe892c51c10519d6bdc508bc29fd">  992</a></span>    std::optional&lt;T&gt; <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#ae82abe892c51c10519d6bdc508bc29fd">to_integer</a>(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix = radix_type::decimal) <span class="keyword">const</span></div>
+<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>        <span class="keyword">requires</span> std::integral&lt;T&gt; &amp;&amp; (!std::is_same&lt;T, bool&gt;::value);</div>
 <div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span> </div>
-<div class="line"><a id="l01000" name="l01000"></a><span class="lineno"><a class="line" href="classwingmann_1_1numerics_1_1big__integer.html#ab610ef75d985c8927ab5b0461e7be604"> 1000</a></span>    std::optional&lt;std::int64_t&gt; <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#ab610ef75d985c8927ab5b0461e7be604">to_int64</a>(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix = radix_type::decimal)</div>
-<div class="line"><a id="l01001" name="l01001"></a><span class="lineno"> 1001</span>    {</div>
-<div class="line"><a id="l01002" name="l01002"></a><span class="lineno"> 1002</span>        <span class="keywordflow">return</span> this-&gt;safe_convert(radix, std::stoll);</div>
-<div class="line"><a id="l01003" name="l01003"></a><span class="lineno"> 1003</span>    }</div>
-<div class="line"><a id="l01004" name="l01004"></a><span class="lineno"> 1004</span> </div>
-<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l01011" name="l01011"></a><span class="lineno"> 1011</span>    [[nodiscard]]</div>
-<div class="line"><a id="l01012" name="l01012"></a><span class="lineno"><a class="line" href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71"> 1012</a></span>    std::string <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">to_string</a>(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix = radix_type::decimal)<span class="keyword"> const</span></div>
-<div class="line"><a id="l01013" name="l01013"></a><span class="lineno"> 1013</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l01014" name="l01014"></a><span class="lineno"> 1014</span>        std::stringstream ss;</div>
-<div class="line"><a id="l01015" name="l01015"></a><span class="lineno"> 1015</span> </div>
-<div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>        <span class="keywordflow">if</span> (this-&gt;<a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a01999f82b4e576ff6b7b1f7c2a1e6ec3">is_negative</a>())</div>
-<div class="line"><a id="l01017" name="l01017"></a><span class="lineno"> 1017</span>            ss &lt;&lt; <span class="charliteral">&#39;-&#39;</span>;</div>
-<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"> 1018</span> </div>
-<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>        <span class="keywordflow">if</span> (radix == radix_type::decimal)</div>
-<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span>            ss &lt;&lt; this-&gt;value_;</div>
-<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span>            ss &lt;&lt; convert_from_base_ten(*<span class="keyword">this</span>, radix);</div>
-<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span> </div>
-<div class="line"><a id="l01024" name="l01024"></a><span class="lineno"> 1024</span>        <span class="keywordflow">return</span> ss.str();</div>
-<div class="line"><a id="l01025" name="l01025"></a><span class="lineno"> 1025</span>    }</div>
-<div class="line"><a id="l01026" name="l01026"></a><span class="lineno"> 1026</span> </div>
-<div class="line"><a id="l01027" name="l01027"></a><span class="lineno"> 1027</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l01028" name="l01028"></a><span class="lineno"> 1028</span>    <span class="comment">// Checks for value is valid.</span></div>
-<div class="line"><a id="l01029" name="l01029"></a><span class="lineno"> 1029</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> is_valid_number(<span class="keyword">const</span> std::string&amp; value, <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
-<div class="line"><a id="l01030" name="l01030"></a><span class="lineno"> 1030</span>    {</div>
-<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>        std::pair range{<span class="charliteral">&#39;0&#39;</span>, <span class="charliteral">&#39;9&#39;</span>};</div>
-<div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span> </div>
-<div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>        <span class="keywordflow">if</span> (radix == radix_type::binary)</div>
-<div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span>            range.second = <span class="charliteral">&#39;1&#39;</span>;</div>
-<div class="line"><a id="l01035" name="l01035"></a><span class="lineno"> 1035</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (radix == radix_type::octal)</div>
-<div class="line"><a id="l01036" name="l01036"></a><span class="lineno"> 1036</span>            range.second = <span class="charliteral">&#39;7&#39;</span>;</div>
-<div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (radix == radix_type::hexadecimal)</div>
-<div class="line"><a id="l01038" name="l01038"></a><span class="lineno"> 1038</span>            range.second = <span class="charliteral">&#39;F&#39;</span>;</div>
-<div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span> </div>
-<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>        <span class="keywordflow">return</span> std::ranges::all_of(value, [=](<span class="keyword">const</span> <span class="keyword">auto</span> c) {</div>
-<div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span>                <span class="keywordflow">return</span> c &gt;= range.first &amp;&amp; c &lt;= range.second;</div>
-<div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span>            });</div>
-<div class="line"><a id="l01043" name="l01043"></a><span class="lineno"> 1043</span>    }</div>
-<div class="line"><a id="l01044" name="l01044"></a><span class="lineno"> 1044</span> </div>
-<div class="line"><a id="l01045" name="l01045"></a><span class="lineno"> 1045</span>    <span class="comment">// Removes first char if its sign.</span></div>
-<div class="line"><a id="l01046" name="l01046"></a><span class="lineno"> 1046</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> remove_sign(std::string&amp; value)</div>
-<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>    {</div>
-<div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>        value.erase(0, 1);</div>
-<div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>    }</div>
-<div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span> </div>
-<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span>    <span class="comment">// Removes leading not significant zeros.</span></div>
-<div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> remove_leading_zeros(std::string&amp; value)</div>
-<div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span>    {</div>
-<div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span>        <span class="keywordflow">while</span> (value.starts_with(<span class="charliteral">&#39;0&#39;</span>) &amp;&amp; (value.length() != 1))</div>
-<div class="line"><a id="l01055" name="l01055"></a><span class="lineno"> 1055</span>            value.erase(0, 1);</div>
-<div class="line"><a id="l01056" name="l01056"></a><span class="lineno"> 1056</span>    }</div>
-<div class="line"><a id="l01057" name="l01057"></a><span class="lineno"> 1057</span> </div>
-<div class="line"><a id="l01058" name="l01058"></a><span class="lineno"> 1058</span>    <span class="comment">// Converts char to digit.</span></div>
-<div class="line"><a id="l01059" name="l01059"></a><span class="lineno"> 1059</span>    <span class="keyword">static</span> <span class="keywordtype">int</span> char_to_digit(<span class="keyword">const</span> <span class="keywordtype">char</span> value)</div>
-<div class="line"><a id="l01060" name="l01060"></a><span class="lineno"> 1060</span>    {</div>
-<div class="line"><a id="l01061" name="l01061"></a><span class="lineno"> 1061</span>        <span class="keywordflow">return</span> (<span class="charliteral">&#39;0&#39;</span> &lt;= value) &amp;&amp; (value &lt;= <span class="charliteral">&#39;9&#39;</span>)</div>
-<div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>            ? (value - <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span>            : (std::tolower(value) - <span class="charliteral">&#39;a&#39;</span>) + 10;</div>
-<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span>    }</div>
-<div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span> </div>
-<div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>    <span class="comment">// Returns the base char values of a system of number.</span></div>
-<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> base_chars()</div>
-<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>    {</div>
-<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;0123456789ABCDEF&quot;</span>;</div>
-<div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span>    }</div>
-<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span> </div>
-<div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span>    <span class="comment">// Converts not base ten value to string.</span></div>
-<div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>    <span class="keyword">static</span> std::string convert_from_base_ten(<span class="keyword">const</span> <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a9cf293ea8e711635841e5134deee6c8a">big_integer</a>&amp; value, <span class="keyword">const</span> <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
-<div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span>    {</div>
-<div class="line"><a id="l01075" name="l01075"></a><span class="lineno"> 1075</span>        <span class="keyword">auto</span> decimal_value{value};</div>
-<div class="line"><a id="l01076" name="l01076"></a><span class="lineno"> 1076</span>        <span class="keyword">auto</span> modulo = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(<span class="keyword">static_cast&lt;</span>std::uint8_t<span class="keyword">&gt;</span>(radix));</div>
-<div class="line"><a id="l01077" name="l01077"></a><span class="lineno"> 1077</span> </div>
-<div class="line"><a id="l01078" name="l01078"></a><span class="lineno"> 1078</span>        std::string result;</div>
-<div class="line"><a id="l01079" name="l01079"></a><span class="lineno"> 1079</span> </div>
-<div class="line"><a id="l01080" name="l01080"></a><span class="lineno"> 1080</span>        <span class="keywordflow">while</span> (!decimal_value.equal(0)) {</div>
-<div class="line"><a id="l01081" name="l01081"></a><span class="lineno"> 1081</span>            <span class="keyword">auto</span> remainder = decimal_value.mod(modulo);</div>
-<div class="line"><a id="l01082" name="l01082"></a><span class="lineno"> 1082</span>            decimal_value /= modulo;</div>
-<div class="line"><a id="l01083" name="l01083"></a><span class="lineno"> 1083</span> </div>
-<div class="line"><a id="l01084" name="l01084"></a><span class="lineno"> 1084</span>            <span class="keyword">auto</span> c = base_chars()[std::stoi(remainder.to_string())];</div>
-<div class="line"><a id="l01085" name="l01085"></a><span class="lineno"> 1085</span>            result.push_back(c);</div>
-<div class="line"><a id="l01086" name="l01086"></a><span class="lineno"> 1086</span>        }</div>
-<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span>        std::ranges::reverse(result);</div>
-<div class="line"><a id="l01088" name="l01088"></a><span class="lineno"> 1088</span> </div>
-<div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span>        <span class="keywordflow">return</span> std::move(result);</div>
-<div class="line"><a id="l01090" name="l01090"></a><span class="lineno"> 1090</span>    }</div>
-<div class="line"><a id="l01091" name="l01091"></a><span class="lineno"> 1091</span> </div>
-<div class="line"><a id="l01092" name="l01092"></a><span class="lineno"> 1092</span>    <span class="comment">// Converts string value to base ten.</span></div>
-<div class="line"><a id="l01093" name="l01093"></a><span class="lineno"> 1093</span>    <span class="keyword">static</span> std::string convert_to_base_ten(<span class="keyword">const</span> std::string&amp; value, <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
-<div class="line"><a id="l01094" name="l01094"></a><span class="lineno"> 1094</span>    {</div>
-<div class="line"><a id="l01095" name="l01095"></a><span class="lineno"> 1095</span>        <span class="keyword">auto</span> last = char_to_digit(value.back());</div>
-<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span>        <span class="keyword">auto</span> length = value.length();</div>
-<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span> </div>
-<div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>        <span class="keyword">auto</span> power = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(length - 1);</div>
-<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>        <span class="keyword">auto</span> converted_value = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(last);</div>
-<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>        <span class="keyword">auto</span> radix_value = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(<span class="keyword">static_cast&lt;</span>std::uint8_t<span class="keyword">&gt;</span>(radix));</div>
-<div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span> </div>
-<div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span>        <span class="keywordtype">int</span> current;</div>
-<div class="line"><a id="l01103" name="l01103"></a><span class="lineno"> 1103</span> </div>
-<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; length - 1; ++i) {</div>
-<div class="line"><a id="l01105" name="l01105"></a><span class="lineno"> 1105</span>            current = char_to_digit(value.at(i));</div>
-<div class="line"><a id="l01106" name="l01106"></a><span class="lineno"> 1106</span>            converted_value += <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(current).<a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#ac44e55fe3dd6c46db3b07082c04bb0dc">multiply</a>(radix_value.pow(power--));</div>
-<div class="line"><a id="l01107" name="l01107"></a><span class="lineno"> 1107</span>        }</div>
-<div class="line"><a id="l01108" name="l01108"></a><span class="lineno"> 1108</span>        <span class="keywordflow">return</span> std::move(converted_value.value_);</div>
-<div class="line"><a id="l01109" name="l01109"></a><span class="lineno"> 1109</span>    }</div>
-<div class="line"><a id="l01110" name="l01110"></a><span class="lineno"> 1110</span>};</div>
-<div class="line"><a id="l01111" name="l01111"></a><span class="lineno"> 1111</span> </div>
-<div class="line"><a id="l01112" name="l01112"></a><span class="lineno"> 1112</span>} <span class="comment">// namespace wingmann::numerics</span></div>
-<div class="line"><a id="l01113" name="l01113"></a><span class="lineno"> 1113</span> </div>
-<div class="line"><a id="l01114" name="l01114"></a><span class="lineno"> 1114</span><span class="preprocessor">#endif </span><span class="comment">// WINGMANN_BIGINTEGER_H</span></div>
+<div class="line"><a id="l01001" name="l01001"></a><span class="lineno"> 1001</span>    <span class="keyword">template</span>&lt;&gt;</div>
+<div class="line"><a id="l01002" name="l01002"></a><span class="lineno"> 1002</span>    [[nodiscard]]</div>
+<div class="line"><a id="l01003" name="l01003"></a><span class="lineno"> 1003</span>    std::optional&lt;int&gt; to_integer&lt;int&gt;(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01004" name="l01004"></a><span class="lineno"> 1004</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span>        <span class="keywordflow">return</span> safe_convert&lt;int&gt;(radix, std::stoi);</div>
+<div class="line"><a id="l01006" name="l01006"></a><span class="lineno"> 1006</span>    }</div>
+<div class="line"><a id="l01007" name="l01007"></a><span class="lineno"> 1007</span> </div>
+<div class="line"><a id="l01014" name="l01014"></a><span class="lineno"> 1014</span>    <span class="keyword">template</span>&lt;&gt;</div>
+<div class="line"><a id="l01015" name="l01015"></a><span class="lineno"> 1015</span>    [[nodiscard]]</div>
+<div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>    std::optional&lt;std::int64_t&gt; to_integer&lt;std::int64_t&gt;(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01017" name="l01017"></a><span class="lineno"> 1017</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"> 1018</span><span class="preprocessor">#if defined(__WORDSIZE) &amp;&amp; __WORDSIZE == 64</span></div>
+<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>        <span class="keywordflow">return</span> safe_convert&lt;std::int64_t&gt;(radix, std::stol);</div>
+<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span>        <span class="keywordflow">return</span> safe_convert&lt;std::int64_t&gt;(radix, std::stoll);</div>
+<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span>    }</div>
+<div class="line"><a id="l01024" name="l01024"></a><span class="lineno"> 1024</span> </div>
+<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>    <span class="keyword">template</span>&lt;&gt;</div>
+<div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span>    [[nodiscard]]</div>
+<div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>    std::optional&lt;std::uint64_t&gt; to_integer&lt;std::uint64_t&gt;(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l01035" name="l01035"></a><span class="lineno"> 1035</span><span class="preprocessor">#if defined(__WORDSIZE) &amp;&amp; __WORDSIZE == 64</span></div>
+<div class="line"><a id="l01036" name="l01036"></a><span class="lineno"> 1036</span>        <span class="keywordflow">return</span> safe_convert&lt;std::uint64_t&gt;(radix, std::stoul);</div>
+<div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l01038" name="l01038"></a><span class="lineno"> 1038</span>        <span class="keywordflow">return</span> safe_convert&lt;std::uint64_t&gt;(radix, std::stoull);</div>
+<div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>    }</div>
+<div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span> </div>
+<div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>    [[nodiscard]]</div>
+<div class="line"><a id="l01049" name="l01049"></a><span class="lineno"><a class="line" href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71"> 1049</a></span>    std::string <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">to_string</a>(<a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix = radix_type::decimal)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span>        std::stringstream ss;</div>
+<div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span> </div>
+<div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span>        <span class="keywordflow">if</span> (this-&gt;<a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a01999f82b4e576ff6b7b1f7c2a1e6ec3">is_negative</a>())</div>
+<div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span>            ss &lt;&lt; <span class="charliteral">&#39;-&#39;</span>;</div>
+<div class="line"><a id="l01055" name="l01055"></a><span class="lineno"> 1055</span> </div>
+<div class="line"><a id="l01056" name="l01056"></a><span class="lineno"> 1056</span>        <span class="keywordflow">if</span> (radix == radix_type::decimal)</div>
+<div class="line"><a id="l01057" name="l01057"></a><span class="lineno"> 1057</span>            ss &lt;&lt; this-&gt;value_;</div>
+<div class="line"><a id="l01058" name="l01058"></a><span class="lineno"> 1058</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l01059" name="l01059"></a><span class="lineno"> 1059</span>            ss &lt;&lt; convert_from_base_ten(*<span class="keyword">this</span>, radix);</div>
+<div class="line"><a id="l01060" name="l01060"></a><span class="lineno"> 1060</span> </div>
+<div class="line"><a id="l01061" name="l01061"></a><span class="lineno"> 1061</span>        <span class="keywordflow">return</span> ss.str();</div>
+<div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>    }</div>
+<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span> </div>
+<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span>    <span class="comment">// Checks for value is valid.</span></div>
+<div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> is_valid_number(<span class="keyword">const</span> std::string&amp; value, <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
+<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>    {</div>
+<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>        std::pair range{<span class="charliteral">&#39;0&#39;</span>, <span class="charliteral">&#39;9&#39;</span>};</div>
+<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span> </div>
+<div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span>        <span class="keywordflow">if</span> (radix == radix_type::binary)</div>
+<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span>            range.second = <span class="charliteral">&#39;1&#39;</span>;</div>
+<div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (radix == radix_type::octal)</div>
+<div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>            range.second = <span class="charliteral">&#39;7&#39;</span>;</div>
+<div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (radix == radix_type::hexadecimal)</div>
+<div class="line"><a id="l01075" name="l01075"></a><span class="lineno"> 1075</span>            range.second = <span class="charliteral">&#39;F&#39;</span>;</div>
+<div class="line"><a id="l01076" name="l01076"></a><span class="lineno"> 1076</span> </div>
+<div class="line"><a id="l01077" name="l01077"></a><span class="lineno"> 1077</span>        <span class="keywordflow">return</span> std::ranges::all_of(value, [=](<span class="keyword">const</span> <span class="keyword">auto</span> c) {</div>
+<div class="line"><a id="l01078" name="l01078"></a><span class="lineno"> 1078</span>                <span class="keywordflow">return</span> c &gt;= range.first &amp;&amp; c &lt;= range.second;</div>
+<div class="line"><a id="l01079" name="l01079"></a><span class="lineno"> 1079</span>            });</div>
+<div class="line"><a id="l01080" name="l01080"></a><span class="lineno"> 1080</span>    }</div>
+<div class="line"><a id="l01081" name="l01081"></a><span class="lineno"> 1081</span> </div>
+<div class="line"><a id="l01082" name="l01082"></a><span class="lineno"> 1082</span>    <span class="comment">// Removes first char if its sign.</span></div>
+<div class="line"><a id="l01083" name="l01083"></a><span class="lineno"> 1083</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> remove_sign(std::string&amp; value)</div>
+<div class="line"><a id="l01084" name="l01084"></a><span class="lineno"> 1084</span>    {</div>
+<div class="line"><a id="l01085" name="l01085"></a><span class="lineno"> 1085</span>        value.erase(0, 1);</div>
+<div class="line"><a id="l01086" name="l01086"></a><span class="lineno"> 1086</span>    }</div>
+<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span> </div>
+<div class="line"><a id="l01088" name="l01088"></a><span class="lineno"> 1088</span>    <span class="comment">// Removes leading not significant zeros.</span></div>
+<div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> remove_leading_zeros(std::string&amp; value)</div>
+<div class="line"><a id="l01090" name="l01090"></a><span class="lineno"> 1090</span>    {</div>
+<div class="line"><a id="l01091" name="l01091"></a><span class="lineno"> 1091</span>        <span class="keywordflow">while</span> (value.starts_with(<span class="charliteral">&#39;0&#39;</span>) &amp;&amp; (value.length() != 1))</div>
+<div class="line"><a id="l01092" name="l01092"></a><span class="lineno"> 1092</span>            value.erase(0, 1);</div>
+<div class="line"><a id="l01093" name="l01093"></a><span class="lineno"> 1093</span>    }</div>
+<div class="line"><a id="l01094" name="l01094"></a><span class="lineno"> 1094</span> </div>
+<div class="line"><a id="l01095" name="l01095"></a><span class="lineno"> 1095</span>    <span class="comment">// Converts char to digit.</span></div>
+<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span>    <span class="keyword">static</span> <span class="keywordtype">int</span> char_to_digit(<span class="keyword">const</span> <span class="keywordtype">char</span> value)</div>
+<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span>    {</div>
+<div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>        <span class="keywordflow">return</span> (<span class="charliteral">&#39;0&#39;</span> &lt;= value) &amp;&amp; (value &lt;= <span class="charliteral">&#39;9&#39;</span>)</div>
+<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>            ? (value - <span class="charliteral">&#39;0&#39;</span>)</div>
+<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>            : (std::tolower(value) - <span class="charliteral">&#39;a&#39;</span>) + 10;</div>
+<div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span>    }</div>
+<div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span> </div>
+<div class="line"><a id="l01103" name="l01103"></a><span class="lineno"> 1103</span>    <span class="comment">// Returns the base char values of a system of number.</span></div>
+<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> base_chars()</div>
+<div class="line"><a id="l01105" name="l01105"></a><span class="lineno"> 1105</span>    {</div>
+<div class="line"><a id="l01106" name="l01106"></a><span class="lineno"> 1106</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;0123456789ABCDEF&quot;</span>;</div>
+<div class="line"><a id="l01107" name="l01107"></a><span class="lineno"> 1107</span>    }</div>
+<div class="line"><a id="l01108" name="l01108"></a><span class="lineno"> 1108</span> </div>
+<div class="line"><a id="l01109" name="l01109"></a><span class="lineno"> 1109</span>    <span class="comment">// Converts not base ten value to string.</span></div>
+<div class="line"><a id="l01110" name="l01110"></a><span class="lineno"> 1110</span>    <span class="keyword">static</span> std::string convert_from_base_ten(<span class="keyword">const</span> <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a9cf293ea8e711635841e5134deee6c8a">big_integer</a>&amp; value, <span class="keyword">const</span> <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
+<div class="line"><a id="l01111" name="l01111"></a><span class="lineno"> 1111</span>    {</div>
+<div class="line"><a id="l01112" name="l01112"></a><span class="lineno"> 1112</span>        <span class="keyword">auto</span> decimal_value{value};</div>
+<div class="line"><a id="l01113" name="l01113"></a><span class="lineno"> 1113</span>        <span class="keyword">auto</span> modulo = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(<span class="keyword">static_cast&lt;</span>std::uint8_t<span class="keyword">&gt;</span>(radix));</div>
+<div class="line"><a id="l01114" name="l01114"></a><span class="lineno"> 1114</span> </div>
+<div class="line"><a id="l01115" name="l01115"></a><span class="lineno"> 1115</span>        std::string result;</div>
+<div class="line"><a id="l01116" name="l01116"></a><span class="lineno"> 1116</span> </div>
+<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span>        <span class="keywordflow">while</span> (!decimal_value.equal(0)) {</div>
+<div class="line"><a id="l01118" name="l01118"></a><span class="lineno"> 1118</span>            <span class="keyword">auto</span> remainder = decimal_value.mod(modulo);</div>
+<div class="line"><a id="l01119" name="l01119"></a><span class="lineno"> 1119</span>            decimal_value /= modulo;</div>
+<div class="line"><a id="l01120" name="l01120"></a><span class="lineno"> 1120</span> </div>
+<div class="line"><a id="l01121" name="l01121"></a><span class="lineno"> 1121</span>            <span class="keyword">auto</span> c = base_chars()[std::stoi(remainder.to_string())];</div>
+<div class="line"><a id="l01122" name="l01122"></a><span class="lineno"> 1122</span>            result.push_back(c);</div>
+<div class="line"><a id="l01123" name="l01123"></a><span class="lineno"> 1123</span>        }</div>
+<div class="line"><a id="l01124" name="l01124"></a><span class="lineno"> 1124</span>        std::ranges::reverse(result);</div>
+<div class="line"><a id="l01125" name="l01125"></a><span class="lineno"> 1125</span> </div>
+<div class="line"><a id="l01126" name="l01126"></a><span class="lineno"> 1126</span>        <span class="keywordflow">return</span> std::move(result);</div>
+<div class="line"><a id="l01127" name="l01127"></a><span class="lineno"> 1127</span>    }</div>
+<div class="line"><a id="l01128" name="l01128"></a><span class="lineno"> 1128</span> </div>
+<div class="line"><a id="l01129" name="l01129"></a><span class="lineno"> 1129</span>    <span class="comment">// Converts string value to base ten.</span></div>
+<div class="line"><a id="l01130" name="l01130"></a><span class="lineno"> 1130</span>    <span class="keyword">static</span> std::string convert_to_base_ten(<span class="keyword">const</span> std::string&amp; value, <a class="code hl_enumeration" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix)</div>
+<div class="line"><a id="l01131" name="l01131"></a><span class="lineno"> 1131</span>    {</div>
+<div class="line"><a id="l01132" name="l01132"></a><span class="lineno"> 1132</span>        <span class="keyword">auto</span> last = char_to_digit(value.back());</div>
+<div class="line"><a id="l01133" name="l01133"></a><span class="lineno"> 1133</span>        <span class="keyword">auto</span> length = value.length();</div>
+<div class="line"><a id="l01134" name="l01134"></a><span class="lineno"> 1134</span> </div>
+<div class="line"><a id="l01135" name="l01135"></a><span class="lineno"> 1135</span>        <span class="keyword">auto</span> power = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(length - 1);</div>
+<div class="line"><a id="l01136" name="l01136"></a><span class="lineno"> 1136</span>        <span class="keyword">auto</span> converted_value = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(last);</div>
+<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span>        <span class="keyword">auto</span> radix_value = <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(<span class="keyword">static_cast&lt;</span>std::uint8_t<span class="keyword">&gt;</span>(radix));</div>
+<div class="line"><a id="l01138" name="l01138"></a><span class="lineno"> 1138</span> </div>
+<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"> 1139</span>        <span class="keywordtype">int</span> current;</div>
+<div class="line"><a id="l01140" name="l01140"></a><span class="lineno"> 1140</span> </div>
+<div class="line"><a id="l01141" name="l01141"></a><span class="lineno"> 1141</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; length - 1; ++i) {</div>
+<div class="line"><a id="l01142" name="l01142"></a><span class="lineno"> 1142</span>            current = char_to_digit(value.at(i));</div>
+<div class="line"><a id="l01143" name="l01143"></a><span class="lineno"> 1143</span>            converted_value += <a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#a31ba6a2d1efcc5c15cec4a2e5e76728b">value_from</a>(current).<a class="code hl_function" href="classwingmann_1_1numerics_1_1big__integer.html#ac44e55fe3dd6c46db3b07082c04bb0dc">multiply</a>(radix_value.pow(power--));</div>
+<div class="line"><a id="l01144" name="l01144"></a><span class="lineno"> 1144</span>        }</div>
+<div class="line"><a id="l01145" name="l01145"></a><span class="lineno"> 1145</span>        <span class="keywordflow">return</span> std::move(converted_value.value_);</div>
+<div class="line"><a id="l01146" name="l01146"></a><span class="lineno"> 1146</span>    }</div>
+<div class="line"><a id="l01147" name="l01147"></a><span class="lineno"> 1147</span>};</div>
+<div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span> </div>
+<div class="line"><a id="l01149" name="l01149"></a><span class="lineno"> 1149</span>} <span class="comment">// namespace wingmann::numerics</span></div>
+<div class="line"><a id="l01150" name="l01150"></a><span class="lineno"> 1150</span> </div>
+<div class="line"><a id="l01151" name="l01151"></a><span class="lineno"> 1151</span><span class="preprocessor">#endif </span><span class="comment">// WINGMANN_BIGINTEGER_H</span></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html">wingmann::numerics::big_integer</a></div><div class="ttdoc">Arbitrarily large integer.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00028">big_integer.h:28</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a01999f82b4e576ff6b7b1f7c2a1e6ec3"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a01999f82b4e576ff6b7b1f7c2a1e6ec3">wingmann::numerics::big_integer::is_negative</a></div><div class="ttdeci">bool is_negative() const</div><div class="ttdoc">Checks for value sign.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00895">big_integer.h:895</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a08944edb0548e3f2602e07342f936580"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a08944edb0548e3f2602e07342f936580">wingmann::numerics::big_integer::operator&gt;&gt;=</a></div><div class="ttdeci">big_integer &amp; operator&gt;&gt;=(const big_integer &amp;rhs) &amp;</div><div class="ttdoc">Shifts the current value to left on right operand value and assigns the result.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00244">big_integer.h:244</a></div></div>
-<div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a091863c39f05795dfd603f04e0e2fd52"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a091863c39f05795dfd603f04e0e2fd52">wingmann::numerics::big_integer::to_int</a></div><div class="ttdeci">std::optional&lt; int &gt; to_int(radix_type radix=radix_type::decimal)</div><div class="ttdoc">Converts to integral value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00990">big_integer.h:990</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a09a3ad59ea5bc21827555811ba121679"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a09a3ad59ea5bc21827555811ba121679">wingmann::numerics::big_integer::pow</a></div><div class="ttdeci">big_integer pow(const big_integer &amp;rhs) const</div><div class="ttdoc">Rises the current value to the power of the right operand.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00756">big_integer.h:756</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a0be3b74a52f5cdec5b6c581efa9827a0"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a0be3b74a52f5cdec5b6c581efa9827a0">wingmann::numerics::big_integer::operator%=</a></div><div class="ttdeci">big_integer &amp; operator%=(const big_integer &amp;rhs) &amp;</div><div class="ttdoc">Gets the remainder of the current value divided by the right operand and assigns the result.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00222">big_integer.h:222</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a1035958cc8c71c2b4639de3196e96c41"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a1035958cc8c71c2b4639de3196e96c41">wingmann::numerics::big_integer::operator--</a></div><div class="ttdeci">big_integer operator--(int) &amp;</div><div class="ttdoc">Decrements the current value after returns copy.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00283">big_integer.h:283</a></div></div>
@@ -937,7 +959,7 @@ $(function() {
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a582bda4cc6a0d81186ca7db47c2e78ef"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a582bda4cc6a0d81186ca7db47c2e78ef">wingmann::numerics::big_integer::is_pow10</a></div><div class="ttdeci">bool is_pow10()</div><div class="ttdoc">Checks for current value is power of 10.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00865">big_integer.h:865</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a584929d20da545fae9c3ee29873ddcc9"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a584929d20da545fae9c3ee29873ddcc9">wingmann::numerics::big_integer::operator-</a></div><div class="ttdeci">big_integer operator-(const big_integer &amp;rhs) const</div><div class="ttdoc">Subtracts value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00686">big_integer.h:686</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a5a485c3f1bb97d6768fb56c29cf86f7b"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a5a485c3f1bb97d6768fb56c29cf86f7b">wingmann::numerics::big_integer::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, const big_integer &amp;value)</div><div class="ttdoc">Puts the value to the output stream.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00919">big_integer.h:919</a></div></div>
-<div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a5d7b9499e12f418a167f07e4ebfebf71"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">wingmann::numerics::big_integer::to_string</a></div><div class="ttdeci">std::string to_string(radix_type radix=radix_type::decimal) const</div><div class="ttdoc">Converts to string representation.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l01012">big_integer.h:1012</a></div></div>
+<div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a5d7b9499e12f418a167f07e4ebfebf71"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">wingmann::numerics::big_integer::to_string</a></div><div class="ttdeci">std::string to_string(radix_type radix=radix_type::decimal) const</div><div class="ttdoc">Converts to string representation.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l01049">big_integer.h:1049</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a5e512f23d780b81e9314f54d7b867394"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a5e512f23d780b81e9314f54d7b867394">wingmann::numerics::big_integer::big_integer</a></div><div class="ttdeci">big_integer(const char *value, radix_type radix=radix_type::decimal)</div><div class="ttdoc">Constructs from string literal.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00086">big_integer.h:86</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a5fec7967bf17c8a0911fbb4b9708bdc6"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a5fec7967bf17c8a0911fbb4b9708bdc6">wingmann::numerics::big_integer::operator*</a></div><div class="ttdeci">big_integer operator*(const big_integer &amp;rhs) const</div><div class="ttdoc">Multiples value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00696">big_integer.h:696</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_a681a2e8d77bb970ced52a358036b594c"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#a681a2e8d77bb970ced52a358036b594c">wingmann::numerics::big_integer::operator+=</a></div><div class="ttdeci">big_integer &amp; operator+=(const big_integer &amp;rhs) &amp;</div><div class="ttdoc">Adds the right operand to the current value and assigns the result.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00177">big_integer.h:177</a></div></div>
@@ -960,7 +982,6 @@ $(function() {
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_aa39373f72402c968dd92b8b8fd38cae6"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#aa39373f72402c968dd92b8b8fd38cae6">wingmann::numerics::big_integer::operator=</a></div><div class="ttdeci">big_integer &amp; operator=(std::string value) &amp;</div><div class="ttdoc">Constructs from the string value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00150">big_integer.h:150</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_aa86b4b907f6916a134ae31792f518557"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#aa86b4b907f6916a134ae31792f518557">wingmann::numerics::big_integer::is_positive</a></div><div class="ttdeci">bool is_positive() const</div><div class="ttdoc">Checks for value sign.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00886">big_integer.h:886</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_aacbceebfe55f829061865c9cb319c063"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#aacbceebfe55f829061865c9cb319c063">wingmann::numerics::big_integer::shift_right</a></div><div class="ttdeci">big_integer shift_right(const big_integer &amp;rhs) const</div><div class="ttdoc">Shifts the current value to right on right operand value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00317">big_integer.h:317</a></div></div>
-<div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ab610ef75d985c8927ab5b0461e7be604"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ab610ef75d985c8927ab5b0461e7be604">wingmann::numerics::big_integer::to_int64</a></div><div class="ttdeci">std::optional&lt; std::int64_t &gt; to_int64(radix_type radix=radix_type::decimal)</div><div class="ttdoc">Converts to integral value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l01000">big_integer.h:1000</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ab82875a803f082f097948d8ecad2b257"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ab82875a803f082f097948d8ecad2b257">wingmann::numerics::big_integer::divide</a></div><div class="ttdeci">big_integer divide(const big_integer &amp;rhs) const</div><div class="ttdoc">Divides value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00610">big_integer.h:610</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ab94250665b4f458d08fcee229657fa47"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ab94250665b4f458d08fcee229657fa47">wingmann::numerics::big_integer::big_integer</a></div><div class="ttdeci">big_integer(T value)</div><div class="ttdoc">Constructs from integral.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00076">big_integer.h:76</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ac44e55fe3dd6c46db3b07082c04bb0dc"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ac44e55fe3dd6c46db3b07082c04bb0dc">wingmann::numerics::big_integer::multiply</a></div><div class="ttdeci">big_integer multiply(const big_integer &amp;rhs) const</div><div class="ttdoc">Multiplies value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00558">big_integer.h:558</a></div></div>
@@ -971,6 +992,7 @@ $(function() {
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_add688269f8a65591e2ee40c6ea118e1b"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#add688269f8a65591e2ee40c6ea118e1b">wingmann::numerics::big_integer::add</a></div><div class="ttdeci">big_integer add(const big_integer &amp;rhs) const</div><div class="ttdoc">Adds value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00443">big_integer.h:443</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_adebf8d6a243358afc0571e5180181d9e"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#adebf8d6a243358afc0571e5180181d9e">wingmann::numerics::big_integer::compare</a></div><div class="ttdeci">std::strong_ordering compare(const big_integer &amp;rhs) const</div><div class="ttdoc">Three way compares the current value and right side operand.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00363">big_integer.h:363</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ae79d900656fc892bbd23817b35d03c27"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ae79d900656fc892bbd23817b35d03c27">wingmann::numerics::big_integer::operator++</a></div><div class="ttdeci">big_integer &amp; operator++() &amp;</div><div class="ttdoc">Increments the current value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00255">big_integer.h:255</a></div></div>
+<div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_ae82abe892c51c10519d6bdc508bc29fd"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#ae82abe892c51c10519d6bdc508bc29fd">wingmann::numerics::big_integer::to_integer</a></div><div class="ttdeci">std::optional&lt; T &gt; to_integer(radix_type radix=radix_type::decimal) const</div><div class="ttdoc">Converts to integral value.</div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_aef0211435ebd6ce62bf7c08fc8c46944"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#aef0211435ebd6ce62bf7c08fc8c46944">wingmann::numerics::big_integer::operator=</a></div><div class="ttdeci">big_integer &amp; operator=(const char *value) &amp;</div><div class="ttdoc">Constructs from the string literal.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00139">big_integer.h:139</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_af0746ec429b3066f45d0622d6fb2de4a"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#af0746ec429b3066f45d0622d6fb2de4a">wingmann::numerics::big_integer::operator+</a></div><div class="ttdeci">big_integer operator+(const big_integer &amp;rhs) const</div><div class="ttdoc">Adds value.</div><div class="ttdef"><b>Definition:</b> <a href="big__integer_8h_source.html#l00676">big_integer.h:676</a></div></div>
 <div class="ttc" id="aclasswingmann_1_1numerics_1_1big__integer_html_af8eb5caa1d4b78855ffc6c7809fe179d"><div class="ttname"><a href="classwingmann_1_1numerics_1_1big__integer.html#af8eb5caa1d4b78855ffc6c7809fe179d">wingmann::numerics::big_integer::operator=</a></div><div class="ttdeci">big_integer &amp; operator=(const big_integer &amp;value) &amp;noexcept=default</div><div class="ttdoc">Copy assignment operator.</div></div>

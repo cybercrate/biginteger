@@ -984,22 +984,59 @@ protected:
 public:
     /// @brief Converts to integral value.
     ///
+    /// @tparam T    An integral type.
     /// @param radix The base of a system of number.
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
-    std::optional<int> to_int(radix_type radix = radix_type::decimal)
+    template<typename T>
+    std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
+        requires std::integral<T> && (!std::is_same<T, bool>::value);
+
+    /// @brief Converts to integral value.
+    ///
+    /// @tparam T    An integral type.
+    /// @param radix The base of a system of number.
+    /// @return      If converted, then integral value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<int> to_integer<int>(radix_type radix) const
     {
-        return this->safe_convert(radix, std::stoi);
+        return safe_convert<int>(radix, std::stoi);
     }
 
     /// @brief Converts to integral value.
     ///
+    /// @tparam T    An integral type.
     /// @param radix The base of a system of number.
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
-    std::optional<std::int64_t> to_int64(radix_type radix = radix_type::decimal)
+    template<>
+    [[nodiscard]]
+    std::optional<std::int64_t> to_integer<std::int64_t>(radix_type radix) const
     {
-        return this->safe_convert(radix, std::stoll);
+#if defined(__WORDSIZE) && __WORDSIZE == 64
+        return safe_convert<std::int64_t>(radix, std::stol);
+#else
+        return safe_convert<std::int64_t>(radix, std::stoll);
+#endif
+    }
+
+    /// @brief Converts to integral value.
+    ///
+    /// @tparam T    An integral type.
+    /// @param radix The base of a system of number.
+    /// @return      If converted, then integral value otherwise std::nullopt
+    ///
+    template<>
+    [[nodiscard]]
+    std::optional<std::uint64_t> to_integer<std::uint64_t>(radix_type radix) const
+    {
+#if defined(__WORDSIZE) && __WORDSIZE == 64
+        return safe_convert<std::uint64_t>(radix, std::stoul);
+#else
+        return safe_convert<std::uint64_t>(radix, std::stoull);
+#endif
     }
 
 public:

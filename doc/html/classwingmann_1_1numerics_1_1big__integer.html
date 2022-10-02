@@ -271,12 +271,23 @@ requires std::integral&lt;T&gt; &amp;&amp; (!std::is_same&lt;T, bool&gt;::value)
 <tr class="memitem:a7a9b73a495ba77cc69b7c8ca2d2a5b86"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a7a9b73a495ba77cc69b7c8ca2d2a5b86">operator bool</a> () const</td></tr>
 <tr class="memdesc:a7a9b73a495ba77cc69b7c8ca2d2a5b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to boolean representation.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a7a9b73a495ba77cc69b7c8ca2d2a5b86">More...</a><br /></td></tr>
 <tr class="separator:a7a9b73a495ba77cc69b7c8ca2d2a5b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a091863c39f05795dfd603f04e0e2fd52"><td class="memItemLeft" align="right" valign="top">std::optional&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a091863c39f05795dfd603f04e0e2fd52">to_int</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix=radix_type::decimal)</td></tr>
-<tr class="memdesc:a091863c39f05795dfd603f04e0e2fd52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a091863c39f05795dfd603f04e0e2fd52">More...</a><br /></td></tr>
-<tr class="separator:a091863c39f05795dfd603f04e0e2fd52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab610ef75d985c8927ab5b0461e7be604"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::int64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#ab610ef75d985c8927ab5b0461e7be604">to_int64</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix=radix_type::decimal)</td></tr>
-<tr class="memdesc:ab610ef75d985c8927ab5b0461e7be604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#ab610ef75d985c8927ab5b0461e7be604">More...</a><br /></td></tr>
-<tr class="separator:ab610ef75d985c8927ab5b0461e7be604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae82abe892c51c10519d6bdc508bc29fd"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; <br />
+requires std::integral&lt;T&gt; &amp;&amp; (!std::is_same&lt;T, bool&gt;::value)</td></tr>
+<tr class="memitem:ae82abe892c51c10519d6bdc508bc29fd"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#ae82abe892c51c10519d6bdc508bc29fd">to_integer</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix=radix_type::decimal) const</td></tr>
+<tr class="memdesc:ae82abe892c51c10519d6bdc508bc29fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#ae82abe892c51c10519d6bdc508bc29fd">More...</a><br /></td></tr>
+<tr class="separator:ae82abe892c51c10519d6bdc508bc29fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ea3d9e2fd0ea6ca182fd94ac98fe3e7"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a1ea3d9e2fd0ea6ca182fd94ac98fe3e7"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; int &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a1ea3d9e2fd0ea6ca182fd94ac98fe3e7">to_integer</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix) const</td></tr>
+<tr class="memdesc:a1ea3d9e2fd0ea6ca182fd94ac98fe3e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a1ea3d9e2fd0ea6ca182fd94ac98fe3e7">More...</a><br /></td></tr>
+<tr class="separator:a1ea3d9e2fd0ea6ca182fd94ac98fe3e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b0bf762ac5210312662b184b8584c3c"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a9b0bf762ac5210312662b184b8584c3c"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; std::int64_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a9b0bf762ac5210312662b184b8584c3c">to_integer</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix) const</td></tr>
+<tr class="memdesc:a9b0bf762ac5210312662b184b8584c3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a9b0bf762ac5210312662b184b8584c3c">More...</a><br /></td></tr>
+<tr class="separator:a9b0bf762ac5210312662b184b8584c3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10931b7ab16001a286e0a5bfadf83be2"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a10931b7ab16001a286e0a5bfadf83be2"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; std::uint64_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a10931b7ab16001a286e0a5bfadf83be2">to_integer</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix) const</td></tr>
+<tr class="memdesc:a10931b7ab16001a286e0a5bfadf83be2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to integral value.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a10931b7ab16001a286e0a5bfadf83be2">More...</a><br /></td></tr>
+<tr class="separator:a10931b7ab16001a286e0a5bfadf83be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d7b9499e12f418a167f07e4ebfebf71"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">to_string</a> (<a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a> radix=radix_type::decimal) const</td></tr>
 <tr class="memdesc:a5d7b9499e12f418a167f07e4ebfebf71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts to string representation.  <a href="classwingmann_1_1numerics_1_1big__integer.html#a5d7b9499e12f418a167f07e4ebfebf71">More...</a><br /></td></tr>
 <tr class="separator:a5d7b9499e12f418a167f07e4ebfebf71"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2243,21 +2254,23 @@ template&lt;std::integral T&gt; </div>
 
 </div>
 </div>
-<a id="a091863c39f05795dfd603f04e0e2fd52" name="a091863c39f05795dfd603f04e0e2fd52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a091863c39f05795dfd603f04e0e2fd52">&#9670;&#160;</a></span>to_int()</h2>
+<a id="a1ea3d9e2fd0ea6ca182fd94ac98fe3e7" name="a1ea3d9e2fd0ea6ca182fd94ac98fe3e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ea3d9e2fd0ea6ca182fd94ac98fe3e7">&#9670;&#160;</a></span>to_integer() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::optional&lt; int &gt; wingmann::numerics::big_integer::to_int </td>
+          <td class="memname">std::optional&lt; int &gt; wingmann::numerics::big_integer::to_integer </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a>&#160;</td>
-          <td class="paramname"><em>radix</em> = <code>radix_type::decimal</code></td><td>)</td>
-          <td></td>
+          <td class="paramname"><em>radix</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -2268,6 +2281,12 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>Converts to integral value. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>An integral type. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">radix</td><td>The base of a system of number. </td></tr>
@@ -2276,25 +2295,27 @@ template&lt;std::integral T&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If converted, then integral value otherwise std::nullopt </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l00990">990</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l00992">992</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
 
 </div>
 </div>
-<a id="ab610ef75d985c8927ab5b0461e7be604" name="ab610ef75d985c8927ab5b0461e7be604"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab610ef75d985c8927ab5b0461e7be604">&#9670;&#160;</a></span>to_int64()</h2>
+<a id="a9b0bf762ac5210312662b184b8584c3c" name="a9b0bf762ac5210312662b184b8584c3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b0bf762ac5210312662b184b8584c3c">&#9670;&#160;</a></span>to_integer() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::optional&lt; std::int64_t &gt; wingmann::numerics::big_integer::to_int64 </td>
+          <td class="memname">std::optional&lt; std::int64_t &gt; wingmann::numerics::big_integer::to_integer </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a>&#160;</td>
-          <td class="paramname"><em>radix</em> = <code>radix_type::decimal</code></td><td>)</td>
-          <td></td>
+          <td class="paramname"><em>radix</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -2305,6 +2326,12 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>Converts to integral value. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>An integral type. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">radix</td><td>The base of a system of number. </td></tr>
@@ -2313,7 +2340,88 @@ template&lt;std::integral T&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If converted, then integral value otherwise std::nullopt </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l01000">1000</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l00992">992</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
+
+</div>
+</div>
+<a id="a10931b7ab16001a286e0a5bfadf83be2" name="a10931b7ab16001a286e0a5bfadf83be2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10931b7ab16001a286e0a5bfadf83be2">&#9670;&#160;</a></span>to_integer() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; std::uint64_t &gt; wingmann::numerics::big_integer::to_integer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a>&#160;</td>
+          <td class="paramname"><em>radix</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Converts to integral value. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>An integral type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radix</td><td>The base of a system of number. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If converted, then integral value otherwise std::nullopt </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l00992">992</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
+
+</div>
+</div>
+<a id="ae82abe892c51c10519d6bdc508bc29fd" name="ae82abe892c51c10519d6bdc508bc29fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae82abe892c51c10519d6bdc508bc29fd">&#9670;&#160;</a></span>to_integer() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; <br />
+requires std::integral&lt;T&gt; &amp;&amp; (!std::is_same&lt;T, bool&gt;::value)</div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; T &gt; wingmann::numerics::big_integer::to_integer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwingmann_1_1numerics_1_1big__integer.html#a6a4b46664e4f55165dc053b102809cbc">radix_type</a>&#160;</td>
+          <td class="paramname"><em>radix</em> = <code>radix_type::decimal</code></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts to integral value. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>An integral type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radix</td><td>The base of a system of number. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If converted, then integral value otherwise std::nullopt </dd></dl>
 
 </div>
 </div>
@@ -2350,7 +2458,7 @@ template&lt;std::integral T&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of current value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l01012">1012</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="big__integer_8h_source.html#l01049">1049</a> of file <a class="el" href="big__integer_8h_source.html">big_integer.h</a>.</p>
 
 </div>
 </div>
