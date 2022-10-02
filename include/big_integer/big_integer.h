@@ -864,13 +864,10 @@ public:
     ///
     bool is_pow10()
     {
-        if (this->value_[0] > '1')
-            return false;
-
-        for (std::size_t i = 1; i < this->value_.size(); ++i)
-            if (this->value_[i] > '0') return false;
-
-        return true;
+        return (this->value_[0] == '1') && std::ranges::all_of(
+                this->value_.cbegin() + 1,
+                this->value_.cend(),
+                [](const auto c) { return c == '0'; });
     }
 
     /// @brief Gets the binary size.
@@ -968,17 +965,12 @@ public:
         return !this->equal(0);
     }
 
-    /// @brief Safely converts to integral value.
-    ///
-    /// @tparam T    Integral type.
-    /// @param func  Pointer to converter function.
-    /// @param radix The base of a system of number.
-    /// @return      Converted integral value.
-    ///
+protected:
+    // Safely converts to integral value.
     template<std::integral T>
     std::optional<T> safe_convert(
-        radix_type radix,
-        T (* func)(const std::string&, std::size_t*, int)) const
+            radix_type radix,
+            T (* func)(const std::string&, std::size_t*, int)) const
     {
         try {
             return func(this->to_string(radix), nullptr, static_cast<std::uint8_t>(radix));
@@ -989,50 +981,28 @@ public:
         return std::nullopt;
     }
 
+public:
     /// @brief Converts to integral value.
     ///
-    /// @tparam T Type of integral value to which to convert.
-    /// @return   If converted, then integral value otherwise std::nullopt
+    /// @param radix The base of a system of number.
+    /// @return      If converted, then integral value otherwise std::nullopt
     ///
-    template<std::integral T>
-    std::optional<T> to_integer(radix_type radix = radix_type::decimal) const;
-
-    /// @brief Converts to integral value.
-    ///
-    /// @tparam T Type of integral value to which to convert.
-    /// @return   If converted, then integral value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<int> to_integer<int>(radix_type radix) const
+    std::optional<int> to_int(radix_type radix = radix_type::decimal)
     {
         return this->safe_convert(radix, std::stoi);
     }
 
     /// @brief Converts to integral value.
     ///
-    /// @tparam T Type of integral value to which to convert.
-    /// @return   If converted, then integral value otherwise std::nullopt
+    /// @param radix The base of a system of number.
+    /// @return      If converted, then integral value otherwise std::nullopt
     ///
-    template<>
-    [[nodiscard]]
-    std::optional<std::int64_t> to_integer<std::int64_t>(radix_type radix) const
+    std::optional<std::int64_t> to_int64(radix_type radix = radix_type::decimal)
     {
         return this->safe_convert(radix, std::stoll);
     }
 
-    /// @brief Converts to integral value.
-    ///
-    /// @tparam T Type of integral value to which to convert.
-    /// @return   If converted, then integral value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<std::uint64_t> to_integer<std::uint64_t>(radix_type radix) const
-    {
-        return this->safe_convert(radix, std::stoull);
-    }
-
+public:
     /// @brief Converts to string representation.
     ///
     /// @param radix The base of a system of number.
@@ -1055,12 +1025,6 @@ public:
     }
 
 private:
-    // Returns the base char values of a system of number.
-    static constexpr auto base_chars()
-    {
-        return "0123456789ABCDEF";
-    }
-
     // Checks for value is valid.
     static bool is_valid_number(const std::string& value, radix_type radix)
     {
@@ -1074,8 +1038,8 @@ private:
             range.second = 'F';
 
         return std::ranges::all_of(value, [=](const auto c) {
-            return c >= range.first && c <= range.second;
-        });
+                return c >= range.first && c <= range.second;
+            });
     }
 
     // Removes first char if its sign.
@@ -1099,23 +1063,10 @@ private:
             : (std::tolower(value) - 'a') + 10;
     }
 
-    // Converts string value to base ten.
-    static std::string convert_to_base_ten(const std::string& value, radix_type radix)
+    // Returns the base char values of a system of number.
+    static constexpr auto base_chars()
     {
-        auto last = char_to_digit(value.back());
-        auto value_length = value.length();
-
-        auto power = value_from(value_length - 1);
-        auto converted_value = value_from(last);
-        auto radix_value = value_from(static_cast<std::uint8_t>(radix));
-
-        int current;
-
-        for (int i = 0; i < value_length - 1; ++i) {
-            current = char_to_digit(value.at(i));
-            converted_value += value_from(current).multiply(radix_value.pow(power--));
-        }
-        return std::move(converted_value.value_);
+        return "0123456789ABCDEF";
     }
 
     // Converts not base ten value to string.
@@ -1136,6 +1087,25 @@ private:
         std::ranges::reverse(result);
 
         return std::move(result);
+    }
+
+    // Converts string value to base ten.
+    static std::string convert_to_base_ten(const std::string& value, radix_type radix)
+    {
+        auto last = char_to_digit(value.back());
+        auto length = value.length();
+
+        auto power = value_from(length - 1);
+        auto converted_value = value_from(last);
+        auto radix_value = value_from(static_cast<std::uint8_t>(radix));
+
+        int current;
+
+        for (int i = 0; i < length - 1; ++i) {
+            current = char_to_digit(value.at(i));
+            converted_value += value_from(current).multiply(radix_value.pow(power--));
+        }
+        return std::move(converted_value.value_);
     }
 };
 
