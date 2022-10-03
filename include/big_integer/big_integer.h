@@ -72,8 +72,8 @@ public:
     /// @param value Integral value.
     ///
     template<typename T>
-    requires std::integral<T> && (!std::is_same<T, bool>::value)
     big_integer(T value)
+        requires std::integral<T> && (!std::is_same<T, bool>::value)
     {
         *this = value;
     }
@@ -124,8 +124,8 @@ public:
     /// @return      Constructed object.
     ///
     template<typename T>
-    requires std::integral<T> && (!std::is_same<T, bool>::value)
     big_integer& operator=(T value) &
+        requires std::integral<T> && (!std::is_same<T, bool>::value)
     {
         *this = std::to_string(value);
         return *this;
@@ -239,7 +239,7 @@ public:
     /// @brief Shifts the current value to left on right operand value and assigns the result.
     ///
     /// @param rhs The value to shift_right on.
-    /// @return    SModified object.
+    /// @return    Modified object.
     ///
     big_integer& operator>>=(const big_integer& rhs) &
     {
@@ -943,8 +943,9 @@ public:
     /// @tparam value Integral value.
     /// @return       Constructed value.
     ///
-    template<std::integral T>
+    template<typename T>
     static big_integer value_from(T value)
+        requires std::integral<T> && (!std::is_same<T, bool>::value)
     {
         return std::to_string(value);
     }
@@ -969,13 +970,14 @@ public:
 
 protected:
     // Safely converts to integral value.
-    template<std::integral T>
+    template<typename T>
     std::optional<T> safe_convert(
             radix_type radix,
             T (* func)(const std::string&, std::size_t*, int)) const
+        requires std::integral<T> && std::is_signed<T>::value && (!std::is_same<T, bool>::value)
     {
         try {
-            return func(this->to_string(radix), nullptr, static_cast<std::uint8_t>(radix));
+            return func(this->to_string(radix), nullptr, static_cast<int>(radix));
         }
         catch (std::invalid_argument&) { }
         catch (std::out_of_range&) { }
@@ -991,7 +993,6 @@ public:
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
     template<typename T>
-    [[nodiscard]]
     std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
         requires std::integral<T> && std::is_signed<T>::value && (!std::is_same<T, bool>::value);
 
