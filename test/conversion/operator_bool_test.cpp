@@ -6,12 +6,12 @@ using namespace wingmann::numerics;
 
 TEST(biginteger_conversion, operator_bool_positive)
 {
-    EXPECT_TRUE(big_integer{120'000});
+    EXPECT_TRUE(big_integer{1024});
 }
 
 TEST(biginteger_conversion, operator_bool_negative)
 {
-    EXPECT_TRUE(big_integer{-120'000});
+    EXPECT_TRUE(big_integer{-1024});
 }
 
 TEST(biginteger_conversion, operator_bool_zero)

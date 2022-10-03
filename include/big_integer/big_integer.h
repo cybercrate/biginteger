@@ -942,6 +942,7 @@ public:
     ///
     /// @tparam value Integral value.
     /// @return       Constructed value.
+    ///
     template<std::integral T>
     static big_integer value_from(T value)
     {
@@ -952,6 +953,7 @@ public:
     ///
     /// @tparam value String value.
     /// @return       Constructed value.
+    ///
     static big_integer value_from(std::string value)
     {
         return std::move(value);
@@ -989,8 +991,17 @@ public:
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
     template<typename T>
+    [[nodiscard]]
     std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
-        requires std::integral<T> && (!std::is_same<T, bool>::value);
+        requires std::integral<T> && std::is_signed<T>::value && (!std::is_same<T, bool>::value);
+
+    template<>
+    [[nodiscard]]
+    std::optional<std::int8_t> to_integer<std::int8_t>(radix_type radix) const = delete;
+
+    template<>
+    [[nodiscard]]
+    std::optional<std::int16_t> to_integer<std::int16_t>(radix_type radix) const = delete;
 
     /// @brief Converts to integral value.
     ///
@@ -1019,23 +1030,6 @@ public:
         return safe_convert<std::int64_t>(radix, std::stol);
 #else
         return safe_convert<std::int64_t>(radix, std::stoll);
-#endif
-    }
-
-    /// @brief Converts to integral value.
-    ///
-    /// @tparam T    An integral type.
-    /// @param radix The base of a system of number.
-    /// @return      If converted, then integral value otherwise std::nullopt
-    ///
-    template<>
-    [[nodiscard]]
-    std::optional<std::uint64_t> to_integer<std::uint64_t>(radix_type radix) const
-    {
-#if defined(__WORDSIZE) && __WORDSIZE == 64
-        return safe_convert<std::uint64_t>(radix, std::stoul);
-#else
-        return safe_convert<std::uint64_t>(radix, std::stoull);
 #endif
     }
 
