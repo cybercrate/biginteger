@@ -265,7 +265,7 @@ public:
     {
         auto temp{*this};
         ++(*this);
-        return std::move(temp);
+        return temp;
     }
 
     /// @brief Decrements the current value.
@@ -284,7 +284,7 @@ public:
     {
         auto temp{*this};
         --(*this);
-        return std::move(temp);
+        return temp;
     }
 
     // Shift operations -----------------------------------------------------------------------------
@@ -816,7 +816,7 @@ public:
             previous = current;
             current = this->divide(previous).add(previous).divide(2);
         }
-        return std::move(current);
+        return current;
     }
 
     /// @brief Computes the greatest common divisor.
@@ -840,7 +840,7 @@ public:
             lhs_abs = rhs_abs;
             rhs_abs = remainder;
         }
-        return std::move(lhs_abs);
+        return lhs_abs;
     }
 
     /// @brief Computes the least common multiple.
@@ -998,11 +998,11 @@ public:
 
     template<>
     [[nodiscard]]
-    std::optional<std::int8_t> to_integer<std::int8_t>(radix_type radix) const = delete;
+    std::optional<std::int8_t> to_integer(radix_type radix) const = delete;
 
     template<>
     [[nodiscard]]
-    std::optional<std::int16_t> to_integer<std::int16_t>(radix_type radix) const = delete;
+    std::optional<std::int16_t> to_integer(radix_type radix) const = delete;
 
     /// @brief Converts to integral value.
     ///
@@ -1012,9 +1012,9 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<int> to_integer<int>(radix_type radix) const
+    std::optional<int> to_integer(radix_type radix) const
     {
-        return safe_convert<int>(radix, std::stoi);
+        return safe_convert(radix, std::stoi);
     }
 
     /// @brief Converts to integral value.
@@ -1025,12 +1025,12 @@ public:
     ///
     template<>
     [[nodiscard]]
-    std::optional<std::int64_t> to_integer<std::int64_t>(radix_type radix) const
+    std::optional<std::int64_t> to_integer(radix_type radix) const
     {
 #if defined(__WORDSIZE) && __WORDSIZE == 64
-        return safe_convert<std::int64_t>(radix, std::stol);
+        return safe_convert(radix, std::stol);
 #else
-        return safe_convert<std::int64_t>(radix, std::stoll);
+        return safe_convert(radix, std::stoll);
 #endif
     }
 
@@ -1118,7 +1118,7 @@ private:
         }
         std::ranges::reverse(result);
 
-        return std::move(result);
+        return result;
     }
 
     // Converts string value to base ten.
