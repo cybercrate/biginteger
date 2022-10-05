@@ -971,7 +971,7 @@ protected:
     std::optional<T> safe_convert(
             radix_type radix,
             T (* func)(const std::string&, std::size_t*, int)) const
-    requires std::integral<T> && std::signed_integral<T> && (!std::same_as<T, bool>)
+    requires std::signed_integral<T> && (!std::same_as<T, bool>)
     {
         try {
             return func(this->to_string(radix), nullptr, static_cast<int>(radix));
@@ -991,7 +991,7 @@ public:
     ///
     template<typename T>
     std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
-    requires std::integral<T> && std::signed_integral<T> && (!std::same_as<T, bool>);
+    requires std::signed_integral<T> && (!std::same_as<T, bool>);
 
     template<>
     [[nodiscard]]
