@@ -72,8 +72,7 @@ public:
     /// @param value Integral value.
     ///
     template<typename T>
-    big_integer(T value)
-        requires std::integral<T> && (!std::is_same<T, bool>::value)
+    big_integer(T value) requires std::integral<T> && (!std::same_as<T, bool>)
     {
         *this = value;
     }
@@ -124,8 +123,7 @@ public:
     /// @return      Constructed object.
     ///
     template<typename T>
-    big_integer& operator=(T value) &
-        requires std::integral<T> && (!std::is_same<T, bool>::value)
+    big_integer& operator=(T value) & requires std::integral<T> && (!std::same_as<T, bool>)
     {
         *this = std::to_string(value);
         return *this;
@@ -944,8 +942,7 @@ public:
     /// @return       Constructed value.
     ///
     template<typename T>
-    static big_integer value_from(T value)
-        requires std::integral<T> && (!std::is_same<T, bool>::value)
+    static big_integer value_from(T value) requires std::integral<T> && (!std::same_as<T, bool>)
     {
         return std::to_string(value);
     }
@@ -974,7 +971,7 @@ protected:
     std::optional<T> safe_convert(
             radix_type radix,
             T (* func)(const std::string&, std::size_t*, int)) const
-        requires std::integral<T> && std::is_signed<T>::value && (!std::is_same<T, bool>::value)
+    requires std::integral<T> && std::signed_integral<T> && (!std::same_as<T, bool>)
     {
         try {
             return func(this->to_string(radix), nullptr, static_cast<int>(radix));
@@ -994,7 +991,7 @@ public:
     ///
     template<typename T>
     std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
-        requires std::integral<T> && std::is_signed<T>::value && (!std::is_same<T, bool>::value);
+    requires std::integral<T> && std::signed_integral<T> && (!std::same_as<T, bool>);
 
     template<>
     [[nodiscard]]
