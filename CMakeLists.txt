@@ -15,6 +15,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PROJECT_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
-find_package(GTest CONFIGS REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 add_subdirectory(test)
