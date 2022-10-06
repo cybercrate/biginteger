@@ -10,7 +10,8 @@ endif()
 
 project(biginteger VERSION 1.0.0 LANGUAGES CXX)
 
-list(APPEND CMAKE_CXX_FLAGS "-std=c++20 -Wall -Werror -Wpessimizing-move")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PROJECT_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
