@@ -1130,7 +1130,7 @@ private:
 
         int current;
 
-        for (int i = 0; i < length - 1; ++i) {
+        for (std::size_t i = 0; i < length - 1; ++i) {
             current = char_to_digit(value.at(i));
             converted_value += value_from(current).multiply(radix_value.pow(power--));
         }
