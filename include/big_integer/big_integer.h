@@ -72,7 +72,8 @@ public:
     /// @param value Integral value.
     ///
     template<typename T>
-    big_integer(T value) requires std::integral<T> && (!std::same_as<T, bool>)
+    requires std::integral<T> && (!std::same_as<T, bool>)
+    big_integer(T value)
     {
         *this = value;
     }
@@ -123,7 +124,8 @@ public:
     /// @return      Constructed object.
     ///
     template<typename T>
-    big_integer& operator=(T value) & requires std::integral<T> && (!std::same_as<T, bool>)
+    requires std::integral<T> && (!std::same_as<T, bool>)
+    big_integer& operator=(T value) &
     {
         *this = std::to_string(value);
         return *this;
@@ -942,7 +944,8 @@ public:
     /// @return       Constructed value.
     ///
     template<typename T>
-    static big_integer value_from(T value) requires std::integral<T> && (!std::same_as<T, bool>)
+    requires std::integral<T> && (!std::same_as<T, bool>)
+    static big_integer value_from(T value)
     {
         return std::to_string(value);
     }
@@ -968,10 +971,10 @@ public:
 protected:
     // Safely converts to integral value.
     template<typename T>
+    requires std::signed_integral<T> && (!std::same_as<T, bool>)
     std::optional<T> safe_convert(
             radix_type radix,
             T (* func)(const std::string&, std::size_t*, int)) const
-    requires std::signed_integral<T> && (!std::same_as<T, bool>)
     {
         try {
             return func(this->to_string(radix), nullptr, static_cast<int>(radix));
@@ -990,8 +993,8 @@ public:
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
     template<typename T>
-    std::optional<T> to_integer(radix_type radix = radix_type::decimal) const
-    requires std::signed_integral<T> && (!std::same_as<T, bool>);
+    requires std::signed_integral<T> && (!std::same_as<T, bool>)
+    std::optional<T> to_integer(radix_type radix = radix_type::decimal) const;
 
     template<>
     [[nodiscard]]
@@ -1067,8 +1070,8 @@ private:
             range.second = 'F';
 
         return std::ranges::all_of(value, [=](const auto c) {
-                return c >= range.first && c <= range.second;
-            });
+            return c >= range.first && c <= range.second;
+        });
     }
 
     // Removes first char if its sign.
