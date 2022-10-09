@@ -50,19 +50,19 @@ public:
     big_integer() = default;
 
     /// @brief Copy constructor.
-    /// @param value Value to copy.
+    /// @param other Value to copy.
     ///
-    big_integer(const big_integer& value)
-    {
-        *this = value;
-    }
+    big_integer(const big_integer& other) = default;
 
     /// @brief Move constructor.
-    /// @param value Value to move.
+    /// @param other Value to move.
     ///
-    big_integer(const big_integer&& value) noexcept
+    big_integer(big_integer&& other) noexcept
+        : radix_{other.radix_}, signed_{other.signed_}, value_{std::move(other.value_)}
     {
-        *this = value;
+        other.radix_ = radix_type::decimal;
+        other.signed_ = false;
+        other.value_ = "0";
     }
 
     /// @brief Destructor.
@@ -75,7 +75,7 @@ public:
     requires std::integral<T> && (!std::same_as<T, bool>)
     big_integer(T value)
     {
-        *this = value;
+        *this = std::to_string(value);
     }
 
     /// @brief Constructs from string literal.
@@ -85,7 +85,7 @@ public:
     ///
     big_integer(const char* value, radix_type radix = radix_type::decimal) : radix_{radix}
     {
-        *this = value;
+        *this = std::string{value};
     }
 
     /// @brief Constructs from string.
@@ -102,43 +102,50 @@ public:
 
     /// @brief Copy assignment operator.
     ///
-    /// @param value Value to copy.
-    /// @return      Constructed object.
+    /// @param rhs Value to copy.
+    /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer& value) & noexcept = default;
+    big_integer& operator=(const big_integer& rhs) & = default;
 
     /// @brief Move assignment operator.
     ///
-    /// @param value Value to move.
-    /// @return      Constructed object.
+    /// @param rhs Value to move.
+    /// @return    Constructed object.
     ///
-    big_integer& operator=(const big_integer&& value) & noexcept
+    big_integer& operator=(big_integer&& rhs) & noexcept
     {
-        this->value_ = value.value_;
+        this->radix_ = rhs.radix_;
+        this->signed_ = rhs.signed_;
+        this->value_ = std::move(rhs.value_);
+
+        rhs.radix_ = radix_type::decimal;
+        rhs.signed_ = false;
+        rhs.value_ = "0";
+
         return *this;
     }
 
-    /// @brief Constructs from an integral value.
+    /// @brief Constructs from an integral rhs.
     ///
-    /// @param value An integral value.
-    /// @return      Constructed object.
+    /// @param rhs An integral rhs.
+    /// @return    Constructed object.
     ///
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
-    big_integer& operator=(T value) &
+    big_integer& operator=(T rhs) &
     {
-        *this = std::to_string(value);
+        *this = std::to_string(rhs);
         return *this;
     }
 
     /// @brief Constructs from the string literal.
     ///
-    /// @param value The string literal.
-    /// @return      Constructed object.
+    /// @param rhs The string literal.
+    /// @return    Constructed object.
     ///
-    big_integer& operator=(const char* value) &
+    big_integer& operator=(const char* rhs) &
     {
-        *this = std::string{value};
+        *this = std::string{rhs};
         return *this;
     }
 
