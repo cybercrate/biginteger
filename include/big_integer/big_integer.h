@@ -152,7 +152,7 @@ public:
     /// @brief Constructs from the string value.
     ///
     /// @param value The value from which to construct.
-    /// @return    Constructed object.
+    /// @return      Constructed object.
     ///
     big_integer& operator=(std::string value) &
     {
