@@ -541,7 +541,7 @@ public:
         for (char& symbol : subtracted) {
             if (symbol < removed.at(index)) {
                 symbol += 10;
-                subtracted[index + 1]--;
+                --subtracted.at(index + 1);
             }
             symbol = static_cast<char>(
                 (symbol - min_value) - (removed.at(index) - min_value) + min_value);
@@ -871,7 +871,7 @@ public:
     ///
     bool is_pow10()
     {
-        return (this->value_[0] == '1') && std::ranges::all_of(
+        return (this->value_.at(0) == '1') && std::ranges::all_of(
                 this->value_.cbegin() + 1,
                 this->value_.cend(),
                 [](const auto c) { return c == '0'; });
@@ -1103,7 +1103,7 @@ private:
     }
 
     // Returns the base char values of a system of number.
-    static constexpr auto base_chars()
+    static std::string base_chars()
     {
         return "0123456789ABCDEF";
     }
@@ -1120,7 +1120,7 @@ private:
             auto remainder = decimal_value.mod(modulo);
             decimal_value /= modulo;
 
-            auto c = base_chars()[std::stoi(remainder.to_string())];
+            auto c = base_chars().at(std::stoi(remainder.to_string()));
             result.push_back(c);
         }
         std::ranges::reverse(result);
