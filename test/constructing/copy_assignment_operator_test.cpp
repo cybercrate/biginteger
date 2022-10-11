@@ -4,10 +4,10 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_construction, copy_constructor)
+TEST(biginteger_constructing, copy_assignment_operator)
 {
     big_integer from{1024};
-    big_integer same{from};
+    big_integer same = from;
 
     EXPECT_EQ(from, same);
 }

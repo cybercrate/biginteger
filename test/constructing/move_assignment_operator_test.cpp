@@ -4,10 +4,10 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_construction, move_constructor)
+TEST(biginteger_constructing, move_assignment_operator)
 {
     big_integer from{1024};
-    big_integer to{std::move(from)};
+    big_integer to = std::move(from);
 
     EXPECT_NE(from, to);
     EXPECT_EQ(from, 0);

@@ -4,8 +4,10 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_construction, from_char_pointer_assignment_operator)
+TEST(biginteger_constructing, from_string_constructor)
 {
-    big_integer number = "2048";
+    std::string value{"2048"};
+    big_integer number{value};
+
     EXPECT_EQ(number, 2048);
 }

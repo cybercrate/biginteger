@@ -60,9 +60,7 @@ public:
     big_integer(big_integer&& other) noexcept
         : radix_{other.radix_}, signed_{other.signed_}, value_{std::move(other.value_)}
     {
-        other.radix_ = radix_type::decimal;
-        other.signed_ = false;
-        other.value_ = "0";
+        set_default(other);
     }
 
     /// @brief Destructor.
@@ -118,9 +116,7 @@ public:
         this->signed_ = rhs.signed_;
         this->value_ = std::move(rhs.value_);
 
-        rhs.radix_ = radix_type::decimal;
-        rhs.signed_ = false;
-        rhs.value_ = "0";
+        set_default(rhs);
 
         return *this;
     }
@@ -167,7 +163,7 @@ public:
         remove_leading_zeros(value);
 
         if (this->radix_ == radix_type::decimal)
-            this->value_ = value;
+            this->value_ = std::move(value);
         else
             this->value_ = convert_to_base_ten(value, this->radix_);
 
@@ -980,8 +976,8 @@ protected:
     template<typename T>
     requires std::signed_integral<T> && (!std::same_as<T, bool>)
     std::optional<T> safe_convert(
-            radix_type radix,
-            T (* func)(const std::string&, std::size_t*, int)) const
+        radix_type radix,
+        T (* func)(const std::string&, std::size_t*, int)) const
     {
         try {
             return func(this->to_string(radix), nullptr, static_cast<int>(radix));
@@ -1064,6 +1060,14 @@ public:
     }
 
 private:
+    // Sets the default value for an object whose state has been moved.
+    static void set_default(big_integer& moved)
+    {
+        moved.radix_ = radix_type::decimal;
+        moved.signed_ = false;
+        moved.value_ = "0";
+    }
+
     // Checks for value is valid.
     static bool is_valid_number(const std::string& value, radix_type radix)
     {

@@ -4,7 +4,7 @@
 
 using namespace wingmann::numerics;
 
-TEST(biginteger_construction, from_integral_assignment_operator)
+TEST(biginteger_constructing, from_integral_assignment_operator)
 {
     big_integer number = 2048;
     EXPECT_EQ(number, 2048);
