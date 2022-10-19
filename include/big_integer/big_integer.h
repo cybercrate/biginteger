@@ -12,9 +12,10 @@
 #ifndef WINGMANN_BIGINTEGER_H
 #define WINGMANN_BIGINTEGER_H
 
+#include <wing_concepts/numeric_concepts.h>
+
 #include <algorithm>
 #include <cmath>
-#include <concepts>
 #include <optional>
 #include <ostream>
 #include <ranges>
@@ -69,9 +70,7 @@ public:
     /// @brief Constructs from integral.
     /// @param value Integral value.
     ///
-    template<typename T>
-    requires std::integral<T> && (!std::same_as<T, bool>)
-    big_integer(T value)
+    big_integer(concepts::numeric::integral auto value)
     {
         *this = std::to_string(value);
     }
@@ -126,9 +125,7 @@ public:
     /// @param rhs An integral rhs.
     /// @return    Constructed object.
     ///
-    template<typename T>
-    requires std::integral<T> && (!std::same_as<T, bool>)
-    big_integer& operator=(T rhs) &
+    big_integer& operator=(concepts::numeric::integral auto rhs) &
     {
         *this = std::to_string(rhs);
         return *this;
@@ -946,9 +943,7 @@ public:
     /// @tparam value Integral value.
     /// @return       Constructed value.
     ///
-    template<typename T>
-    requires std::integral<T> && (!std::same_as<T, bool>)
-    static big_integer value_from(T value)
+    static big_integer value_from(concepts::numeric::integral auto value)
     {
         return std::to_string(value);
     }
@@ -973,8 +968,7 @@ public:
 
 protected:
     // Safely converts to integral value.
-    template<typename T>
-    requires std::signed_integral<T> && (!std::same_as<T, bool>)
+    template<concepts::numeric::signed_integral T>
     std::optional<T> safe_convert(
         radix_type radix,
         T (* func)(const std::string&, std::size_t*, int)) const
@@ -995,8 +989,7 @@ public:
     /// @param radix The base of a system of number.
     /// @return      If converted, then integral value otherwise std::nullopt
     ///
-    template<typename T>
-    requires std::signed_integral<T> && (!std::same_as<T, bool>)
+    template<concepts::numeric::signed_integral T>
     std::optional<T> to_integer(radix_type radix = radix_type::decimal) const;
 
     template<>

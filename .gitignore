@@ -3,6 +3,7 @@
 /cmake-build-debug
 /out
 /target
+/lib
 
 # Personal IDE config files
 .idea
