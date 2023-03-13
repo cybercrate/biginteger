@@ -8,8 +8,8 @@ fi
 
 cd "./lib"
 
-if [ ! -d "./alef-core" ]; then
-    git clone https://github.com/wingmann/alef-core.git
+if [ ! -d "./alef" ]; then
+    git clone https://github.com/wingmann/alef.git
 else
     echo alef was already installed
 fi

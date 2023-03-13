@@ -7,8 +7,8 @@ if not exist ".\lib" (
 
 cd ".\lib"
 
-if not exist ".\alef-core" (
-    git clone https://github.com/wingmann/alef-core.git
+if not exist ".\alef" (
+    git clone https://github.com/wingmann/alef.git
 ) else (
     echo alef was already installed
 )
