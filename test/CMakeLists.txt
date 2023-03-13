@@ -1,4 +1,4 @@
-project(big_integer_test)
+project(biginteger_test)
 
 file(GLOB PROJECT_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"

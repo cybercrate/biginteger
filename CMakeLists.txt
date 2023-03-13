@@ -8,7 +8,7 @@ else()
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(big_integer VERSION 1.0.0 LANGUAGES CXX)
+project(biginteger VERSION 1.0.0 LANGUAGES CXX)
 
 if (MSVC)
     set(CMAKE_CXX_FLAGS "/std:c++20")
