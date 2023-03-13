@@ -17,7 +17,7 @@ else()
 endif()
 
 set(PROJECT_INCLUDE_DIRS
-    "${CMAKE_SOURCE_DIR}/lib/alef-core/include"
+    "${CMAKE_SOURCE_DIR}/lib/alef/include"
     "${CMAKE_SOURCE_DIR}/include")
 
 find_package(GTest CONFIG REQUIRED)
