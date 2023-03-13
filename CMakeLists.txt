@@ -8,7 +8,7 @@ else()
         CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project(biginteger VERSION 1.0.0 LANGUAGES CXX)
+project(big_integer VERSION 1.0.0 LANGUAGES CXX)
 
 if (MSVC)
     set(CMAKE_CXX_FLAGS "/std:c++20")
@@ -17,8 +17,8 @@ else()
 endif()
 
 set(PROJECT_INCLUDE_DIRS
-    "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/lib/wing-concepts/include")
+    "${CMAKE_SOURCE_DIR}/lib/alef-core/include"
+    "${CMAKE_SOURCE_DIR}/include")
 
 find_package(GTest CONFIG REQUIRED)
 
