@@ -1,4 +1,4 @@
-/// @file   big_integer.h
+/// @file   biginteger.h
 /// @author Alexander Shavrov (alexander.shavrov@outlook.com)
 /// @brief  Arbitrary large integer library.
 /// @date   2022-09-28

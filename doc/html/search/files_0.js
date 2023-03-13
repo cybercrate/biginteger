@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['big_5finteger_2eh_0',['big_integer.h',['../big__integer_8h.html',1,'']]]
+  ['biginteger_2eh_0',['biginteger.h',['../biginteger_8h.html',1,'']]]
 ];
