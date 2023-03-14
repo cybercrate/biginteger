@@ -16,9 +16,13 @@ else()
     set(CMAKE_CXX_FLAGS "-std=c++20 -Werror -Wall -Wextra -Wpedantic")
 endif()
 
-set(PROJECT_INCLUDE_DIRS
+set(ALEF_INCLUDE_PATH
     "${CMAKE_SOURCE_DIR}/lib/alef/include"
+    "${CMAKE_SOURCE_DIR}/lib/concepts/include"
+    "${CMAKE_SOURCE_DIR}/lib/cast/include"
     "${CMAKE_SOURCE_DIR}/include")
+
+set(PROJECT_INCLUDE_DIRS ${ALEF_INCLUDE_PATH})
 
 find_package(GTest CONFIG REQUIRED)
 
