@@ -14,7 +14,9 @@
 
 #include "alef/alef.h"
 #include "alef/algo.h"
+#include "alef/cast.h"
 #include "alef/char.h"
+#include "alef/concepts.h"
 #include "alef/io.h"
 #include "alef/math.h"
 #include "alef/string.h"
