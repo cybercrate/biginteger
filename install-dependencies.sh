@@ -13,3 +13,16 @@ if [ ! -d "./alef" ]; then
 else
     echo alef was already installed
 fi
+
+if [ ! -d "./concepts" ]; then
+    git clone https://github.com/wingmann/concepts.git
+else
+    echo concepts was already installed
+fi
+
+
+if [ ! -d "./cast" ]; then
+    git clone https://github.com/wingmann/cast.git
+else
+    echo cast was already installed
+fi

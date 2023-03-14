@@ -13,6 +13,18 @@ if not exist ".\alef" (
     echo alef was already installed
 )
 
+if not exist ".\concepts" (
+    git clone https://github.com/wingmann/concepts.git
+) else (
+    echo concepts was already installed
+)
+
+if not exist ".\cast" (
+    git clone https://github.com/wingmann/cast.git
+) else (
+    echo cast was already installed
+)
+
 if exist "%HOMEPATH%\vcpkg" (
     cd "%HOMEPATH%\vcpkg"
     vcpkg.exe install gtest:x64-windows
