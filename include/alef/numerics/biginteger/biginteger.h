@@ -12,16 +12,14 @@
 #ifndef ALEF_NUMERICS_BIG_INTEGER_BIG_INTEGER_H
 #define ALEF_NUMERICS_BIG_INTEGER_BIG_INTEGER_H
 
+#include "./utility.h"
+
 #include "alef/alef.h"
-#include "alef/algo.h"
 #include "alef/cast.h"
 #include "alef/char.h"
 #include "alef/concepts.h"
-#include "alef/io.h"
 #include "alef/math.h"
-#include "alef/string.h"
 #include "alef/utility.h"
-#include "alef/numerics/types.h"
 
 ALEF_GLOBAL_NAMESPACE_BEGIN
 
@@ -71,37 +69,31 @@ public:
     /// @brief Constructs from integer.
     /// @param value Integral value.
     ///
-    biginteger(integer auto value) {
-        *this = std::to_string(value);
-    }
+    biginteger(integer auto value) { *this = std::to_string(value); }
 
     /// @brief Constructs from string literal.
     ///
     /// @param value std::string literal value.
     /// @param radix The base of a system of number.
     ///
-    biginteger(const char* value, radix_type radix) :radix_{radix} {
-        *this = std::string{value};
-    }
+    biginteger(const char* value, radix_type radix) : radix_{radix} { *this = std::string{value}; }
 
     /// @brief Constructs from string literal.
     /// @param value std::string literal value.
     ///
-    biginteger(const char* value) :biginteger{value, radix_type{radix_flag::decimal}} { }
+    biginteger(const char* value) : biginteger{value, radix_type{radix_flag::decimal}} { }
 
     /// @brief Constructs from string.
     ///
     /// @param value std::string value.
     /// @param radix The base of a system of number.
     ///
-    biginteger(std::string value, radix_flag radix) :radix_{radix} {
-        *this = std::move(value);
-    }
+    biginteger(std::string value, radix_flag radix) : radix_{radix} { *this = std::move(value); }
 
     /// @brief Constructs from string.
     /// @param value std::string value.
     ///
-    biginteger(std::string value) :biginteger{std::move(value), radix_flag::decimal} { }
+    biginteger(std::string value) : biginteger{std::move(value), radix_flag::decimal} { }
 
     // Assignment operators ------------------------------------------------------------------------
 
@@ -156,91 +148,18 @@ public:
         this->sign_.value = (value.starts_with('-') ? sign_flag::negative : sign_flag::positive);
 
         if (this->is_negative()) {
-            remove_sign(value);
+            __detail::num::remove_sign(value);
         }
-        if (!is_valid_number(value, this->radix_)) {
+        if (!__detail::num::is_valid_number(value, this->radix_.value)) {
             throw std::invalid_argument("value in not valid");
         }
-        remove_leading_zeros(value);
+        __detail::num::remove_leading_zeros(value);
 
         if (this->radix_.value == radix_flag::decimal) {
             this->value_ = std::move(value);
         } else {
             this->value_ = convert_to_base_ten(value, this->radix_.value);
         }
-        return *this;
-    }
-
-    // Additional assignment operators -------------------------------------------------------------
-
-    /// @brief Adds the right operand to the current value and assigns the result.
-    ///
-    /// @param rhs The value to add to the current value.
-    /// @return    Modified object.
-    ///
-    biginteger& operator+=(const biginteger& rhs) {
-        *this = this->add(rhs);
-        return *this;
-    }
-
-    /// @brief Subtracts the right operand from the current value and assigns the result.
-    ///
-    /// @param rhs The value to subtract from the current value.
-    /// @return    Modified object.
-    ///
-    biginteger& operator-=(const biginteger& rhs) {
-        *this = this->subtract(rhs);
-        return *this;
-    }
-
-    /// @brief Multiplies the current value by the right operand and assigns the result.
-    ///
-    /// @param rhs The value to multiply by current value.
-    /// @return    Modified object.
-    ///
-    biginteger& operator*=(const biginteger& rhs) {
-        *this = this->multiply(rhs);
-        return *this;
-    }
-
-    /// @brief Divides the current value by the right operand and assigns the result.
-    ///
-    /// @param rhs The value by which to divide the current value.
-    /// @return    Modified object.
-    ///
-    biginteger& operator/=(const biginteger& rhs) {
-        *this = this->divide(rhs);
-        return *this;
-    }
-
-    /// @brief Gets the remainder of the current value divided by the right operand
-    /// and assigns the result.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Modified object.
-    ///
-    biginteger& operator%=(const biginteger& rhs) {
-        *this = this->mod(rhs);
-        return *this;
-    }
-
-    /// @brief Shifts the current value to left on right operand value and assigns the result.
-    ///
-    /// @param rhs The value to shift_right on.
-    /// @return    Modified object.
-    ///
-    biginteger& operator<<=(const biginteger& rhs) {
-        *this = this->shift_left(rhs);
-        return *this;
-    }
-
-    /// @brief Shifts the current value to left on right operand value and assigns the result.
-    ///
-    /// @param rhs The value to shift_right on.
-    /// @return    Modified object.
-    ///
-    biginteger& operator>>=(const biginteger& rhs) {
-        *this = this->shift_right(rhs);
         return *this;
     }
 
@@ -293,9 +212,11 @@ public:
             throw std::invalid_argument{"negative value"};
         }
         auto bitwise_value = this->to_string(radix_flag::binary);
+        auto i = value_from(0);
 
-        for (auto i = 0; i < rhs; ++i) {
+        while (i.compare(rhs) == std::strong_ordering::less) {
             bitwise_value.push_back('0');
+            ++i;
         }
         return {std::move(bitwise_value), radix_flag::binary};
     }
@@ -311,34 +232,16 @@ public:
             throw std::invalid_argument{"negative value"};
         }
         auto bitwise_value = this->to_string(radix_flag::binary);
+        auto i = value_from(0);
 
-        for (auto i = 0; (i < rhs) && (bitwise_value.length() > 0); ++i) {
+        while ((i.compare(rhs) == std::strong_ordering::less) && (bitwise_value.length() > 0)) {
             bitwise_value.pop_back();
+            ++i;
         }
         if (bitwise_value.empty()) {
             bitwise_value.push_back('0');
         }
         return {std::move(bitwise_value), radix_flag::binary};
-    }
-
-    // Shift operators -----------------------------------------------------------------------------
-
-    /// @brief Shifts the current value to left on right operand value.
-    ///
-    /// @param rhs The value to shift_right on.
-    /// @return    Shifted current value.
-    ///
-    biginteger operator<<(const biginteger& rhs) const {
-        return this->shift_left(rhs);
-    }
-
-    /// @brief Shifts the current value to right on right operand value.
-    ///
-    /// @param rhs The value to shift_right on.
-    /// @return    Shifted current value.
-    ///
-    biginteger operator>>(const biginteger& rhs) const {
-        return this->shift_right(rhs);
     }
 
     // Comparison ----------------------------------------------------------------------------------
@@ -397,26 +300,6 @@ public:
     [[nodiscard]]
     bool equal(const biginteger& rhs) const {
         return this->compare(rhs) == std::strong_ordering::equivalent;
-    }
-
-    // Comparison operators ------------------------------------------------------------------------
-
-    /// @brief Three way compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
-    std::strong_ordering operator<=>(const biginteger& rhs) const {
-        return this->compare(rhs);
-    }
-
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compare with the current value.
-    /// @return    Result of comparison.
-    ///
-    auto operator==(const biginteger& rhs) const {
-        return this->equal(rhs);
     }
 
     // Basic arithmetic ----------------------------------------------------------------------------
@@ -584,7 +467,7 @@ public:
                 operation.insert(0, 1, carry);
                 carry = min_value;
             }
-            temp += operation;
+            temp = temp.add(operation);
             ++index;
         }
         auto positive =
@@ -624,14 +507,16 @@ public:
 
             biginteger dividend_value{lhs_quotient};
 
-            if (dividend_value < rhs_abs) {
+            if (dividend_value.compare(rhs_abs) == std::strong_ordering::less) {
                 rhs_quotient.push_back('0');
                 continue;
             }
             auto number = value_from(2);
+            auto mul = rhs_abs.multiply(number).compare(dividend_value);
 
-            while (rhs_abs.multiply(number) <= dividend_value) {
+            while (mul == std::strong_ordering::less || mul == std::strong_ordering::equal) {
                 ++number;
+                mul = rhs_abs.multiply(number).compare(dividend_value);
             }
             --number;
             rhs_quotient.append(number.to_string());
@@ -656,53 +541,6 @@ public:
             throw std::invalid_argument("mod by zero");
         }
         return this->subtract(rhs.multiply(this->divide(rhs)));
-    }
-
-    // Arithmetic operators ------------------------------------------------------------------------
-
-    /// @brief Adds value.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Result of addition.
-    ///
-    biginteger operator+(const biginteger& rhs) const {
-        return this->add(rhs);
-    }
-
-    /// @brief Subtracts value.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Result of subtraction.
-    ///
-    biginteger operator-(const biginteger& rhs) const {
-        return this->subtract(rhs);
-    }
-
-    /// @brief Multiples value.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Result of multiplication.
-    ///
-    biginteger operator*(const biginteger& rhs) const {
-        return this->multiply(rhs);
-    }
-
-    /// @brief Divides value.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Result of division.
-    ///
-    biginteger operator/(const biginteger& rhs) const {
-        return this->divide(rhs);
-    }
-
-    /// @brief Computes remainder.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Remainder of division current value by right side value.
-    ///
-    biginteger operator%(const biginteger& rhs) const {
-        return this->mod(rhs);
     }
 
     // Complex arithmetic --------------------------------------------------------------------------
@@ -754,10 +592,10 @@ public:
 
         while (init_exp.compare(1) == std::strong_ordering::greater) {
             if (init_exp.mod(2)) {
-                result_odd *= result;
+                result_odd = result_odd.multiply(result);
             }
-            result *= result;
-            init_exp /= 2;
+            result = result.multiply(result);
+            init_exp = init_exp.divide(2);
         }
         return result.multiply(result_odd);
     }
@@ -884,32 +722,6 @@ public:
         std::swap(*this, rhs);
     }
 
-    // Stream operators ----------------------------------------------------------------------------
-
-    /// @brief Puts the value to the output stream.
-    ///
-    /// @param os    The output stream.
-    /// @param value The value to put to output.
-    /// @return      Output stream.
-    ///
-    friend std::ostream& operator<<(std::ostream& os, const biginteger& value) {
-        os << value.to_string();
-        return os;
-    }
-
-    /// @brief Gets the value from input stream.
-    ///
-    /// @param is    Input stream.
-    /// @param value The value for writing from input stream.
-    /// @return      Input stream.
-    ///
-    friend std::istream& operator>>(std::istream& is, biginteger& value) {
-        std::string input;
-        is >> input;
-        value = input;
-        return is;
-    }
-
     // Conversion methods --------------------------------------------------------------------------
 
     /// @brief Creates value from integer value.
@@ -965,7 +777,7 @@ public:
     /// @return      std::string representation of current value.
     ///
     [[nodiscard]]
-    std::string to_string(radix_flag radix) const {
+    std::string to_string(radix_flag radix = radix_flag::decimal) const {
         std::stringstream ss;
 
         if (is_negative()) {
@@ -979,51 +791,12 @@ public:
         return ss.str();
     }
 
-    /// @brief Converts to string representation.
-    ///
-    /// @param radix The base of a system of number.
-    /// @return      std::string representation of current value.
-    ///
-    [[nodiscard]]
-    std::string to_string() const {
-        return to_string(radix_flag::decimal);
-    }
-
 private:
     // Sets the default value for an object whose state has been moved.
     static void set_default(biginteger& moved) {
         moved.radix_.value = radix_flag::decimal;
         moved.sign_.value = sign_flag::positive;
         moved.value_ = "0";
-    }
-
-    // Checks for value is valid.
-    static bool is_valid_number(const std::string& value, radix_type radix) {
-        std::pair range{'0', '9'};
-        radix_flag flag = radix.value;
-
-        if (flag == radix_flag::binary) {
-            range.second = '1';
-        } else if (flag == radix_flag::octal) {
-            range.second = '7';
-        } else if (flag == radix_flag::hexadecimal) {
-            range.second = 'F';
-        }
-        return std::ranges::all_of(value, [=](const auto c) {
-            return c >= range.first && c <= range.second;
-        });
-    }
-
-    // Removes first char if its sign.
-    static void remove_sign(std::string& value) {
-        value.erase(0, 1);
-    }
-
-    // Removes leading not significant zeros.
-    static void remove_leading_zeros(std::string& value) {
-        while (value.starts_with('0') && (value.length() != 1)) {
-            value.erase(0, 1);
-        }
     }
 
     // Converts not base ten value to string.
@@ -1035,7 +808,7 @@ private:
 
         while (!decimal_value.equal(0)) {
             auto remainder = decimal_value.mod(modulo);
-            decimal_value /= modulo;
+            decimal_value = decimal_value.divide(modulo);
 
             auto c = base_chars(radix_flag::hexadecimal).at(std::stoi(remainder.to_string()));
             result.push_back(c);
@@ -1058,7 +831,8 @@ private:
 
         for (usize i = 0; i < length - 1; ++i) {
             current = char_to_int32(value.at(i));
-            converted_value += value_from(current).multiply(radix_value.pow(power--));
+            converted_value = converted_value
+                .add(value_from(current).multiply(radix_value.pow(power--)));
         }
         return std::move(converted_value.value_);
     }
