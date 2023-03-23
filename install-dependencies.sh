@@ -8,10 +8,10 @@ fi
 
 cd "./lib"
 
-if [ ! -d "./alef" ]; then
-    git clone https://github.com/wingmann/alef.git
+if [ ! -d "./alef-core" ]; then
+    git clone https://github.com/wingmann/alef-core.git
 else
-    echo alef was already installed
+    echo alef-core was already installed
 fi
 
 if [ ! -d "./concepts" ]; then

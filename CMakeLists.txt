@@ -17,7 +17,7 @@ else()
 endif()
 
 set(ALEF_INCLUDE_PATH
-    "${CMAKE_SOURCE_DIR}/lib/alef/include"
+    "${CMAKE_SOURCE_DIR}/lib/alef-core/include"
     "${CMAKE_SOURCE_DIR}/lib/concepts/include"
     "${CMAKE_SOURCE_DIR}/lib/cast/include"
     "${CMAKE_SOURCE_DIR}/include")
