@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mod_0',['mod',['../classnum_1_1biginteger.html#a3479b8dc5a86d995d9f9f210575db610',1,'num::biginteger']]],
-  ['multiply_1',['multiply',['../classnum_1_1biginteger.html#a3f318a366fb965e355c77bbcd60859eb',1,'num::biginteger']]]
+  ['mod_0',['mod',['../classwingmann_1_1numerics_1_1biginteger.html#aafef7d745dc47b5de34ed61a3375cf1f',1,'wingmann::numerics::biginteger']]],
+  ['multiply_1',['multiply',['../classwingmann_1_1numerics_1_1biginteger.html#a6029dbced17a3e836d158226eefe7e0a',1,'wingmann::numerics::biginteger']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_5ffrom_0',['value_from',['../classnum_1_1biginteger.html#ae35067397ae4635b1cf968317894036a',1,'num::biginteger::value_from(integer auto value)'],['../classnum_1_1biginteger.html#a38b5c87a88d4385bdf59ce1726f13d52',1,'num::biginteger::value_from(std::string value)']]]
+  ['to_5fstring_0',['to_string',['../classwingmann_1_1numerics_1_1biginteger.html#a662abc2b2ac7bca974ad225ffe2a0842',1,'wingmann::numerics::biginteger']]]
 ];

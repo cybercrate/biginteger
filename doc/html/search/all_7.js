@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lcm_0',['lcm',['../classnum_1_1biginteger.html#aa759bf77173ca741f3a64be806596223',1,'num::biginteger']]]
+  ['lcm_0',['lcm',['../classwingmann_1_1numerics_1_1biginteger.html#adc47057561f6a34818f41d04008dec59',1,'wingmann::numerics::biginteger']]]
 ];

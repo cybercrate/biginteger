@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['equal_0',['equal',['../classnum_1_1biginteger.html#a3b32cde2623bbd44e669fae538c405c7',1,'num::biginteger']]]
+  ['equal_0',['equal',['../classwingmann_1_1numerics_1_1biginteger.html#a7bad47b9ecdc8f7654eb2532bb4f947b',1,'wingmann::numerics::biginteger']]]
 ];
