@@ -1,9 +1,9 @@
-#include <biginteger/biginteger.h>
+#include <biginteger/bigInteger.h>
 #include <gtest/gtest.h>
 
 TEST(wingmann_biginteger_modification, swap_1) {
-    wingmann::numerics::biginteger number1{739'928'192};
-    wingmann::numerics::biginteger number2{673'282'193};
+    wingmann::numerics::BigInteger number1{739'928'192};
+    wingmann::numerics::BigInteger number2{673'282'193};
 
     number1.swap(number2);
 

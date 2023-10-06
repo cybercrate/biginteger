@@ -3,7 +3,7 @@
 
 namespace wingmann::numerics {
 
-class biginteger;
+class BigInteger;
 
 /**
  * Adds value.
@@ -11,7 +11,7 @@ class biginteger;
  * @param rhs The right operand.
  * @return    Result of addition.
  */
-static biginteger operator+(const biginteger& lhs, const biginteger& rhs) {
+static BigInteger operator+(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.add(rhs);
 }
 
@@ -21,7 +21,7 @@ static biginteger operator+(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The right operand.
  * @return    Result of subtraction.
  */
-static biginteger operator-(const biginteger& lhs, const biginteger& rhs) {
+static BigInteger operator-(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.subtract(rhs);
 }
 
@@ -31,7 +31,7 @@ static biginteger operator-(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The right operand.
  * @return    Result of multiplication.
  */
-static biginteger operator*(const biginteger& lhs, const biginteger& rhs) {
+static BigInteger operator*(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.multiply(rhs);
 }
 
@@ -41,7 +41,7 @@ static biginteger operator*(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The right operand.
  * @return    Result of division.
  */
-static biginteger operator/(const biginteger& lhs, const biginteger& rhs) {
+static BigInteger operator/(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.divide(rhs);
 }
 
@@ -51,7 +51,7 @@ static biginteger operator/(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The right operand.
  * @return    Remainder of division current value by right side value.
  */
-static biginteger operator%(const biginteger& lhs, const biginteger& rhs) {
+static BigInteger operator%(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.mod(rhs);
 }
 
@@ -60,7 +60,7 @@ static biginteger operator%(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to add to the current value.
  * @return    Modified object.
  */
-static biginteger& operator+=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator+=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs + rhs;
     return lhs;
 }
@@ -70,7 +70,7 @@ static biginteger& operator+=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to subtract from the current value.
  * @return    Modified object.
  */
-static biginteger& operator-=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator-=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs - rhs;
     return lhs;
 }
@@ -80,7 +80,7 @@ static biginteger& operator-=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to multiply by current value.
  * @return    Modified object.
  */
-static biginteger& operator*=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator*=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs * rhs;
     return lhs;
 }
@@ -90,7 +90,7 @@ static biginteger& operator*=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value by which to divide the current value.
  * @return    Modified object.
  */
-static biginteger& operator/=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator/=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs / rhs;
     return lhs;
 }
@@ -100,7 +100,7 @@ static biginteger& operator/=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The right operand for taking the remainder.
  * @return    Modified object.
  */
-static biginteger& operator%=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator%=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs % rhs;
     return lhs;
 }
@@ -111,8 +111,8 @@ static biginteger& operator%=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to shift right on.
  * @return    Shifted current value.
  */
-static biginteger operator<<(const biginteger& lhs, const biginteger& rhs) {
-    return lhs.shift_left(rhs);
+static BigInteger operator<<(const BigInteger& lhs, const BigInteger& rhs) {
+    return lhs.shiftLeft(rhs);
 }
 
 /**
@@ -121,26 +121,26 @@ static biginteger operator<<(const biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to shift left on.
  * @return    Shifted current value.
  */
-static biginteger operator>>(const biginteger& lhs, const biginteger& rhs) {
-    return lhs.shift_right(rhs);
+static BigInteger operator>>(const BigInteger& lhs, const BigInteger& rhs) {
+    return lhs.shiftRight(rhs);
 }
 
 /**
  * Shifts the current value to left on right operand value and assigns the result.
- * @param lhs The value to shift_right on.
+ * @param lhs The value to shiftRight on.
  * @return    Modified object.
  */
-static biginteger& operator<<=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator<<=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs << rhs;
     return lhs;
 }
 
 /**
  * Shifts the current value to left on right operand value and assigns the result.
- * @param lhs The value to shift_right on.
+ * @param lhs The value to shiftRight on.
  * @param rhs Modified object.
  */
-static biginteger& operator>>=(biginteger& lhs, const biginteger& rhs) {
+static BigInteger& operator>>=(BigInteger& lhs, const BigInteger& rhs) {
     lhs = lhs >> rhs;
     return lhs;
 }
@@ -150,7 +150,7 @@ static biginteger& operator>>=(biginteger& lhs, const biginteger& rhs) {
  * @param rhs The value to compere with the current value.
  * @return    Result of comparison.
  */
-static std::strong_ordering operator<=>(const biginteger& lhs, const biginteger& rhs){
+static std::strong_ordering operator<=>(const BigInteger& lhs, const BigInteger& rhs){
     return lhs.compare(rhs);
 }
 
@@ -159,7 +159,7 @@ static std::strong_ordering operator<=>(const biginteger& lhs, const biginteger&
  * @param rhs The value to compare with the current value.
  * @return    Result of comparison.
  */
-static auto operator==(const biginteger& lhs, const biginteger& rhs) {
+static auto operator==(const BigInteger& lhs, const BigInteger& rhs) {
     return lhs.equal(rhs);
 }
 
@@ -169,7 +169,7 @@ static auto operator==(const biginteger& lhs, const biginteger& rhs) {
  * @param value The value to put to output.
  * @return      Output stream.
  */
-static std::ostream& operator<<(std::ostream& os, const biginteger& value) {
+static std::ostream& operator<<(std::ostream& os, const BigInteger& value) {
     os << value.to_string();
     return os;
 }
@@ -180,7 +180,7 @@ static std::ostream& operator<<(std::ostream& os, const biginteger& value) {
  * @param value The value for writing from input stream.
  * @return      Input stream.
  */
-static std::istream& operator>>(std::istream& is, biginteger& value) {
+static std::istream& operator>>(std::istream& is, BigInteger& value) {
     std::string input;
     is >> input;
     value = input;

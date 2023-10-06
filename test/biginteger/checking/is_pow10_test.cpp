@@ -1,11 +1,11 @@
-#include <biginteger/biginteger.h>
+#include <biginteger/bigInteger.h>
 #include <gtest/gtest.h>
 
 TEST(wingmann_biginteger_checking, is_pow10_1) {
-    wingmann::numerics::biginteger number{"100000000000000000000000000000000000000000000000000000000000000"};
-    EXPECT_TRUE(number.is_pow10());
+    wingmann::numerics::BigInteger number{"100000000000000000000000000000000000000000000000000000000000000"};
+    EXPECT_TRUE(number.isPow10());
 }
 
 TEST(wingmann_biginteger_checking, is_pow10_2) {
-    EXPECT_FALSE(wingmann::numerics::biginteger{1024}.is_pow10());
+    EXPECT_FALSE(wingmann::numerics::BigInteger{1024}.isPow10());
 }

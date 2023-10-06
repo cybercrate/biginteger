@@ -10,14 +10,14 @@
 namespace wingmann::numerics::__detail {
 
 // Checks for value is valid.
-static bool is_valid_number(const std::string& value, radix_flag radix) {
+static bool isValidNumber(const std::string& value, RadixFlag radix) {
     std::pair range{'0', '9'};
 
-    if (radix == radix_flag::binary) {
+    if (radix == RadixFlag::Binary) {
         range.second = '1';
-    } else if (radix == radix_flag::octal) {
+    } else if (radix == RadixFlag::Octal) {
         range.second = '7';
-    } else if (radix == radix_flag::hexadecimal) {
+    } else if (radix == RadixFlag::Hexadecimal) {
         range.second = 'F';
     }
     return std::ranges::all_of(value, [=](const auto c) {
@@ -26,18 +26,18 @@ static bool is_valid_number(const std::string& value, radix_flag radix) {
 }
 
 // Removes first char if its sign.
-static void remove_sign(std::string& value) {
+static void removeSign(std::string& value) {
     value.erase(0, 1);
 }
 
 // Removes leading not significant zeros.
-static void remove_leading_zeros(std::string& value) {
+static void removeLeadingZeros(std::string& value) {
     while (value.starts_with('0') && (value.length() != 1)) {
         value.erase(0, 1);
     }
 }
 
-static constexpr auto char_to_int32 = [](const char value) {
+static constexpr auto charToInt32 = [](const char value) {
     auto number{static_cast<int>(value)};
     return std::isdigit(value) ? (number - 0x30) : (std::tolower(number - 0x61) + 0xA);
 };

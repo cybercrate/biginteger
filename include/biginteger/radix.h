@@ -6,39 +6,39 @@
 namespace wingmann::numerics {
 
 /// @brief The base of a system of number.
-enum class radix_flag {
-    binary      = 2,
-    octal       = 8,
-    decimal     = 10,
-    hexadecimal = 16
+enum class RadixFlag {
+    Binary      = 2,
+    Octal       = 8,
+    Decimal     = 10,
+    Hexadecimal = 16
 };
 
 /// @brief Radix type.
 
 
-struct radix {
-    radix_flag value;
+struct Radix {
+    RadixFlag value;
 
 public:
     /// @brief Deleted default constructor.
-    radix() = delete;
+    Radix() = delete;
 
-    /// @brief Constructs from radix flag.
+    /// @brief Constructs from Radix flag.
     /// @param value Radix flag.
     ///
-    explicit radix(radix_flag flag) : value{flag} { }
+    explicit Radix(RadixFlag flag) : value{flag} { }
 };
 
 // Returns the base char values of a system of number.
-static constexpr auto base_chars(radix_flag radix) {
+static constexpr auto baseChars(RadixFlag radix) {
     std::string value{"0123456789ABCDEF"};
 
     switch (radix) {
-        case radix_flag::binary:
+        case RadixFlag::Binary:
             return value.substr(0, 2);
-        case radix_flag::octal:
+        case RadixFlag::Octal:
             return value.substr(0, 8);
-        case radix_flag::hexadecimal:
+        case RadixFlag::Hexadecimal:
             return value.substr(0, 16);
         default:
             return value.substr(0, 10);

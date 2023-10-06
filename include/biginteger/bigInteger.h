@@ -1,14 +1,3 @@
-/// @file   biginteger.h
-/// @author Alexander Shavrov (alexander.shavrov@outlook.com)
-/// @brief  Arbitrary large integer library.
-/// @date   2022-09-28
-///
-/// @copyright Copyright (c) 2022
-///
-/// This file is distributed under the GNU GPL v3 License.
-/// See LICENSE file for details.
-///
-
 #ifndef ALEF_NUMERICS_BIG_INTEGER_BIG_INTEGER_H
 #define ALEF_NUMERICS_BIG_INTEGER_BIG_INTEGER_H
 
@@ -23,44 +12,44 @@
 namespace wingmann::numerics {
 
 /// @brief Arbitrarily large integer.
-class biginteger {
+class BigInteger {
 public:
-    using radix_type = radix;
-    using sign_type  = sign;
-    using radix_flag = radix_flag;
-    using sign_flag  = sign_flag;
+    using RadixType = Radix;
+    using SignType  = Sign;
+    using RadixFlag = RadixFlag;
+    using SignFlag  = SignFlag;
 
 protected:
     // The base of a system of number.
-    radix_type radix_{radix_flag::decimal};
+    RadixType radix_{RadixFlag::Decimal};
 
     // Sign flag.
-    sign_type sign_{sign_flag::positive};
+    SignType sign_{SignFlag::positive};
 
-    // std::string representation of decimal value.
+    // std::string representation of Decimal value.
     std::string value_{"0"};
 
 public:
     /// @brief Default constructor.
-    biginteger() = default;
+    BigInteger() = default;
 
     /// @brief Destructor.
-    virtual ~biginteger() = default;
+    virtual ~BigInteger() = default;
 
     /// @brief Copy constructor.
     /// @param other Value to copy.
     ///
-    biginteger(const biginteger& other) = default;
+    BigInteger(const BigInteger& other) = default;
 
     /// @brief Move constructor.
     /// @param other Value to move.
     ///
-    biginteger(biginteger&& other) noexcept
+    BigInteger(BigInteger&& other) noexcept
         : radix_{other.radix_},
           sign_{other.sign_},
           value_{std::move(other.value_)}
     {
-        set_default(other);
+        setDefault(other);
     }
 
     /// @brief Constructs from integer.
@@ -68,31 +57,31 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
-    biginteger(T value) { *this = std::to_string(value); }
+    BigInteger(T value) { *this = std::to_string(value); }
 
     /// @brief Constructs from string literal.
     ///
     /// @param value std::string literal value.
     /// @param radix The base of a system of number.
     ///
-    biginteger(const char* value, radix_type radix) : radix_{radix} { *this = std::string{value}; }
+    BigInteger(const char* value, RadixType radix) : radix_{radix} { *this = std::string{value}; }
 
     /// @brief Constructs from string literal.
     /// @param value std::string literal value.
     ///
-    biginteger(const char* value) : biginteger{value, radix_type{radix_flag::decimal}} { }
+    BigInteger(const char* value) : BigInteger{value, RadixType{RadixFlag::Decimal}} { }
 
     /// @brief Constructs from string.
     ///
     /// @param value std::string value.
     /// @param radix The base of a system of number.
     ///
-    biginteger(std::string value, radix_flag radix) : radix_{radix} { *this = std::move(value); }
+    BigInteger(std::string value, RadixFlag radix) : radix_{radix} { *this = std::move(value); }
 
     /// @brief Constructs from string.
     /// @param value std::string value.
     ///
-    biginteger(std::string value) : biginteger{std::move(value), radix_flag::decimal} { }
+    BigInteger(std::string value) : BigInteger{std::move(value), RadixFlag::Decimal} { }
 
     // Assignment operators ------------------------------------------------------------------------
 
@@ -101,20 +90,19 @@ public:
     /// @param rhs Value to copy.
     /// @return    Constructed object.
     ///
-    biginteger& operator=(const biginteger& rhs) = default;
+    BigInteger& operator=(const BigInteger& rhs) = default;
 
     /// @brief Move assignment operator.
     ///
     /// @param rhs Value to move.
     /// @return    Constructed object.
     ///
-    biginteger& operator=(biginteger&& rhs) noexcept {
+    BigInteger& operator=(BigInteger&& rhs) noexcept {
         this->radix_ = rhs.radix_;
         this->sign_ = rhs.sign_;
         this->value_ = std::move(rhs.value_);
 
-        set_default(rhs);
-
+        setDefault(rhs);
         return *this;
     }
 
@@ -125,7 +113,7 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
-    biginteger& operator=(T rhs) {
+    BigInteger& operator=(T rhs) {
         *this = std::to_string(rhs);
         return *this;
     }
@@ -135,7 +123,7 @@ public:
     /// @param rhs The string literal.
     /// @return    Constructed object.
     ///
-    biginteger& operator=(const char* rhs) {
+    BigInteger& operator=(const char* rhs) {
         *this = std::string{rhs};
         return *this;
     }
@@ -145,21 +133,21 @@ public:
     /// @param value The value from which to construct.
     /// @return      Constructed object.
     ///
-    biginteger& operator=(std::string value) {
-        this->sign_.value = (value.starts_with('-') ? sign_flag::negative : sign_flag::positive);
+    BigInteger& operator=(std::string value) {
+        this->sign_.value = (value.starts_with('-') ? SignFlag::negative : SignFlag::positive);
 
-        if (this->is_negative()) {
-            __detail::remove_sign(value);
+        if (this->isNegative()) {
+            __detail::removeSign(value);
         }
-        if (!__detail::is_valid_number(value, this->radix_.value)) {
+        if (!__detail::isValidNumber(value, this->radix_.value)) {
             throw std::invalid_argument("value in not valid");
         }
-        __detail::remove_leading_zeros(value);
+        __detail::removeLeadingZeros(value);
 
-        if (this->radix_.value == radix_flag::decimal) {
+        if (this->radix_.value == RadixFlag::Decimal) {
             this->value_ = std::move(value);
         } else {
-            this->value_ = convert_to_base_ten(value, this->radix_.value);
+            this->value_ = convertToBaseTen(value, this->radix_.value);
         }
         return *this;
     }
@@ -169,7 +157,7 @@ public:
     /// @brief Increments the current value.
     /// @return Modified object.
     ///
-    biginteger& operator++() {
+    BigInteger& operator++() {
         *this = this->add(1);
         return *this;
     }
@@ -177,7 +165,7 @@ public:
     /// @brief Increments the current value after returns copy.
     /// @return Copy of current value.
     ///
-    biginteger operator++(int) {
+    BigInteger operator++(int) {
         auto temp{*this};
         ++(*this);
         return temp;
@@ -186,7 +174,7 @@ public:
     /// @brief Decrements the current value.
     /// @return Modified object.
     ///
-    biginteger& operator--() {
+    BigInteger& operator--() {
         *this = this->subtract(1);
         return *this;
     }
@@ -194,7 +182,7 @@ public:
     /// @brief Decrements the current value after returns copy.
     /// @return Copy of current value.
     ///
-    biginteger operator--(int) {
+    BigInteger operator--(int) {
         auto temp{*this};
         --(*this);
         return temp;
@@ -204,45 +192,45 @@ public:
 
     /// @brief Shifts the current value to left on right operand value.
     ///
-    /// @param rhs The value to shift_right on.
+    /// @param rhs The value to shiftRight on.
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    biginteger shift_left(const biginteger& rhs) const {
-        if (rhs.is_negative()) {
+    BigInteger shiftLeft(const BigInteger& rhs) const {
+        if (rhs.isNegative()) {
             throw std::invalid_argument{"negative value"};
         }
-        auto bitwise_value = this->to_string(radix_flag::binary);
-        auto i = value_from(0);
+        auto bitwiseValue = this->to_string(RadixFlag::Binary);
+        auto i = valueFrom(0);
 
         while (i.compare(rhs) == std::strong_ordering::less) {
-            bitwise_value.push_back('0');
+            bitwiseValue.push_back('0');
             ++i;
         }
-        return {std::move(bitwise_value), radix_flag::binary};
+        return {std::move(bitwiseValue), RadixFlag::Binary};
     }
 
     /// @brief Shifts the current value to right on right operand value.
     ///
-    /// @param rhs The value to shift_right on.
+    /// @param rhs The value to shiftRight on.
     /// @return    Shifted current value.
     ///
     [[nodiscard]]
-    biginteger shift_right(const biginteger& rhs) const {
-        if (rhs.is_negative()) {
+    BigInteger shiftRight(const BigInteger& rhs) const {
+        if (rhs.isNegative()) {
             throw std::invalid_argument{"negative value"};
         }
-        auto bitwise_value = this->to_string(radix_flag::binary);
-        auto i = value_from(0);
+        auto bitwiseValue = this->to_string(RadixFlag::Binary);
+        auto i = valueFrom(0);
 
-        while ((i.compare(rhs) == std::strong_ordering::less) && (bitwise_value.length() > 0)) {
-            bitwise_value.pop_back();
+        while ((i.compare(rhs) == std::strong_ordering::less) && (bitwiseValue.length() > 0)) {
+            bitwiseValue.pop_back();
             ++i;
         }
-        if (bitwise_value.empty()) {
-            bitwise_value.push_back('0');
+        if (bitwiseValue.empty()) {
+            bitwiseValue.push_back('0');
         }
-        return {std::move(bitwise_value), radix_flag::binary};
+        return {std::move(bitwiseValue), RadixFlag::Binary};
     }
 
     // Comparison ----------------------------------------------------------------------------------
@@ -253,19 +241,19 @@ public:
     /// @return    Result of comparison.
     ///
     [[nodiscard]]
-    std::strong_ordering compare(const biginteger& rhs) const {
+    std::strong_ordering compare(const BigInteger& rhs) const {
         // -a, +b
-        if (this->is_negative() && rhs.is_positive()) {
+        if (this->isNegative() && rhs.isPositive()) {
             return std::strong_ordering::less;
         }
 
         // +a, -b
-        if (this->is_positive() && rhs.is_negative()) {
+        if (this->isPositive() && rhs.isNegative()) {
             return std::strong_ordering::greater;
         }
 
         // -a, -b
-        if (this->is_negative() && rhs.is_negative()) {
+        if (this->isNegative() && rhs.isNegative()) {
             if (this->value_.length() == rhs.value_.length()) {
                 if (this->value_ > rhs.value_) {
                     return std::strong_ordering::less;
@@ -299,7 +287,7 @@ public:
     /// @return    Result of comparison.
     ///
     [[nodiscard]]
-    bool equal(const biginteger& rhs) const {
+    bool equal(const BigInteger& rhs) const {
         return this->compare(rhs) == std::strong_ordering::equivalent;
     }
 
@@ -311,60 +299,58 @@ public:
     /// @return    Result of addition.
     ///
     [[nodiscard]]
-    biginteger add(const biginteger& rhs) const {
+    BigInteger add(const BigInteger& rhs) const {
         // (-a)+(+b)
-        if (this->is_negative() && rhs.is_positive()) {
+        if (this->isNegative() && rhs.isPositive()) {
             return rhs.subtract(this->negate());
         }
 
         // (+a)+(-b)
-        if (this->is_positive() && rhs.is_negative()) {
+        if (this->isPositive() && rhs.isNegative()) {
             return this->subtract(rhs.negate());
         }
 
         // (+a)+(+b) or (-a)+(-b)
-        auto lhs_value = this->value_;
-        auto rhs_value = rhs.value_;
+        auto lhsValue = this->value_;
+        auto rhsValue = rhs.value_;
 
-        auto diff_length = std::abs(
-            static_cast<int>(lhs_value.length() - rhs_value.length()));
+        auto diffLength = std::abs(static_cast<int>(lhsValue.length() - rhsValue.length()));
 
-        const auto min_value{'0'};
-        const auto max_value{'9'};
+        const auto minValue{'0'};
+        const auto maxValue{'9'};
 
-        if (lhs_value.length() > rhs_value.length()) {
-            rhs_value.insert(0, diff_length, min_value);
+        if (lhsValue.length() > rhsValue.length()) {
+            rhsValue.insert(0, diffLength, minValue);
         } else {
-            lhs_value.insert(0, diff_length, min_value);
+            lhsValue.insert(0, diffLength, minValue);
         }
-        std::ranges::reverse(lhs_value);
-        std::ranges::reverse(rhs_value);
+        std::ranges::reverse(lhsValue);
+        std::ranges::reverse(rhsValue);
 
         std::size_t index{};
-        char carry{min_value};
+        char carry{minValue};
 
-        for (char& lhs_char : lhs_value) {
-            lhs_char = static_cast<char>(
-                (carry - min_value) +
-                (lhs_char - min_value) +
-                (rhs_value.at(index) - min_value) +
-                min_value);
+        for (char& lhsChar : lhsValue) {
+            lhsChar = static_cast<char>(
+                    (carry - minValue) +
+                    (lhsChar - minValue) +
+                    (rhsValue.at(index) - minValue) +
+                    minValue);
 
-            if (lhs_char > max_value) {
-                lhs_char -= 10;
-                carry = (min_value + 1);
+            if (lhsChar > maxValue) {
+                lhsChar -= 10;
+                carry = (minValue + 1);
             } else {
-                carry = min_value;
+                carry = minValue;
             }
             ++index;
         }
-
-        if (carry > min_value) {
-            lhs_value.append(1, carry);
+        if (carry > minValue) {
+            lhsValue.append(1, carry);
         }
-        std::ranges::reverse(lhs_value);
+        std::ranges::reverse(lhsValue);
 
-        return this->is_negative() ? value_from(lhs_value).negate() : std::move(lhs_value);
+        return this->isNegative() ? valueFrom(lhsValue).negate() : std::move(lhsValue);
     }
 
     /// @brief Subtracts value.
@@ -373,16 +359,16 @@ public:
     /// @return    Result of subtraction.
     ///
     [[nodiscard]]
-    biginteger subtract(const biginteger& rhs) const {
+    BigInteger subtract(const BigInteger& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
-        if ((this->is_negative() && rhs.is_positive()) ||
-            (this->is_positive() && rhs.is_negative()))
+        if ((this->isNegative() && rhs.isPositive()) ||
+            (this->isPositive() && rhs.isNegative()))
         {
             return this->add(rhs.negate());
         }
 
         // (+a)-(+b) or (-a)-(-b)
-        if (this->is_negative()) {
+        if (this->isNegative()) {
             return this->add(rhs.negate());
         }
         bool inverted_sign = (this->compare(rhs) == std::strong_ordering::less);
@@ -390,15 +376,14 @@ public:
         std::string subtracted = inverted_sign ? rhs.value_ : this->value_;
         std::string removed = inverted_sign ? this->value_ : rhs.value_;
 
-        auto diff_length = std::abs(
-            static_cast<int>(subtracted.length() - removed.length()));
+        auto diffLength = std::abs(static_cast<int>(subtracted.length() - removed.length()));
 
-        const auto min_value{'0'};
+        const auto minValue{'0'};
 
         if (subtracted.size() > removed.size()) {
-            removed.insert(0, diff_length, min_value);
+            removed.insert(0, diffLength, minValue);
         } else {
-            subtracted.insert(0, diff_length, min_value);
+            subtracted.insert(0, diffLength, minValue);
         }
         std::ranges::reverse(subtracted);
         std::ranges::reverse(removed);
@@ -411,16 +396,16 @@ public:
                 --subtracted.at(index + 1);
             }
             symbol = static_cast<char>(
-                (symbol - min_value) - (removed.at(index) - min_value) + min_value);
+                    (symbol - minValue) - (removed.at(index) - minValue) + minValue);
 
             ++index;
         }
         std::ranges::reverse(subtracted);
 
-        while (subtracted.front() == min_value && subtracted.length() != 1) {
+        while (subtracted.front() == minValue && subtracted.length() != 1) {
             subtracted.erase(0, 1);
         }
-        return inverted_sign ? value_from(subtracted).negate() : std::move(subtracted);
+        return inverted_sign ? valueFrom(subtracted).negate() : std::move(subtracted);
     }
 
     /// @brief Multiplies value.
@@ -429,51 +414,45 @@ public:
     /// @return    Result of multiplication.
     ///
     [[nodiscard]]
-    biginteger multiply(const biginteger& rhs) const {
-        auto lhs_value = this->value_;
-        auto rhs_value = rhs.value_;
+    BigInteger multiply(const BigInteger& rhs) const {
+        auto lhsValue = this->value_;
+        auto rhsValue = rhs.value_;
 
-        std::ranges::reverse(lhs_value);
-        std::ranges::reverse(rhs_value);
+        std::ranges::reverse(lhsValue);
+        std::ranges::reverse(rhsValue);
 
-        const auto min_value{'0'};
-        const auto max_value{'9'};
+        const auto minValue{'0'};
+        const auto maxValue{'9'};
 
         int index{};
-        char carry{min_value};
+        char carry{minValue};
 
-        auto temp = value_from(0);
+        auto temp = valueFrom(0);
         std::uint8_t result;
 
-        for (const auto& lhs_char : lhs_value) {
-            auto operation = std::string{}.insert(0, index, min_value);
+        for (const auto& lhsChar : lhsValue) {
+            auto operation = std::string{}.insert(0, index, minValue);
 
-            for (const auto& rhs_char : rhs_value) {
-                result =
-                    ((lhs_char - min_value) * (rhs_char - min_value)) +
-                    (carry - min_value) +
-                    min_value;
+            for (const auto& rhsChar : rhsValue) {
+                result = ((lhsChar - minValue) * (rhsChar - minValue)) + (carry - minValue) + minValue;
+                carry = minValue;
 
-                carry = min_value;
-
-                if (result > max_value) {
-                    while (result > max_value) {
+                if (result > maxValue) {
+                    while (result > maxValue) {
                         result -= 10;
                         ++carry;
                     }
                 }
                 operation.insert(0, 1, static_cast<char>(result));
             }
-            if (carry > min_value) {
+            if (carry > minValue) {
                 operation.insert(0, 1, carry);
-                carry = min_value;
+                carry = minValue;
             }
             temp = temp.add(operation);
             ++index;
         }
-        auto positive =
-            (this->is_negative() && rhs.is_negative()) ||
-            (this->is_positive() && rhs.is_positive());
+        auto positive = (this->isNegative() && rhs.isNegative()) || (this->isPositive() && rhs.isPositive());
 
         return positive ? std::move(temp) : temp.negate();
     }
@@ -484,7 +463,7 @@ public:
     /// @return    Result of division.
     ///
     [[nodiscard]]
-    biginteger divide(const biginteger& rhs) const {
+    BigInteger divide(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
             throw std::invalid_argument("divide by zero");
         }
@@ -494,41 +473,39 @@ public:
         if (this->equal(rhs)) {
             return 1;
         }
-        auto lhs_value = this->value_;
-        std::ranges::reverse(lhs_value);
+        auto lhsValue = this->value_;
+        std::ranges::reverse(lhsValue);
 
-        auto rhs_abs = rhs.abs();
+        auto rhsAbs = rhs.abs();
 
-        std::string lhs_quotient;
-        std::string rhs_quotient;
+        std::string lhsQuotient;
+        std::string rhsQuotient;
 
         do {
-            lhs_quotient.push_back(lhs_value.back());
-            lhs_value.pop_back();
+            lhsQuotient.push_back(lhsValue.back());
+            lhsValue.pop_back();
 
-            biginteger dividend_value{lhs_quotient};
+            BigInteger dividend_value{lhsQuotient};
 
-            if (dividend_value.compare(rhs_abs) == std::strong_ordering::less) {
-                rhs_quotient.push_back('0');
+            if (dividend_value.compare(rhsAbs) == std::strong_ordering::less) {
+                rhsQuotient.push_back('0');
                 continue;
             }
-            auto number = value_from(2);
-            auto mul = rhs_abs.multiply(number).compare(dividend_value);
+            auto number = valueFrom(2);
+            auto mul = rhsAbs.multiply(number).compare(dividend_value);
 
             while (mul == std::strong_ordering::less || mul == std::strong_ordering::equal) {
                 ++number;
-                mul = rhs_abs.multiply(number).compare(dividend_value);
+                mul = rhsAbs.multiply(number).compare(dividend_value);
             }
             --number;
-            rhs_quotient.append(number.to_string());
-            lhs_quotient = dividend_value.subtract(rhs_abs.multiply(number)).to_string();
-        } while (!lhs_value.empty());
+            rhsQuotient.append(number.to_string());
+            lhsQuotient = dividend_value.subtract(rhsAbs.multiply(number)).to_string();
+        } while (!lhsValue.empty());
 
-        auto positive =
-            (this->is_negative() && rhs.is_negative()) ||
-            (this->is_positive() && rhs.is_positive());
+        auto positive = (this->isNegative() && rhs.isNegative()) || (this->isPositive() && rhs.isPositive());
 
-        return positive ? std::move(rhs_quotient) : value_from(rhs_quotient).negate();
+        return positive ? std::move(rhsQuotient) : valueFrom(rhsQuotient).negate();
     }
 
     /// @brief Computes remainder.
@@ -537,7 +514,7 @@ public:
     /// @return    Remainder of division current value by right side value.
     ///
     [[nodiscard]]
-    biginteger mod(const biginteger& rhs) const {
+    BigInteger mod(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
             throw std::invalid_argument("mod by zero");
         }
@@ -550,11 +527,11 @@ public:
     /// @return If current value signed then current value otherwise sign reversed.
     ///
     [[nodiscard]]
-    biginteger negate() const {
+    BigInteger negate() const {
         if (this->equal(0)) {
             return *this;
         }
-        if (this->is_negative()) {
+        if (this->isNegative()) {
             return this->value_;
         }
         std::stringstream ss;
@@ -567,8 +544,8 @@ public:
     /// @return Unsigned current value.
     ///
     [[nodiscard]]
-    biginteger abs() const {
-        return this->is_positive() ? *this : this->negate();
+    BigInteger abs() const {
+        return this->isPositive() ? *this : this->negate();
     }
 
     /// @brief Rises the current value to the power of the right operand.
@@ -577,7 +554,7 @@ public:
     /// @return    Current value raised to the power.
     ///
     [[nodiscard]]
-    biginteger pow(const biginteger& rhs) const {
+    BigInteger pow(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
             return 1;
         }
@@ -587,33 +564,33 @@ public:
         if (rhs.compare(0) == std::strong_ordering::less) {
             return this->abs().equal(1) ? *this : 0;
         }
-        auto init_exp{rhs};
+        auto initExp{rhs};
         auto result{*this};
-        auto result_odd = value_from(1);
+        auto resultOdd = valueFrom(1);
 
-        while (init_exp.compare(1) == std::strong_ordering::greater) {
-            if (init_exp.mod(2)) {
-                result_odd = result_odd.multiply(result);
+        while (initExp.compare(1) == std::strong_ordering::greater) {
+            if (initExp.mod(2)) {
+                resultOdd = resultOdd.multiply(result);
             }
             result = result.multiply(result);
-            init_exp = init_exp.divide(2);
+            initExp = initExp.divide(2);
         }
-        return result.multiply(result_odd);
+        return result.multiply(resultOdd);
     }
 
     /// @brief Rises the exponent value to the power of 10
     /// @return Current value raised to the power.
     ///
     [[nodiscard]]
-    biginteger pow10() const {
-        return value_from(10).pow(*this);
+    BigInteger pow10() const {
+        return valueFrom(10).pow(*this);
     }
 
     /// @brief Computes square root.
     /// @return Square root of current value.
     ///
     [[nodiscard]]
-    biginteger sqrt() const {
+    BigInteger sqrt() const {
         if (this->compare(0) == std::strong_ordering::less) {
             throw std::invalid_argument("sqrt of a negative value");
         }
@@ -631,8 +608,8 @@ public:
         if (this->compare(16) == std::strong_ordering::less) {
             return 3;
         }
-        auto previous = value_from(-1);
-        auto current = value_from(this->to_string().size() / 2 - 1).pow10();
+        auto previous = valueFrom(-1);
+        auto current = valueFrom(this->to_string().size() / 2 - 1).pow10();
 
         while (current.subtract(previous).abs().compare(1) == std::strong_ordering::greater) {
             previous = current;
@@ -647,21 +624,21 @@ public:
     /// @return    Greatest common divisor of the current value and right operand.
     ///
     [[nodiscard]]
-    biginteger gcd(const biginteger& rhs) const {
-        auto lhs_abs = this->abs();
-        auto rhs_abs = rhs.abs();
+    BigInteger gcd(const BigInteger& rhs) const {
+        auto lhsAbs = this->abs();
+        auto rhsAbs = rhs.abs();
 
-        if (rhs_abs.equal(0) || lhs_abs.equal(0)) {
+        if (rhsAbs.equal(0) || lhsAbs.equal(0)) {
             return 0;
         }
-        auto remainder{rhs_abs};
+        auto remainder{rhsAbs};
 
         while (!remainder.equal(0)) {
-            remainder = lhs_abs.mod(rhs_abs);
-            lhs_abs = rhs_abs;
-            rhs_abs = remainder;
+            remainder = lhsAbs.mod(rhsAbs);
+            lhsAbs = rhsAbs;
+            rhsAbs = remainder;
         }
-        return lhs_abs;
+        return lhsAbs;
     }
 
     /// @brief Computes the least common multiple.
@@ -670,7 +647,7 @@ public:
     /// @return    Least common multiple of the current value and right operand.
     ///
     [[nodiscard]]
-    biginteger lcm(const biginteger& rhs) const {
+    BigInteger lcm(const BigInteger& rhs) const {
         if (this->equal(0) || rhs.equal(0)) {
             return 0;
         }
@@ -682,41 +659,41 @@ public:
     /// @brief Checks for current value is power of 10.
     /// @return If is power of 10 true otherwise false.
     ///
-    bool is_pow10() {
+    bool isPow10() {
         return (this->value_.at(0) == '1') && std::ranges::all_of(
             this->value_.cbegin() + 1,
             this->value_.cend(),
             [](const auto c) { return c == '0'; });
     }
 
-    /// @brief Gets the binary usize.
+    /// @brief Gets the Binary usize.
     /// @return Bit length of current value.
     ///
     [[nodiscard]]
-    std::size_t bit_length() const {
-        return to_string(radix_flag::binary).length();
+    std::size_t bitLength() const {
+        return to_string(RadixFlag::Binary).length();
     }
 
     /// @brief Checks for value sign.
     /// @return If value unsigned then true otherwise false.
     ///
     [[nodiscard]]
-    bool is_positive() const {
-        return this->sign_.is_positive();
+    bool isPositive() const {
+        return this->sign_.isPositive();
     }
 
     /// @brief Checks for value sign.
     /// @return If value signed true otherwise false.
     ///
     [[nodiscard]]
-    bool is_negative() const {
-        return !is_positive();
+    bool isNegative() const {
+        return !isPositive();
     }
 
     /// @brief Swaps values.
     /// @param rhs The value to swap with the current value.
     ///
-    void swap(biginteger& rhs) {
+    void swap(BigInteger& rhs) {
         if (this->equal(rhs)) {
             return;
         }
@@ -732,7 +709,7 @@ public:
     ///
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
-    static biginteger value_from(T value) {
+    static BigInteger valueFrom(T value) {
         return std::to_string(value);
     }
 
@@ -741,7 +718,7 @@ public:
     /// @tparam value std::string value.
     /// @return       Constructed value.
     ///
-    static biginteger value_from(std::string value) {
+    static BigInteger valueFrom(std::string value) {
         return std::move(value);
     }
 
@@ -782,40 +759,40 @@ public:
     /// @return      std::string representation of current value.
     ///
     [[nodiscard]]
-    std::string to_string(radix_flag radix = radix_flag::decimal) const {
+    std::string to_string(RadixFlag radix = RadixFlag::Decimal) const {
         std::stringstream ss;
 
-        if (is_negative()) {
+        if (isNegative()) {
             ss << '-';
         }
-        if (radix == radix_flag::decimal) {
+        if (radix == RadixFlag::Decimal) {
             ss << value_;
         } else {
-            ss << convert_from_base_ten(*this, radix);
+            ss << convertFromBaseTen(*this, radix);
         }
         return ss.str();
     }
 
 private:
     // Sets the default value for an object whose state has been moved.
-    static void set_default(biginteger& moved) {
-        moved.radix_.value = radix_flag::decimal;
-        moved.sign_.value = sign_flag::positive;
+    static void setDefault(BigInteger& moved) {
+        moved.radix_.value = RadixFlag::Decimal;
+        moved.sign_.value = SignFlag::positive;
         moved.value_ = "0";
     }
 
     // Converts not base ten value to string.
-    static std::string convert_from_base_ten(const biginteger& value, const radix_flag radix) {
-        auto decimal_value{value};
-        auto modulo = value_from(static_cast<std::uint8_t>(radix));
+    static std::string convertFromBaseTen(const BigInteger& value, const RadixFlag radix) {
+        auto decimalValue{value};
+        auto modulo = valueFrom(static_cast<std::uint8_t>(radix));
 
         std::string result;
 
-        while (!decimal_value.equal(0)) {
-            auto remainder = decimal_value.mod(modulo);
-            decimal_value = decimal_value.divide(modulo);
+        while (!decimalValue.equal(0)) {
+            auto remainder = decimalValue.mod(modulo);
+            decimalValue = decimalValue.divide(modulo);
 
-            auto c = base_chars(radix_flag::hexadecimal).at(std::stoi(remainder.to_string()));
+            auto c = baseChars(RadixFlag::Hexadecimal).at(std::stoi(remainder.to_string()));
             result.push_back(c);
         }
         std::ranges::reverse(result);
@@ -824,22 +801,22 @@ private:
     }
 
     // Converts string value to base ten.
-    static std::string convert_to_base_ten(const std::string& value, radix_flag radix) {
-        auto last = __detail::char_to_int32(value.back());
+    static std::string convertToBaseTen(const std::string& value, RadixFlag radix) {
+        auto last = __detail::charToInt32(value.back());
         auto length = value.length();
 
-        auto power = value_from(length - 1);
-        auto converted_value = value_from(last);
-        auto radix_value = value_from(static_cast<std::uint8_t>(radix));
+        auto power = valueFrom(length - 1);
+        auto convertedValue = valueFrom(last);
+        auto radixValue = valueFrom(static_cast<std::uint8_t>(radix));
 
         int current;
 
         for (std::size_t i = 0; i < length - 1; ++i) {
-            current = __detail::char_to_int32(value.at(i));
-            converted_value = converted_value
-                .add(value_from(current).multiply(radix_value.pow(power--)));
+            current = __detail::charToInt32(value.at(i));
+            convertedValue = convertedValue
+                .add(valueFrom(current).multiply(radixValue.pow(power--)));
         }
-        return std::move(converted_value.value_);
+        return std::move(convertedValue.value_);
     }
 };
 

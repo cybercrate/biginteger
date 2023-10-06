@@ -3,35 +3,35 @@
 
 namespace wingmann::numerics {
 
-enum class sign_flag {
+enum class SignFlag {
     positive = 0,
     negative = 1
 };
 
-struct sign {
+struct Sign {
     /// @brief Flag of sign.
-    sign_flag value;
+    SignFlag value;
 
 public:
     /// @brief Default constructor.
-    sign() = delete;
+    Sign() = delete;
 
     /// @brief Constructs from sign flag.
     /// @param flag Sign flag value.
     ///
-    explicit sign(sign_flag flag) : value{flag} { }
+    explicit Sign(SignFlag flag) : value{flag} { }
 
 public:
     /// @brief Checks if the flag is positive.
     [[nodiscard]]
-    bool is_positive() const { return value == sign_flag::positive; }
+    bool isPositive() const { return value == SignFlag::positive; }
 
     /// @brief Checks if the flag is negative.
     [[nodiscard]]
-    bool is_negative() const { return !is_positive(); }
+    bool isNegative() const { return !isPositive(); }
 
     /// @brief Inverts the value of the flag.
-    void reverse() { value = is_positive() ? sign_flag::negative : sign_flag::positive; }
+    void reverse() { value = isPositive() ? SignFlag::negative : SignFlag::positive; }
 };
 
 } // namespace wingmann::numerics
