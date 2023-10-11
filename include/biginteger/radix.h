@@ -5,7 +5,9 @@
 
 namespace wingmann::numerics {
 
-/// @brief The base of a system of number.
+/**
+ * @brief The base of a system of number.
+ */
 enum class RadixFlag {
     Binary      = 2,
     Octal       = 8,
@@ -13,19 +15,22 @@ enum class RadixFlag {
     Hexadecimal = 16
 };
 
-/// @brief Radix type.
-
-
+/**
+ * @brief Radix type.
+ */
 struct Radix {
     RadixFlag value;
 
 public:
-    /// @brief Deleted default constructor.
+    /**
+     * @brief Deleted default constructor.
+     */
     Radix() = delete;
 
-    /// @brief Constructs from Radix flag.
-    /// @param value Radix flag.
-    ///
+    /**
+     * @brief Constructs from Radix flag.
+     * @param flag Radix flag.
+     */
     explicit Radix(RadixFlag flag) : value{flag} { }
 };
 

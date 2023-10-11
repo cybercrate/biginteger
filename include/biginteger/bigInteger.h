@@ -11,7 +11,9 @@
 
 namespace wingmann::numerics {
 
-/// @brief Arbitrarily large integer.
+/**
+ * @brief Arbitrarily large integer.
+ */
 class BigInteger {
 public:
     using RadixType = Radix;
@@ -30,20 +32,26 @@ protected:
     std::string value_{"0"};
 
 public:
-    /// @brief Default constructor.
+    /**
+     * @brief Default constructor.
+     */
     BigInteger() = default;
 
-    /// @brief Destructor.
+    /**
+     * @brief Destructor.
+     */
     virtual ~BigInteger() = default;
 
-    /// @brief Copy constructor.
-    /// @param other Value to copy.
-    ///
+    /**
+     * @brief Copy constructor.
+     * @param other Value to copy.
+     */
     BigInteger(const BigInteger& other) = default;
 
-    /// @brief Move constructor.
-    /// @param other Value to move.
-    ///
+    /**
+     * @brief Move constructor.
+     * @param other Value to move.
+     */
     BigInteger(BigInteger&& other) noexcept
         : radix_{other.radix_},
           sign_{other.sign_},
@@ -52,51 +60,58 @@ public:
         setDefault(other);
     }
 
-    /// @brief Constructs from integer.
-    /// @param value Integral value.
-    ///
+    /**
+     * @brief Constructs from integer.
+     * @param value Integral value.
+     */
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
     BigInteger(T value) { *this = std::to_string(value); }
 
-    /// @brief Constructs from string literal.
-    ///
-    /// @param value std::string literal value.
-    /// @param radix The base of a system of number.
-    ///
+    /**
+     * @brief Constructs from string literal.
+     *
+     * @param value std::string literal value.
+     * @param radix The base of a system of number.
+     */
     BigInteger(const char* value, RadixType radix) : radix_{radix} { *this = std::string{value}; }
 
-    /// @brief Constructs from string literal.
-    /// @param value std::string literal value.
-    ///
+    /**
+     * @brief Constructs from string literal.
+     * @param value std::string literal value.
+     */
     BigInteger(const char* value) : BigInteger{value, RadixType{RadixFlag::Decimal}} { }
 
-    /// @brief Constructs from string.
-    ///
-    /// @param value std::string value.
-    /// @param radix The base of a system of number.
-    ///
+    /**
+     * @brief Constructs from string.
+     *
+     * @param value std::string value.
+     * @param radix The base of a system of number.
+     */
     BigInteger(std::string value, RadixFlag radix) : radix_{radix} { *this = std::move(value); }
 
-    /// @brief Constructs from string.
-    /// @param value std::string value.
-    ///
+    /**
+     * @brief Constructs from string.
+     * @param value std::string value.
+     */
     BigInteger(std::string value) : BigInteger{std::move(value), RadixFlag::Decimal} { }
 
     // Assignment operators ------------------------------------------------------------------------
 
-    /// @brief Copy assignment operator.
-    ///
-    /// @param rhs Value to copy.
-    /// @return    Constructed object.
-    ///
+    /**
+     * @brief Copy assignment operator.
+     *
+     * @param rhs Value to copy.
+     * @return Constructed object.
+     */
     BigInteger& operator=(const BigInteger& rhs) = default;
 
-    /// @brief Move assignment operator.
-    ///
-    /// @param rhs Value to move.
-    /// @return    Constructed object.
-    ///
+    /**
+     * @brief Move assignment operator.
+     *
+     * @param rhs Value to move.
+     * @return Constructed object.
+     */
     BigInteger& operator=(BigInteger&& rhs) noexcept {
         this->radix_ = rhs.radix_;
         this->sign_ = rhs.sign_;
@@ -106,11 +121,12 @@ public:
         return *this;
     }
 
-    /// @brief Constructs from an integer rhs.
-    ///
-    /// @param rhs An integer rhs.
-    /// @return    Constructed object.
-    ///
+    /**
+     * @brief Constructs from an integer rhs.
+     *
+     * @param rhs An integer rhs.
+     * @return Constructed object.
+     */
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
     BigInteger& operator=(T rhs) {
@@ -118,21 +134,23 @@ public:
         return *this;
     }
 
-    /// @brief Constructs from the string literal.
-    ///
-    /// @param rhs The string literal.
-    /// @return    Constructed object.
-    ///
+    /**
+     * @brief Constructs from the string literal.
+     *
+     * @param rhs The string literal.
+     * @return Constructed object.
+     */
     BigInteger& operator=(const char* rhs) {
         *this = std::string{rhs};
         return *this;
     }
 
-    /// @brief Constructs from the string value.
-    ///
-    /// @param value The value from which to construct.
-    /// @return      Constructed object.
-    ///
+    /**
+     * @brief Constructs from the string value.
+     *
+     * @param value The value from which to construct.
+     * @return Constructed object.
+     */
     BigInteger& operator=(std::string value) {
         this->sign_.value = (value.starts_with('-') ? SignFlag::negative : SignFlag::positive);
 
@@ -154,34 +172,38 @@ public:
 
     // Increment and decrement operators -----------------------------------------------------------
 
-    /// @brief Increments the current value.
-    /// @return Modified object.
-    ///
+    /**
+     * @brief Increments the current value.
+     * @return Modified object.
+     */
     BigInteger& operator++() {
         *this = this->add(1);
         return *this;
     }
 
-    /// @brief Increments the current value after returns copy.
-    /// @return Copy of current value.
-    ///
+    /**
+     * @brief Increments the current value after returns copy.
+     * @return Copy of current value.
+     */
     BigInteger operator++(int) {
         auto temp{*this};
         ++(*this);
         return temp;
     }
 
-    /// @brief Decrements the current value.
-    /// @return Modified object.
-    ///
+    /**
+     * @brief Decrements the current value.
+     * @return Modified object.
+     */
     BigInteger& operator--() {
         *this = this->subtract(1);
         return *this;
     }
 
-    /// @brief Decrements the current value after returns copy.
-    /// @return Copy of current value.
-    ///
+    /**
+     * @brief Decrements the current value after returns copy.
+     * @return Copy of current value.
+     */
     BigInteger operator--(int) {
         auto temp{*this};
         --(*this);
@@ -190,11 +212,12 @@ public:
 
     // Shift operations -----------------------------------------------------------------------------
 
-    /// @brief Shifts the current value to left on right operand value.
-    ///
-    /// @param rhs The value to shiftRight on.
-    /// @return    Shifted current value.
-    ///
+    /**
+     * @brief Shifts the current value to left on right operand value.
+     *
+     * @param rhs The value to shiftRight on.
+     * @return Shifted current value.
+     */
     [[nodiscard]]
     BigInteger shiftLeft(const BigInteger& rhs) const {
         if (rhs.isNegative()) {
@@ -210,11 +233,12 @@ public:
         return {std::move(bitwiseValue), RadixFlag::Binary};
     }
 
-    /// @brief Shifts the current value to right on right operand value.
-    ///
-    /// @param rhs The value to shiftRight on.
-    /// @return    Shifted current value.
-    ///
+    /**
+     * @brief Shifts the current value to right on right operand value.
+     *
+     * @param rhs The value to shiftRight on.
+     * @return Shifted current value.
+     */
     [[nodiscard]]
     BigInteger shiftRight(const BigInteger& rhs) const {
         if (rhs.isNegative()) {
@@ -235,11 +259,12 @@ public:
 
     // Comparison ----------------------------------------------------------------------------------
 
-    /// @brief Three way compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compere with the current value.
-    /// @return    Result of comparison.
-    ///
+    /**
+     * @brief Three way compares the current value and right side operand.
+     *
+     * @param rhs The value to compere with the current value.
+     * @return Result of comparison.
+     */
     [[nodiscard]]
     std::strong_ordering compare(const BigInteger& rhs) const {
         // -a, +b
@@ -281,11 +306,12 @@ public:
             : std::strong_ordering::greater;
     }
 
-    /// @brief Compares the current value and right side operand.
-    ///
-    /// @param rhs The value to compare with the current value.
-    /// @return    Result of comparison.
-    ///
+    /**
+     * @brief Compares the current value and right side operand.
+     *
+     * @param rhs The value to compare with the current value.
+     * @return Result of comparison.
+     */
     [[nodiscard]]
     bool equal(const BigInteger& rhs) const {
         return this->compare(rhs) == std::strong_ordering::equivalent;
@@ -293,11 +319,12 @@ public:
 
     // Basic arithmetic ----------------------------------------------------------------------------
 
-    /// @brief Adds value.
-    ///
-    /// @param rhs The right side operand for addition to current value.
-    /// @return    Result of addition.
-    ///
+    /**
+     * @brief Adds value.
+     *
+     * @param rhs The right side operand for addition to current value.
+     * @return Result of addition.
+     */
     [[nodiscard]]
     BigInteger add(const BigInteger& rhs) const {
         // (-a)+(+b)
@@ -353,11 +380,12 @@ public:
         return this->isNegative() ? valueFrom(lhsValue).negate() : std::move(lhsValue);
     }
 
-    /// @brief Subtracts value.
-    ///
-    /// @param rhs The right side operand for subtract from current value.
-    /// @return    Result of subtraction.
-    ///
+    /**
+     * @brief Subtracts value.
+     *
+     * @param rhs The right side operand for subtract from current value.
+     * @return Result of subtraction.
+     */
     [[nodiscard]]
     BigInteger subtract(const BigInteger& rhs) const {
         // (-a)-(+b) or (+a)-(-b)
@@ -408,11 +436,12 @@ public:
         return inverted_sign ? valueFrom(subtracted).negate() : std::move(subtracted);
     }
 
-    /// @brief Multiplies value.
-    ///
-    /// @param rhs The right operand for multiplication by the current value.
-    /// @return    Result of multiplication.
-    ///
+    /**
+     * @brief Multiplies value.
+     *
+     * @param rhs The right operand for multiplication by the current value.
+     * @return Result of multiplication.
+     */
     [[nodiscard]]
     BigInteger multiply(const BigInteger& rhs) const {
         auto lhsValue = this->value_;
@@ -457,11 +486,12 @@ public:
         return positive ? std::move(temp) : temp.negate();
     }
 
-    /// @brief Divides value.
-    ///
-    /// @param rhs The right operand by which to divide the current value.
-    /// @return    Result of division.
-    ///
+    /**
+     * @brief Divides value.
+     *
+     * @param rhs The right operand by which to divide the current value.
+     * @return Result of division.
+     */
     [[nodiscard]]
     BigInteger divide(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
@@ -508,11 +538,12 @@ public:
         return positive ? std::move(rhsQuotient) : valueFrom(rhsQuotient).negate();
     }
 
-    /// @brief Computes remainder.
-    ///
-    /// @param rhs The right operand for taking the remainder.
-    /// @return    Remainder of division current value by right side value.
-    ///
+    /**
+     * @brief Computes remainder.
+     *
+     * @param rhs The right operand for taking the remainder.
+     * @return Remainder of division current value by right side value.
+     */
     [[nodiscard]]
     BigInteger mod(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
@@ -523,9 +554,10 @@ public:
 
     // Complex arithmetic --------------------------------------------------------------------------
 
-    /// @brief Reverses the sign.
-    /// @return If current value signed then current value otherwise sign reversed.
-    ///
+    /**
+     * @brief Reverses the sign.
+     * @return If current value signed then current value otherwise sign reversed.
+     */
     [[nodiscard]]
     BigInteger negate() const {
         if (this->equal(0)) {
@@ -540,19 +572,21 @@ public:
         return ss.str();
     }
 
-    /// @brief Absolutes the current value.
-    /// @return Unsigned current value.
-    ///
+    /**
+     * @brief Absolutes the current value.
+     * @return Unsigned current value.
+     */
     [[nodiscard]]
     BigInteger abs() const {
         return this->isPositive() ? *this : this->negate();
     }
 
-    /// @brief Rises the current value to the power of the right operand.
-    ///
-    /// @param rhs Degree.
-    /// @return    Current value raised to the power.
-    ///
+    /**
+     * @brief Rises the current value to the power of the right operand.
+     *
+     * @param rhs Degree.
+     * @return Current value raised to the power.
+     */
     [[nodiscard]]
     BigInteger pow(const BigInteger& rhs) const {
         if (rhs.equal(0)) {
@@ -578,17 +612,19 @@ public:
         return result.multiply(resultOdd);
     }
 
-    /// @brief Rises the exponent value to the power of 10
-    /// @return Current value raised to the power.
-    ///
+    /**
+     * @brief Rises the exponent value to the power of 10.
+     * @return Current value raised to the power.
+     */
     [[nodiscard]]
     BigInteger pow10() const {
         return valueFrom(10).pow(*this);
     }
 
-    /// @brief Computes square root.
-    /// @return Square root of current value.
-    ///
+    /**
+     * @brief Computes square root.
+     * @return Square root of current value.
+     */
     [[nodiscard]]
     BigInteger sqrt() const {
         if (this->compare(0) == std::strong_ordering::less) {
@@ -618,11 +654,12 @@ public:
         return current;
     }
 
-    /// @brief Computes the greatest common divisor.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Greatest common divisor of the current value and right operand.
-    ///
+    /**
+     * @brief Computes the greatest common divisor.
+     *
+     * @param rhs The right operand.
+     * @return Greatest common divisor of the current value and right operand.
+     */
     [[nodiscard]]
     BigInteger gcd(const BigInteger& rhs) const {
         auto lhsAbs = this->abs();
@@ -641,11 +678,12 @@ public:
         return lhsAbs;
     }
 
-    /// @brief Computes the least common multiple.
-    ///
-    /// @param rhs The right operand.
-    /// @return    Least common multiple of the current value and right operand.
-    ///
+    /**
+     * @brief Computes the least common multiple.
+     *
+     * @param rhs The right operand.
+     * @return Least common multiple of the current value and right operand.
+     */
     [[nodiscard]]
     BigInteger lcm(const BigInteger& rhs) const {
         if (this->equal(0) || rhs.equal(0)) {
@@ -656,9 +694,10 @@ public:
 
     // Modification and checking -------------------------------------------------------------------
 
-    /// @brief Checks for current value is power of 10.
-    /// @return If is power of 10 true otherwise false.
-    ///
+    /**
+     * @brief Checks for current value is power of 10.
+     * @return If is power of 10 true otherwise false.
+     */
     bool isPow10() {
         return (this->value_.at(0) == '1') && std::ranges::all_of(
             this->value_.cbegin() + 1,
@@ -666,33 +705,37 @@ public:
             [](const auto c) { return c == '0'; });
     }
 
-    /// @brief Gets the Binary usize.
-    /// @return Bit length of current value.
-    ///
+    /**
+     * @brief Gets the Binary usize.
+     * @return Bit length of current value.
+     */
     [[nodiscard]]
     std::size_t bitLength() const {
         return to_string(RadixFlag::Binary).length();
     }
 
-    /// @brief Checks for value sign.
-    /// @return If value unsigned then true otherwise false.
-    ///
+    /**
+     * @brief Checks for value sign.
+     * @return If value unsigned then true otherwise false.
+     */
     [[nodiscard]]
     bool isPositive() const {
         return this->sign_.isPositive();
     }
 
-    /// @brief Checks for value sign.
-    /// @return If value signed true otherwise false.
-    ///
+    /**
+     * @brief Checks for value sign.
+     * @return If value signed true otherwise false.
+     */
     [[nodiscard]]
     bool isNegative() const {
         return !isPositive();
     }
 
-    /// @brief Swaps values.
-    /// @param rhs The value to swap with the current value.
-    ///
+    /**
+     * @brief Swaps values.
+     * @param rhs The value to swap with the current value.
+     */
     void swap(BigInteger& rhs) {
         if (this->equal(rhs)) {
             return;
@@ -702,29 +745,32 @@ public:
 
     // Conversion methods --------------------------------------------------------------------------
 
-    /// @brief Creates value from integer value.
-    ///
-    /// @tparam value Integral value.
-    /// @return       Constructed value.
-    ///
+    /**
+     * @brief Creates value from integer value.
+     *
+     * @param value Integral value.
+     * @return Constructed value.
+     */
     template<typename T>
     requires std::integral<T> && (!std::same_as<T, bool>)
     static BigInteger valueFrom(T value) {
         return std::to_string(value);
     }
 
-    /// @brief Creates value from string value.
-    ///
-    /// @tparam value std::string value.
-    /// @return       Constructed value.
-    ///
+    /**
+     * @brief Creates value from string value.
+     *
+     * @param value std::string value.
+     * @return Constructed value.
+     */
     static BigInteger valueFrom(std::string value) {
         return std::move(value);
     }
 
-    /// @brief Converts to boolean representation.
-    /// @return Boolean representation of current value.
-    ///
+    /**
+     * @brief Converts to boolean representation.
+     * @return Boolean representation of current value.
+     */
     explicit operator bool() const {
         return !this->equal(0);
     }
@@ -753,11 +799,12 @@ public:
     }
 
 public:
-    /// @brief Converts to string representation.
-    ///
-    /// @param radix The base of a system of number.
-    /// @return      std::string representation of current value.
-    ///
+    /**
+     * @brief Converts to string representation.
+     *
+     * @param radix The base of a system of number.
+     * @return std::string representation of current value.
+     */
     [[nodiscard]]
     std::string to_string(RadixFlag radix = RadixFlag::Decimal) const {
         std::stringstream ss;
